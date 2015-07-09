@@ -1,0 +1,36 @@
+{
+  "name": "waterpress",
+  "version": "0.1.0",
+  "description": "A Waterline powered Wordpress DB API",
+  "main": "index.js",
+  "scripts": {
+    "test": "karma start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nubotics/waterpress.git"
+  },
+  "keywords": [
+    "nio",
+    "wordpress",
+    "waterline"
+  ],
+  "author": "@Nubuck",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nubotics/waterpress/issues"
+  },
+  "homepage": "https://github.com/nubotics/waterpress",
+  "dependencies": {
+    "sails-mysql": "^0.10.12",
+    "waterline": "^0.10.25",
+    "wordpress-hash-node": "0.0.3"
+  },
+  "devDependencies": {
+    "jasmine-core": "^2.3.4",
+    "karma": "^0.12.32",
+    "karma-jasmine": "^0.3.5",
+    "karma-phantomjs-launcher": "^0.1.4",
+    "weasel": "0.0.1"
+  }
+}
