@@ -1,7 +1,7 @@
 const user = {
-  identity: '',
-  connection: '',
-  tableName:'',
+  identity: 'user',
+  connection: 'mysql',
+  tableName:'wp_users',
   attributes:{
     id: {
       type: 'integer',
@@ -25,14 +25,14 @@ const user = {
     email:{
       type:'string',
       required: true
-    },
+    }/*,
      parentAssociation:{
       collection: '',
       via:''
     },
     childAssociation:{
       model: ''
-    }
+    }*/
 /*    ,
     migrate: 'safe',
     autoPK: false,
