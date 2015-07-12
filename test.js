@@ -1,4 +1,4 @@
-import Api from './src/core/Api'
+import WpApi from './src/core/WaterpressApi'
 
 (function () {
 
@@ -17,87 +17,129 @@ import Api from './src/core/Api'
 
   }
 
-  const wpApi = new Api(config, (err, collections)=> {
-    if (err) console.log('err', err)
 
-    //console.log('collections',collections)
+  let wpApi = new WpApi(config)
 
-    /*
-     wpApi._collections.user
-     .findOne()
-     .where({id: 2})
-     .populate('metaCollection')
-     .then(user => {
-     console.log('found user', user)
-     }, error => {
-     console.log('user error', error)
-     })
-
-     wpApi._collections.user.findMeta(
-     2,
-     ['first_name', 'last_name'],
-     (value)=> {
-     console.log('user meta value:', value)
-     })
-
-     wpApi._collections.user.getMetaAsObject(
-     2,
-     (value)=> {
-     console.log('user meta obj:', value)
-     })
-     */
-
-    wpApi._collections.post
-      .findOne()
-      .where({id: 4})
-      .populate('metaCollection')
-      .populate('relationshipCollection')
-      .then(posts => {
-        console.log('posts', posts)
-        console.log('-------------------------')
-      }, error => {
-        console.log('posts error', error)
-        console.log('-------------------------')
-      })
-
-
-    wpApi._collections.term
-      .find()
-      .populate('taxonomyCollection')
-      .then(terms => {
-        console.log('terms', terms)
-        console.log('-------------------------')
-      }, error => {
-        console.log('terms error', error)
-        console.log('-------------------------')
-      })
-
-
-    wpApi._collections.termtaxonomy
-      .find()
-      .populate('relationshipCollection')
-      .then(tax => {
-        console.log('tax', tax)
-        console.log('-------------------------')
-      }, error => {
-        console.log('tax error', error)
-        console.log('-------------------------')
-      })
-
-    wpApi._collections.termrelationship
-      .find()
-      .then(rels => {
-        console.log('rels', rels)
-        console.log('-------------------------')
-      }, error => {
-        console.log('rels error', error)
-        console.log('-------------------------')
-      })
-    //console.log('collections:',wpApi._collections)
-
-    //console.log('-------------------------')
+  wpApi.user.one({id: 12}, (err, user) => {
+    if (err) throw(err)
+    if (user){
+      console.log('wp api one user found ', user)
+    }else{
+      console.log('wp api one user NOT found', user)
+    }
 
   })
+
+  wpApi.user.byRole('author', (err, users) => {
+    if (err) throw(err)
+    if (users){
+      console.log('wp api user by role found ', users)
+    }else{
+      console.log('wp api user by role NOT found', users)
+    }
+
+  })
+
+  /*  const wpApi = new WpApi(config, (err, collections)=> {
+   if (err) console.log('err', err)
+
+   //console.log('collections',collections)
+
+   /!*
+   wpApi._collections.user
+   .findOne()
+   .where({id: 2})
+   .populate('metaCollection')
+   .then(user => {
+   console.log('found user', user)
+   }, error => {
+   console.log('user error', error)
+   })
+
+   wpApi._collections.user.findMeta(
+   2,
+   ['first_name', 'last_name'],
+   (value)=> {
+   console.log('user meta value:', value)
+   })
+
+   wpApi._collections.user.getMetaAsObject(
+   2,
+   (value)=> {
+   console.log('user meta obj:', value)
+   })
+   *!/
+
+   wpApi._collections.post
+   .findOne()
+   .where({id: 140})
+   /!* .populate('metaCollection')
+   .populate('relationshipCollection')
+   .populate('commentCollection')*!/
+   //.populateAll()
+   .then(posts => {
+   console.log('posts', posts)
+   console.log('-------------------------')
+   }, error => {
+   console.log('posts error', error)
+   console.log('-------------------------')
+   })
+
+
+   wpApi._collections.term
+   .find()
+   //.populate('taxonomy')
+   //.populateAll()
+   .then(terms => {
+   console.log('terms', terms)
+   console.log('-------------------------')
+   }, error => {
+   console.log('terms error', error)
+   console.log('-------------------------')
+   })
+
+
+   wpApi._collections.termtaxonomy
+   .find()
+   //.populate('relationshipCollection')
+   //.populateAll()
+   .then(tax => {
+   console.log('tax', tax)
+   console.log('-------------------------')
+   }, error => {
+   console.log('tax error', error)
+   console.log('-------------------------')
+   })
+
+   wpApi._collections.termrelationship
+   .find()
+   //.populateAll()
+   .then(rels => {
+   console.log('rels', rels)
+   console.log('-------------------------')
+   }, error => {
+   console.log('rels error', error)
+   console.log('-------------------------')
+   })
+
+   wpApi._collections.comment
+   .find()
+   //.populate('metaCollection')
+   .populateAll()
+   .then(comms => {
+   console.log('comments', comms)
+   console.log('-------------------------')
+   }, error => {
+   console.log('comments error', error)
+   console.log('-------------------------')
+   })
+
+
+   //console.log('collections:',wpApi._collections)
+
+   //console.log('-------------------------')
+
+   })*/
 
 
 })()

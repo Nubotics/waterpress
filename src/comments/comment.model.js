@@ -12,7 +12,7 @@ const comment = {
     postId:{
       type:'integer',
       columnName:'comment_post_ID',
-      model:'post'
+      //model:'post'
     },
     authorId:{
       type:'integer',
@@ -34,6 +34,10 @@ const comment = {
     createdAt:{
       type: 'datetime',
       columnName: 'comment_date'
+    },
+    metaCollection: {
+      collection: 'commentMeta',
+      via: 'commentId'
     }
   },
   migrate: 'safe',
@@ -46,7 +50,27 @@ const commentMeta = {
   identity: 'commentMeta',
   connection: 'mysql',
   tableName: 'wp_commentmeta',
-  attributes: {},
+  attributes: {
+    id: {
+      type: 'integer',
+      columnName: 'meta_id',
+      primaryKey: true,
+      autoIncrement: true
+    },
+    commentId: {
+      type: 'integer',
+      columnName: 'comment_id',
+      model: 'comment'
+    },
+    key: {
+      type: 'string',
+      columnName: 'meta_key'
+    },
+    value: {
+      type: 'string',
+      columnName: 'meta_value'
+    }
+  },
   migrate: 'safe',
   autoPK: false,
   autoCreatedAt: false,

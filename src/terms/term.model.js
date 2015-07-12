@@ -21,7 +21,7 @@ const term = {
       type: 'integer',
       columnName: 'term_group'
     },
-    taxonomyCollection: {
+    taxonomy: {
       collection: 'termTaxonomy',
       via: 'termId'
     }
@@ -80,37 +80,34 @@ const termRelationship = {
   identity: 'termRelationship',
   connection: 'mysql',
   tableName: 'wp_term_relationships',
-/*  types: {
-    compositeKey: function () {
-      return `${this.objectId.toString()}_${this.termTaxonomyId.toString()}`
-    }
-  },*/
   attributes: {
-    /*    id: {
-     type: 'string',
-     compositeKey:true,
-     primaryKey: true
-     },*/
+    id: {
+      type: 'integer',
+      primaryKey: true,
+      autoIncrement: true
+    },
     objectId: {
       type: 'integer',
       columnName: 'object_id',
-      primaryKey: true,
+      //primaryKey: true,
       required: true,
-      model: 'post'
+      model: 'post',
+      index: true
     },
     termTaxonomyId: {
       type: 'integer',
       columnName: 'term_taxonomy_id',
-      primaryKey: true,
+      //primaryKey: true,
       required: true,
-      model: 'termTaxonomy'
+      model: 'termTaxonomy',
+      index: true
     },
     order: {
       type: 'integer',
       columnName: 'term_order'
     }
   },
-  migrate: 'safe',
+  migrate: 'alter',
   autoPK: false,
   autoCreatedAt: false,
   autoUpdatedAt: false

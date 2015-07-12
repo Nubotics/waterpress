@@ -35,4 +35,4 @@ let makeObjectFromKeyCollection = function(collection){
   return result
 }
 
-export {findValue,makeObjectFromKeyCollection}
+export {_,findValue,makeObjectFromKeyCollection}

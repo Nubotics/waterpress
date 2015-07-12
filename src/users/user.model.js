@@ -1,4 +1,5 @@
 import {
+  _,
   findValue,
   makeObjectFromKeyCollection
 } from '../core/util'
@@ -75,37 +76,65 @@ const user = {
     delete obj.password;
     return obj;
   },
-  getMetaAsObject: function(id, cb){
+  findOneWithMeta: function (params, cb) {
     this
       .findOne()
-      .where({id: id})
+      .where(params)
       .populate('metaCollection')
-      .then(userObj => {
-        if (userObj.metaCollection) {
-          cb(makeObjectFromKeyCollection(userObj.metaCollection))
+      .exec((error, userObj) => {
+        //if (error) throw(error)
+        //console.log('user model', userObj)
+        if (_.has(userObj, 'metaCollection')) {
+          cb(error,
+            _.extend(userObj,
+              {metaObj: makeObjectFromKeyCollection(userObj.metaCollection)}
+            )
+          )
         } else {
-          cb({})
+          cb(error, userObj)
         }
-      }, error => {
-        console.log('user error', error)
       })
   },
-  findMeta: function (id, key, cb) {
+  findWithMeta: function (params, cb) {
+    this
+      .find()
+      .where(params)
+      .populate('metaCollection')
+      .exec((error, userArr) => {
+        //if (error) throw(error)
+        console.log('user model find', userArr)
+        let result = null
+        if (_.isArray(userArr)){
+          result = []
+          _.forEach(userArr,(userObj)=>{
+            if (_.has(userObj, 'metaCollection')) {
+              result.push(
+                _.extend(userObj,
+                  {metaObj: makeObjectFromKeyCollection(userObj.metaCollection)}
+                )
+              )
+            } else {
+              result.push(userObj)
+            }
+          })
+        }
+        cb(error, result)
+
+      })
+  },
+  findMeta: function (params, key, cb) {
     //console.log('findMeta', this)
     this
-    .findOne()
-      .where({id: id})
+      .findOne()
+      .where(params)
       .populate('metaCollection')
-      .then(userObj => {
+      .exec((error, userObj) => {
         if (userObj.metaCollection) {
-          cb(findValue(userObj.metaCollection, key))
+          cb(error, findValue(userObj.metaCollection, key))
         } else {
-          cb('')
+          cb(error)
         }
-      }, error => {
-        console.log('user error', error)
       })
-
   }
 }
 

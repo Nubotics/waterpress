@@ -11,8 +11,9 @@ let _ = require('lodash')
 import {user, userMeta} from '../users/user.model'
 import {post, postMeta} from '../posts/post.model'
 import {term, termTaxonomy, termRelationship} from '../terms/term.model'
+import {comment, commentMeta} from '../comments/comment.model'
 
-class WaterPress extends Waterline {
+class WaterpressOrm extends Waterline {
   constructor() {
     super()
     this.init.bind(this)
@@ -39,17 +40,25 @@ class WaterPress extends Waterline {
 
     config = _.extend(config, options)
 
-    //console.log('Waterpress: config ext', config)
+    //console.log('WaterpressOrm: config ext', config)
     //init users
     let users = Waterline.Collection.extend(user)
     let usersMeta = Waterline.Collection.extend(userMeta)
     this.load(users)
     this.load(usersMeta)
+
     //init posts
     let posts = Waterline.Collection.extend(post)
     let postsMeta = Waterline.Collection.extend(postMeta)
     this.load(posts)
     this.load(postsMeta)
+
+    //init comments
+    let comments = Waterline.Collection.extend(comment)
+    let commentsMeta = Waterline.Collection.extend(commentMeta)
+    this.load(comments)
+    this.load(commentsMeta)
+
     //init terms
     let terms = Waterline.Collection.extend(term)
     let termTaxonomies = Waterline.Collection.extend(termTaxonomy)
@@ -75,4 +84,4 @@ class WaterPress extends Waterline {
 
 }
 
-export default WaterPress
+export default WaterpressOrm

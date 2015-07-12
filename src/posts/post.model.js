@@ -59,7 +59,11 @@ const post = {
     relationshipCollection: {
       collection: 'termRelationship',
       via: 'objectId'
-    }
+    }/*,
+    commentCollection: {
+      collection: 'comment',
+      via: 'postId'
+    }*/
   },
   migrate: 'safe',
   autoPK: false,

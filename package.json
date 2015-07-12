@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/nubotics/waterpress",
   "dependencies": {
+    "eventemitter3": "^1.1.1",
     "lodash": "^3.10.0",
     "sails-mysql": "^0.10.12",
     "waterline": "^0.10.25",
