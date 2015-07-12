@@ -13,7 +13,10 @@ import commentApi from '../comments/comment.api'
 
 class WaterpressApi extends Base {
   constructor(options, cb) {
-    super(options)
+    //TODO: validate options
+
+    super({connections: options.connections})
+
     if (cb) {
       super.connect(cb)
     }

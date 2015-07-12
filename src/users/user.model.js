@@ -3,6 +3,7 @@ import {
   findValue,
   makeObjectFromKeyCollection
 } from '../core/util'
+const hasher = require('wordpress-hash-node')
 
 const user = {
   identity: 'user',
@@ -66,15 +67,27 @@ const user = {
   autoUpdatedAt: false,
 
   beforeCreate: (values, next) => {
-
+    if (_.has(values,'password')) {
+      let hash = hasher.HashPassword(values.password)
+      next(null,hash)
+      //var checked = hasher.CheckPassword(password, hash);
+    }else{
+      next(null,values)
+    }
   },
   beforeUpdate: (values, next) => {
-
+    if (_.has(values,'password')) {
+      let hash = hasher.HashPassword(values.password)
+      next(null,hash)
+      //var checked = hasher.CheckPassword(password, hash);
+    }else{
+      next(null,values)
+    }
   },
   toJSON: ()=> {
-    let obj = this.toObject();
-    delete obj.password;
-    return obj;
+    let obj = this.toObject()
+    delete obj.password
+    return obj
   },
   findOneWithMeta: function (params, cb) {
     this

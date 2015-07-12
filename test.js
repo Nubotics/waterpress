@@ -20,25 +20,56 @@ import WpApi from './src/core/WaterpressApi'
 
   let wpApi = new WpApi(config)
 
-  wpApi.user.one({id: 12}, (err, user) => {
+    wpApi.post.all(null,null, (err, posts) => {
+   if (err) throw(err)
+   if (posts){
+   console.log('wp api posts found ', posts)
+   }else{
+   console.log('wp api posts NOT found', posts)
+   }
+
+   })
+
+
+/*  wpApi.post.one({id: 140}, (err, post, terms) => {
     if (err) throw(err)
-    if (user){
-      console.log('wp api one user found ', user)
-    }else{
-      console.log('wp api one user NOT found', user)
+    if (post) {
+      console.log('wp api post found ', terms,post)
+    } else {
+      console.log('wp api post NOT found',terms, post)
     }
 
-  })
+  })*/
 
-  wpApi.user.byRole('author', (err, users) => {
-    if (err) throw(err)
-    if (users){
-      console.log('wp api user by role found ', users)
-    }else{
-      console.log('wp api user by role NOT found', users)
-    }
+  /*  wpApi.term.all((err, terms) => {
+   if (err) throw(err)
+   if (terms){
+   console.log('wp api posts found ', terms)
+   }else{
+   console.log('wp api posts NOT found', terms)
+   }
 
-  })
+   })*/
+
+  /*  wpApi.user.one({id: 12}, (err, user) => {
+   if (err) throw(err)
+   if (user){
+   console.log('wp api one user found ', user)
+   }else{
+   console.log('wp api one user NOT found', user)
+   }
+
+   })
+
+   wpApi.user.byRole('author', (err, users) => {
+   if (err) throw(err)
+   if (users){
+   console.log('wp api user by role found ', users)
+   }else{
+   console.log('wp api user by role NOT found', users)
+   }
+
+   })*/
 
   /*  const wpApi = new WpApi(config, (err, collections)=> {
    if (err) console.log('err', err)

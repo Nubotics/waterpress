@@ -11,7 +11,7 @@ let userApi = {
             cb(err, user)
           })
         })
-      
+
     })
 
   },
@@ -64,15 +64,20 @@ let userApi = {
 
   },
   existsByEmail(email, cb){
-    this.user.one({email}, (err, user)=> {
-      if (user) {
-        cb(err, true)
-      } else {
-        cb(err, false)
-      }
+    this.safeConnect((error, collections)=> {
+      this.user.one({email}, (err, user)=> {
+        this.safeKill(()=> {
+          if (user) {
+            cb(err, true)
+          } else {
+            cb(err, false)
+          }
+        })
+      })
     })
   },
   save(userObj, cb){
+    //TODO: santiize userObj
     this.safeConnect((error, collections)=> {
       collections.user
         .one({email: userObj.email}, (err, user)=> {
@@ -92,6 +97,7 @@ let userApi = {
             collections.user
               .create(userObj)
               .exec((e, user)=> {
+                //TODO: validate the response before callback
                 this.safeKill(()=> {
                   cb(e, user)
                 })
@@ -101,6 +107,9 @@ let userApi = {
         })
 
     })
+  },
+  login(identifier, password, cb){
+
   }
 
 }

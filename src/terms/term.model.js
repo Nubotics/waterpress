@@ -21,7 +21,7 @@ const term = {
       type: 'integer',
       columnName: 'term_group'
     },
-    taxonomy: {
+    taxonomyCollection: {
       collection: 'termTaxonomy',
       via: 'termId'
     }
