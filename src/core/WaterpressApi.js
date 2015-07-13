@@ -2,7 +2,7 @@
  * Created by nubuck on 15/07/10.
  */
 import Base from './BaseApi'
-import orm from './WaterpressOrm'
+//import orm from './WaterpressOrm'
 import {_} from './util'
 
 //api
@@ -15,7 +15,12 @@ class WaterpressApi extends Base {
   constructor(options, cb) {
     //TODO: validate options
 
-    super({connections: options.connections})
+    let basicConfig = {connections: options.connections}
+    if (_.has(options, 'Orm')) {
+      basicConfig.Orm = options.Orm
+    }
+
+    super(basicConfig)
 
     if (cb) {
       super.connect(cb)
@@ -28,8 +33,12 @@ class WaterpressApi extends Base {
   }
 
   _bindApiMethods(namespace, api) {
-    this[namespace] = _.extend({},api)
-    Object.keys(this[namespace]).forEach(key => {
+    if (!_.has(this, namespace)){
+      this[namespace] = _.extend({}, api)
+    }else{
+      this[namespace] = _.extend(this[namespace], api)
+    }
+    Object.keys(api).forEach(key => {
       this[namespace][key] = this[namespace][key].bind(this)
     })
   }

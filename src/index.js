@@ -4,8 +4,10 @@
 
 import WaterpressOrm from './core/WaterpressOrm'
 import WaterpressApi from './core/WaterpressApi'
+import util from './core/util'
 
 export {
   WaterpressOrm,
-  WaterpressApi
+  WaterpressApi,
+  util
 }

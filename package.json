@@ -29,10 +29,6 @@
     "wordpress-hash-node": "0.0.3"
   },
   "devDependencies": {
-    "jasmine-core": "^2.3.4",
-    "karma": "^0.12.32",
-    "karma-jasmine": "^0.3.5",
-    "karma-phantomjs-launcher": "^0.1.4",
     "weasel": "0.0.1"
   }
 }

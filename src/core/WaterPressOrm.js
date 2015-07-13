@@ -39,8 +39,8 @@ class WaterpressOrm extends Waterline {
     }
 
     config = _.extend(config, options)
+    console.log('WaterpressOrm: config ext', config)
 
-    //console.log('WaterpressOrm: config ext', config)
     //init users
     let users = Waterline.Collection.extend(user)
     let usersMeta = Waterline.Collection.extend(userMeta)
