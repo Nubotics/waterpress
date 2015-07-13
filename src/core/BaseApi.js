@@ -13,11 +13,8 @@ export default class BaseApi extends EventEmitter {
       //TODO: add more constructor validation
     }
     this.options = options
-    this.OrmLib = null
-    if (_.has(options, 'Orm')) {
-      this.OrmLib = options.Orm
-    } else {
-      this.OrmLib = WpOrm
+    if (!_.has(options, 'Orm')) {
+      this.options.Orm = WpOrm
     }
     this.orm = null
     this.collections = null
@@ -34,7 +31,7 @@ export default class BaseApi extends EventEmitter {
     this.on('connected', cb, this)
     if (!this._isConnecting) {
       this._isConnecting = true
-      this.orm = new this.OrmLib()
+      this.orm = new this.options.Orm()
       this.orm.init(this.options, (err, schema)=> {
         if (err) {
           console.log('Error in Waterpress API connecting to ORM: ', err)
