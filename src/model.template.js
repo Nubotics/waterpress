@@ -1,4 +1,4 @@
-const user = {
+const model = {
   identity: '',
   connection: '',
   tableName:'',
@@ -22,7 +22,7 @@ const user = {
       type: 'string',
       columnName: '',
       defaultsTo: ()=>{
-
+        return ''
       }
     },
     field4:{
@@ -54,11 +54,8 @@ const user = {
   }
 }
 
-const userMeta = {
 
-}
-
-export {user,userMeta}
+export default model
 /**
  * Created by nubuck on 15/07/09.
  */
