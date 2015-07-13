@@ -20,6 +20,7 @@ class WaterpressOrm extends Waterline {
     this.load.bind(this)
     this.kill.bind(this)
 
+    this._safeOverride.bind(this)
   }
 
   init(options, cb) {
@@ -38,43 +39,53 @@ class WaterpressOrm extends Waterline {
       }
     }
 
-    config = _.extend(config, options)
-    console.log('WaterpressOrm: config ext', config)
+    Object.keys(options).forEach(key => {
+      if (_.has(config, key)) {
+        config[key] = _.extend(config[key], options[key])
+      }
+      else {
+        config[key] = options[key]
+      }
+    })
 
-    //init users
-    let users = Waterline.Collection.extend(user)
-    let usersMeta = Waterline.Collection.extend(userMeta)
-    this.load(users)
-    this.load(usersMeta)
+    this.config = config
 
-    //init posts
-    let posts = Waterline.Collection.extend(post)
-    let postsMeta = Waterline.Collection.extend(postMeta)
-    this.load(posts)
-    this.load(postsMeta)
+    console.log('WaterpressOrm: config ext', this.config)
 
-    //init comments
-    let comments = Waterline.Collection.extend(comment)
-    let commentsMeta = Waterline.Collection.extend(commentMeta)
-    this.load(comments)
-    this.load(commentsMeta)
+    //init models
+    this._safeOverride('user', user)
+    this._safeOverride('userMeta', userMeta)
+    this._safeOverride('post', post)
+    this._safeOverride('postMeta', postMeta)
+    this._safeOverride('comment', comment)
+    this._safeOverride('commentMeta', commentMeta)
+    this._safeOverride('term', term)
+    this._safeOverride('termTaxonomy', termTaxonomy)
+    this._safeOverride('termRelationship', termRelationship)
 
-    //init terms
-    let terms = Waterline.Collection.extend(term)
-    let termTaxonomies = Waterline.Collection.extend(termTaxonomy)
-    let termRelationships = Waterline.Collection.extend(termRelationship)
-    this.load(terms)
-    this.load(termTaxonomies)
-    this.load(termRelationships)
-
-    super.initialize(config, cb)
+    super.initialize(this.config, cb)
 
     //console.log('wp instance init', this)
 
   }
 
+  _safeOverride(key, model) {
+    if (!_.has(this.config, 'override')) {
+      this.load(model)
+    } else {
+      if (!_.has(this.config.override, 'model')) {
+        this.load(model)
+      } else if (_.has(this.config.override.model, key)) {
+        console.log('Model override', key, this.config.override.model[key])
+        this.load(this.config.override.model[key])
+      } else {
+        this.load(model)
+      }
+    }
+  }
+
   load(collection) {
-    super.loadCollection(collection)
+    super.loadCollection(Waterline.Collection.extend(collection))
   }
 
   kill(cb) {

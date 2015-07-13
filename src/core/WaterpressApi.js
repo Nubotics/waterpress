@@ -14,34 +14,48 @@ import commentApi from '../comments/comment.api'
 class WaterpressApi extends Base {
   constructor(options, cb) {
     //TODO: validate options
+    super(options)
 
-    let basicConfig = {connections: options.connections}
-    if (_.has(options, 'Orm')) {
-      basicConfig.Orm = options.Orm
-    }
+    this._bindApiMethods.bind(this)
+    this._safeBindApiMethods.bind(this)
 
-    super(basicConfig)
+    this._safeBindApiMethods('user', userApi)
+    this._safeBindApiMethods('post', postApi)
+    this._safeBindApiMethods('term', termApi)
+    this._safeBindApiMethods('comment', commentApi)
 
     if (cb) {
-      super.connect(cb)
+      this.safeConnect(cb)
     }
+  }
 
-    this._bindApiMethods('user', userApi)
-    this._bindApiMethods('post', postApi)
-    this._bindApiMethods('term', termApi)
-    this._bindApiMethods('comment', commentApi)
+  _safeBindApiMethods(namespace, api) {
+    if (_.has(this.options, 'override')) {
+      if (_.has(this.options.override, 'api')) {
+        if (_.has(this.options.override.api, namespace)) {
+          this._bindApiMethods(namespace, this.options.override.api[namespace])
+        } else {
+          this._bindApiMethods(namespace, api)
+        }
+      } else {
+        this._bindApiMethods(namespace, api)
+      }
+    } else {
+      this._bindApiMethods(namespace, api)
+    }
   }
 
   _bindApiMethods(namespace, api) {
-    if (!_.has(this, namespace)){
+    if (!_.has(this, namespace)) {
       this[namespace] = _.extend({}, api)
-    }else{
+    } else {
       this[namespace] = _.extend(this[namespace], api)
     }
     Object.keys(api).forEach(key => {
       this[namespace][key] = this[namespace][key].bind(this)
     })
   }
+
 
 }
 
