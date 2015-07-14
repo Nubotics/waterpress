@@ -12,7 +12,7 @@ let postApi = {
 
           collections.post
             .find()
-            .populate('authorId')
+            .populate('author')
             .populate('relationshipCollection')
             .populate('metaCollection')
             .exec((e, posts)=> {

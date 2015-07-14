@@ -60,9 +60,12 @@ export default class BaseApi extends EventEmitter {
 
   safeKill(cb) {
     console.log('safe kill', this.clientConnections)
-    if (this.connections <= 1) {
+    if (this.clientConnections <= 1) {
+      console.log('safe kill', 'kill')
+      this.clientConnections = 0
       this.orm.kill(cb)
     } else {
+      console.log('safe kill', 'continue')
       this.clientConnections--
       cb()
     }

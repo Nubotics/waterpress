@@ -37,7 +37,7 @@ const comment = {
     },
     metaCollection: {
       collection: 'commentMeta',
-      via: 'commentId'
+      via: 'comment'
     }
   },
   migrate: 'safe',
@@ -57,7 +57,7 @@ const commentMeta = {
       primaryKey: true,
       autoIncrement: true
     },
-    commentId: {
+    comment: {
       type: 'integer',
       columnName: 'comment_id',
       model: 'comment'

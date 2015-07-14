@@ -20,7 +20,17 @@ import WpApi from './src/core/WaterpressApi'
 
   let wpApi = new WpApi(config)
 
-    wpApi.post.all(null,null, (err, posts) => {
+  wpApi.term.byTaxonomy({},(err,data)=>{
+    if (err) throw(err)
+    if (data){
+      console.log('wp api term.byTaxonomy found ', data)
+    }else{
+      console.log('wp api term.byTaxonomy NOT found', data)
+    }
+  })
+
+
+/*    wpApi.post.all(null,null, (err, posts) => {
    if (err) throw(err)
    if (posts){
    console.log('wp api posts found ', posts)
@@ -28,7 +38,7 @@ import WpApi from './src/core/WaterpressApi'
    console.log('wp api posts NOT found', posts)
    }
 
-   })
+   })*/
 
 
 /*  wpApi.post.one({id: 140}, (err, post, terms) => {

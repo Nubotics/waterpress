@@ -63,7 +63,7 @@ class WaterpressOrm extends Waterline {
     this._safeOverride('termTaxonomy', termTaxonomy)
     this._safeOverride('termRelationship', termRelationship)
 
-    super.initialize(this.config, cb)
+    this.initialize(this.config, cb)
 
     //console.log('wp instance init', this)
 
@@ -85,11 +85,12 @@ class WaterpressOrm extends Waterline {
   }
 
   load(collection) {
-    super.loadCollection(Waterline.Collection.extend(collection))
+    this.loadCollection(Waterline.Collection.extend(collection))
   }
 
   kill(cb) {
-    super.teardown(cb)
+    console.log('teardown')
+    this.teardown(cb)
   }
 
 

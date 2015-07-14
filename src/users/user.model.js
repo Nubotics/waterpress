@@ -58,7 +58,7 @@ const user = {
     },
     metaCollection: {
       collection: 'userMeta',
-      via: 'userId'
+      via: 'user'
     }
   },
   migrate: 'safe',
@@ -162,7 +162,7 @@ const userMeta = {
       primaryKey: true,
       autoIncrement: true
     },
-    userId: {
+    user: {
       type: 'integer',
       columnName: 'user_id',
       model: 'user'

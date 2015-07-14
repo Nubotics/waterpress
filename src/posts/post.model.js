@@ -49,16 +49,16 @@ const post = {
     },
     metaCollection: {
       collection: 'postMeta',
-      via: 'postId'
+      via: 'post'
     },
-    authorId: {
+    author: {
       type: 'integer',
       columnName: 'post_author',
       model: 'user'
     },
     relationshipCollection: {
       collection: 'termRelationship',
-      via: 'objectId'
+      via: 'object'
     }/*,
     commentCollection: {
       collection: 'comment',
@@ -83,7 +83,7 @@ const postMeta = {
       primaryKey: true,
       autoIncrement: true
     },
-    postId: {
+    post: {
       type: 'integer',
       columnName: 'post_id',
       model: 'post'

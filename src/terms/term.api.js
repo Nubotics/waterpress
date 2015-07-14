@@ -1,6 +1,6 @@
 let termApi = {
   all(cb){
-    this.safeConnect((error, collections)=> {
+    this.safeConnect((error)=> {
       if (error) throw(error)
 
       this.collections.term
@@ -16,7 +16,25 @@ let termApi = {
   },
   byPost(){
   },
-  byTaxonomy(){
+  byTaxonomy(params, cb){
+    this.safeConnect((error)=> {
+      if (error) throw(error)
+
+      //console.log('bytaxonomy',  this.collections.user)
+
+      this.collections.termtaxonomy
+        .find()
+        .where(params)
+        .populate('term')
+        .populate('childCollection')
+        .populate('relationshipCollection')
+        .exec((err, data)=> {
+
+          cb(err, data)
+
+          this.safeKill()
+        })
+    })
   }
 }
 

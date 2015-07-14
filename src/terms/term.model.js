@@ -23,7 +23,7 @@ const term = {
     },
     taxonomyCollection: {
       collection: 'termTaxonomy',
-      via: 'termId'
+      via: 'term'
     }
   },
   migrate: 'safe',
@@ -43,7 +43,7 @@ const termTaxonomy = {
       primaryKey: true,
       autoIncrement: true
     },
-    termId: {
+    term: {
       type: 'integer',
       columnName: 'term_id',
       model: 'term'
@@ -67,7 +67,7 @@ const termTaxonomy = {
     },
     relationshipCollection: {
       collection: 'termRelationship',
-      via: 'termTaxonomyId'
+      via: 'termTaxonomy'
     }
   },
   migrate: 'safe',
@@ -86,7 +86,7 @@ const termRelationship = {
       primaryKey: true,
       autoIncrement: true
     },
-    objectId: {
+    object: {
       type: 'integer',
       columnName: 'object_id',
       //primaryKey: true,
@@ -94,7 +94,7 @@ const termRelationship = {
       model: 'post',
       index: true
     },
-    termTaxonomyId: {
+    termTaxonomy: {
       type: 'integer',
       columnName: 'term_taxonomy_id',
       //primaryKey: true,
