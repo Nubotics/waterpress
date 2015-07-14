@@ -47,6 +47,18 @@ const post = {
       type: 'datetime',
       columnName: 'post_modified'
     },
+    mimeType: {
+      type: 'string',
+      columnName: 'post_mime_type'
+    },
+    guid: {
+      type: 'string',
+      columnName: 'guid'
+    },
+    parent: {
+      type: 'integer',
+      columnName: 'post_parent'
+    },
     metaCollection: {
       collection: 'postMeta',
       via: 'post'
@@ -59,11 +71,12 @@ const post = {
     relationshipCollection: {
       collection: 'termRelationship',
       via: 'object'
-    }/*,
-    commentCollection: {
-      collection: 'comment',
-      via: 'postId'
-    }*/
+    }
+    /*,
+     commentCollection: {
+     collection: 'comment',
+     via: 'postId'
+     }*/
   },
   migrate: 'safe',
   autoPK: false,

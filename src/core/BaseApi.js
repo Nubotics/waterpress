@@ -67,7 +67,7 @@ export default class BaseApi extends EventEmitter {
     } else {
       console.log('safe kill', 'continue')
       this.clientConnections--
-      cb()
+      if (cb) cb()
     }
   }
 

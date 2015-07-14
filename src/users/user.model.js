@@ -56,6 +56,10 @@ const user = {
       type: 'integer',
       columnName: 'user_status'
     },
+    url: {
+      type: 'string',
+      columnName: 'user_url'
+    },
     metaCollection: {
       collection: 'userMeta',
       via: 'user'
@@ -67,21 +71,21 @@ const user = {
   autoUpdatedAt: false,
 
   beforeCreate: (values, next) => {
-    if (_.has(values,'password')) {
+    if (_.has(values, 'password')) {
       let hash = hasher.HashPassword(values.password)
-      next(null,hash)
+      next(null, hash)
       //var checked = hasher.CheckPassword(password, hash);
-    }else{
-      next(null,values)
+    } else {
+      next(null, values)
     }
   },
   beforeUpdate: (values, next) => {
-    if (_.has(values,'password')) {
+    if (_.has(values, 'password')) {
       let hash = hasher.HashPassword(values.password)
-      next(null,hash)
+      next(null, hash)
       //var checked = hasher.CheckPassword(password, hash);
-    }else{
-      next(null,values)
+    } else {
+      next(null, values)
     }
   },
   toJSON: ()=> {
@@ -117,9 +121,9 @@ const user = {
         //if (error) throw(error)
         console.log('user model find', userArr)
         let result = null
-        if (_.isArray(userArr)){
+        if (_.isArray(userArr)) {
           result = []
-          _.forEach(userArr,(userObj)=>{
+          _.forEach(userArr, (userObj)=> {
             if (_.has(userObj, 'metaCollection')) {
               result.push(
                 _.extend(userObj,
