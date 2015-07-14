@@ -3,7 +3,7 @@ let termApi = {
     this.safeConnect((error, collections)=> {
       if (error) throw(error)
 
-      collections.term
+      this.collections.term
         .find()
         .populate('taxonomyCollection')
         .exec((err, terms)=> {

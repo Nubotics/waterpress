@@ -18,9 +18,10 @@ export default class BaseApi extends EventEmitter {
     }
     this.orm = null
     this.collections = null
+    this.connections = null
     this._bind('_connect', 'safeConnect', 'safeKill')
     this._isConnecting = false
-    this.connections = 0
+    this.clientConnections = 0
   }
 
   _bind(...methods) {
@@ -37,6 +38,7 @@ export default class BaseApi extends EventEmitter {
           console.log('Error in Waterpress API connecting to ORM: ', err)
           cb(err)
         }
+        this.connections = schema.connections
         this.collections = schema.collections
         this._isConnecting = false
         this.emit('connected', err, this.collections)
@@ -45,8 +47,8 @@ export default class BaseApi extends EventEmitter {
   }
 
   safeConnect(cb) {
-    console.log('checkAndConnect', this.connections)
-    this.connections++
+    console.log('checkAndConnect', this.clientConnections)
+    this.clientConnections++
     if (!this.collections) {
       console.log('no connection')
       this._connect(cb)
@@ -57,11 +59,11 @@ export default class BaseApi extends EventEmitter {
   }
 
   safeKill(cb) {
-    console.log('safe kill', this.connections)
+    console.log('safe kill', this.clientConnections)
     if (this.connections <= 1) {
       this.orm.kill(cb)
     } else {
-      this.connections--
+      this.clientConnections--
       cb()
     }
   }
