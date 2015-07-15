@@ -1,124 +1,78 @@
 import {_} from '../core/util'
 
 let postApi = {
-  all(params, take, skip, cb) {
-    this.safeConnect((error)=> {
-        if (error) throw(error)
+  all(params, take, skip, chainStart, chainEnd, cb) {
 
-        /*      this.collections.term
-         .find()
-         .populate('taxonomyCollection')
-         .exec((err, terms)=> {*/
+    const action = (collections)=> {
+      collections.post
+        .find()
+        .where(params)
+        .populate('author')
+        .populate('relationshipCollection')
+        .populate('metaCollection')
+        .exec((e, posts)=> {
 
-        this.collections.post
-          .find()
-          .populate('author')
-          .populate('relationshipCollection')
-          .populate('metaCollection')
-          .exec((e, posts)=> {
-
-            //if (!posts) {
+          if (chainEnd) {
             this.safeKill(()=> {
               cb(e, posts)
             })
 
-            /*} else {
-             posts = posts.map(post=> {
-             if (_.has(post, 'relationshipCollection')) {
-             post.categoryCollection = []
-             post.tagCollection = []
+          } else {
+            cb(e, posts)
 
-             let cat = null
-             post.relationshipCollection.map((rel)=> {
-             cat = _.find(terms, (term)=> {
-             return term.taxonomyCollection[0].id == rel.termTaxonomyId
-             })
-             if (cat) {
-             cat.taxonomy = cat.taxonomyCollection[0].taxonomy
-             if (cat.taxonomy.toLowerCase() === 'category') {
-             post.categoryCollection.push(cat)
-             } else {
-             post.categoryCollection.push(cat)
-             }
+          }
 
-             }
-             })
-             }
-             return post
-             })
+        })
+    }
 
+    if (chainStart) {
+      this.safeConnect((error)=> {
+        if (error) throw(error)
+        action(this.collections)
+      })
 
-             this.safeKill(()=> {
-             cb(e, posts, terms)
-             })
-
-             }*/
-//end exec
-//        })
-//end exec
-          })
-//end connect
-      }
-    )
+    } else {
+      action(this.collections)
+    }
 
   },
-  one(params, cb)
+  one(params, chainStart, chainEnd, cb)
   {
-    this.safeConnect((error)=> {
-      if (error) throw(error)
 
-      /*        this.collections.term
-       .find()
-       .populate('taxonomyCollection')
-       .exec((err, terms)=> {*/
+    const action = (collections)=> {
 
-      this.collections.post
+      collections.post
         .findOne()
         .where(params)
-        .populate('authorId')
+        .populate('author')
         .populate('relationshipCollection')
         .populate('metaCollection')
         .exec((e, post)=> {
 
-          //if (!post) {
-          this.safeKill(()=> {
-            cb(e, post, terms)
-          })
-          /*
-           } else {
+          if (chainEnd) {
+            this.safeKill(()=> {
+              cb(e, post)
+            })
 
-           if (_.has(post, 'relationshipCollection')) {
-           post.categoryCollection = []
-           post.tagCollection = []
+          } else {
+            cb(e, post)
 
-           let cat = null
-           post.relationshipCollection.map((rel)=> {
-           cat = _.find(terms, (term)=> {
-           return term.taxonomyCollection[0].id == rel.termTaxonomyId
-           })
-           if (cat) {
-           cat.taxonomy = cat.taxonomyCollection[0].taxonomy
-           if (cat.taxonomy.toLowerCase() === 'category') {
-           post.categoryCollection.push(cat)
-           } else {
-           post.categoryCollection.push(cat)
-           }
+          }
 
-           }
-           })
-           }
-
-           this.safeKill(()=> {
-           cb(e, post, terms)
-           })
-
-           }*/
-//end exec
-//          })
-//end exec
         })
-//end connect
-    })
+    }
+
+    if (chainStart) {
+      this.safeConnect((error)=> {
+        if (error) throw(error)
+        action(this.collections)
+
+      })
+    } else {
+      action(this.collections)
+    }
+
+
   },
   next()
   {

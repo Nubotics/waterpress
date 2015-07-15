@@ -20,66 +20,101 @@ import WpApi from './src/core/WaterpressApi'
 
   let wpApi = new WpApi(config)
 
-  wpApi.term.byTaxonomy({},(err,data)=>{
-    if (err) throw(err)
-    if (data){
-      console.log('wp api term.byTaxonomy found ', data)
-    }else{
-      console.log('wp api term.byTaxonomy NOT found', data)
-    }
-  })
-
-
-/*    wpApi.post.all(null,null, (err, posts) => {
+  /* wpApi.term.byTaxonomy(null,false,(err,data)=>{
    if (err) throw(err)
-   if (posts){
-   console.log('wp api posts found ', posts)
+   if (data){
+   console.log('wp api term.byTaxonomy found ', data)
    }else{
-   console.log('wp api posts NOT found', posts)
+   console.log('wp api term.byTaxonomy NOT found', data)
    }
-
    })*/
 
 
-/*  wpApi.post.one({id: 140}, (err, post, terms) => {
+  wpApi.post.all(null, null, null, true, false, (err, posts) => {
     if (err) throw(err)
-    if (post) {
-      console.log('wp api post found ', terms,post)
+    if (posts) {
+      console.log('wp api posts found ', posts)
     } else {
-      console.log('wp api post NOT found',terms, post)
+      console.log('wp api posts NOT found', posts)
     }
 
-  })*/
+    wpApi.post.one({id: 153}, false, true, (err, post) => {
+      if (err) throw(err)
+      if (post) {
+        console.log('wp api post found ', terms, post)
+      } else {
+        console.log('wp api post NOT found', terms, post)
+      }
 
-  /*  wpApi.term.all((err, terms) => {
+    })
+
+
+  })
+
+
+
+
+  /*  wpApi.term.all({},false,(err, terms) => {
    if (err) throw(err)
-   if (terms){
+   if (terms) {
    console.log('wp api posts found ', terms)
-   }else{
+   } else {
    console.log('wp api posts NOT found', terms)
    }
 
    })*/
 
-  /*  wpApi.user.one({id: 12}, (err, user) => {
-   if (err) throw(err)
-   if (user){
+  /*  wpApi.user.one({id: 21}, true, false, (err, user) => {
+   if (err) console.log(err)
+
+   if (user) {
    console.log('wp api one user found ', user)
-   }else{
+   } else {
    console.log('wp api one user NOT found', user)
    }
 
-   })
+   wpApi.user.byRole('author', false, false, (e, users) => {
+   if (e) console.log(e)
 
-   wpApi.user.byRole('author', (err, users) => {
-   if (err) throw(err)
-   if (users){
+   if (users) {
    console.log('wp api user by role found ', users)
-   }else{
+   } else {
    console.log('wp api user by role NOT found', users)
    }
 
+   wpApi.user.existsByEmail('jozi011@gmail.com',false, true, (error,exists)=>{
+   if (error) console.log(error)
+
+   console.log('wp api user by email found ', exists)
+   })
+
+
+   })
+
    })*/
+
+  /* wpApi.term.all(null, true, false, (error, termCollection)=> {
+   if (error) console.log(error)
+
+   if (termCollection) {
+   console.log('wp api term all found ', termCollection)
+   } else {
+   console.log('wp api term all NOT found', termCollection)
+   }
+
+   wpApi.term.all(null, false, true, (error, termTaxCollection)=> {
+   if (error) console.log(error)
+
+   if (termTaxCollection) {
+   console.log('wp api term tax found ', termTaxCollection)
+   } else {
+   console.log('wp api term tax NOT found', termTaxCollection)
+   }
+   })
+
+
+   })*/
+
 
   /*  const wpApi = new WpApi(config, (err, collections)=> {
    if (err) console.log('err', err)

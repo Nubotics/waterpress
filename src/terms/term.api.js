@@ -1,40 +1,74 @@
 let termApi = {
-  all(cb){
-    this.safeConnect((error)=> {
-      if (error) throw(error)
+  all(params, chainStart, chainEnd, cb){
 
-      this.collections.term
+    const action = (collections)=> {
+      collections.term
         .find()
+        .where(params)
         .populate('taxonomyCollection')
         .exec((err, terms)=> {
-          this.safeKill(()=> {
+          if (chainEnd) {
+            this.safeKill(()=> {
+              cb(err, terms)
+            })
+          } else {
             cb(err, terms)
-          })
+          }
         })
+    }
 
-    })
+    if (chainStart) {
+      this.safeConnect((error)=> {
+        if (error) throw(error)
+
+        action(this.collections)
+
+      })
+    } else {
+
+      action(this.collections)
+
+    }
+
   },
   byPost(){
+
   },
-  byTaxonomy(params, cb){
-    this.safeConnect((error)=> {
-      if (error) throw(error)
+  byTaxonomy(params, chainStart, chainEnd, cb){
 
-      //console.log('bytaxonomy',  this.collections.user)
-
-      this.collections.termtaxonomy
+    const action = (collections)=> {
+      collections.termtaxonomy
         .find()
         .where(params)
         .populate('term')
         .populate('childCollection')
         .populate('relationshipCollection')
         .exec((err, data)=> {
+          if (chainEnd) {
 
-          cb(err, data)
+            this.safeKill(()=> {
+              cb(err, data)
+            })
 
-          this.safeKill()
+          } else {
+
+            cb(err, data)
+
+          }
+
         })
-    })
+    }
+
+    if (chainStart) {
+      this.safeConnect((error)=> {
+        if (error) throw(error)
+        action(this.collections)
+      })
+    } else {
+      action(this.collections)
+
+    }
+
   }
 }
 

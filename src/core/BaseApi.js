@@ -35,38 +35,43 @@ export default class BaseApi extends EventEmitter {
 
       console.log('_connect', this.orm)
 
-      if (this.orm && this.collections && this.connections) {
-        this._isConnecting = false
-        this.emit('connected', err, this.collections)
-      } else {
-        this.orm = new this.options.Orm()
-        this.orm.init(this.options, (err, schema)=> {
-          if (err) {
-            console.log('Error in Waterpress API connecting to ORM: ', err)
-            cb(err)
-          } else {
-            this.connections = schema.connections
-            this.collections = schema.collections
-            this._isConnecting = false
-            this.emit('connected', err, this.collections)
-          }
+      //&& this.connections && this.collections
 
-        })
-      }
+      /*    if (this.clientConnections > 0 ) {
+       this._isConnecting = false
+       this.emit('connected', null, this.collections)
+       } else {*/
+      this.orm = new this.options.Orm()
+      this.orm.init(this.options, (err, schema)=> {
+        if (err) {
+          console.log('Error in Waterpress API connecting to ORM: ', err)
+          cb(err)
+        } else {
+          this.connections = schema.connections
+          this.collections = schema.collections
+          this._isConnecting = false
+          this.emit('connected', err, this.collections)
+        }
+
+      })
+      //}
 
     }
   }
 
   safeConnect(cb) {
-    console.log('checkAndConnect', this.clientConnections)
-    this.clientConnections++
-    if (!this.connections) {
+
+    console.log('checkAndConnect')
+    if (this.clientConnections == 0) {
       console.log('no connection')
+      this.clientConnections++
       this._connect(cb)
     } else {
       console.log('existing connection')
+      //this.clientConnections++
       cb(null, this.collections)
     }
+
   }
 
   safeKill(cb) {
