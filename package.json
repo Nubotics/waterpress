@@ -4,7 +4,8 @@
   "description": "A Waterline powered Wordpress DB API",
   "main": "index.js",
   "scripts": {
-    "test": "babel-node test.js"
+    "test": "babel-node test.js",
+    "build": "babel src --out-dir lib --stage 0 --loose all --source-maps-inline"
   },
   "repository": {
     "type": "git",
