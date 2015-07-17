@@ -30,7 +30,7 @@ import WpApi from './src/core/WaterpressApi'
    })*/
 
 
-  wpApi.post.all(null, null, null, true, false, (err, posts) => {
+  wpApi.post.all({id: 154}, null, null, true, true, (err, posts) => {
     if (err) throw(err)
     if (posts) {
       console.log('wp api posts found ', posts)
@@ -38,15 +38,15 @@ import WpApi from './src/core/WaterpressApi'
       console.log('wp api posts NOT found', posts)
     }
 
-    wpApi.post.one({id: 153}, false, true, (err, post) => {
+  /*  wpApi.post.one({id: 153}, false, true, (err, post) => {
       if (err) throw(err)
       if (post) {
-        console.log('wp api post found ', terms, post)
+        console.log('wp api post found ', post)
       } else {
-        console.log('wp api post NOT found', terms, post)
+        console.log('wp api post NOT found', post)
       }
 
-    })
+    })*/
 
 
   })

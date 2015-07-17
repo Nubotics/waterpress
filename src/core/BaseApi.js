@@ -42,6 +42,7 @@ export default class BaseApi extends EventEmitter {
        this.emit('connected', null, this.collections)
        } else {*/
       this.orm = new this.options.Orm()
+      try{
       this.orm.init(this.options, (err, schema)=> {
         if (err) {
           console.log('Error in Waterpress API connecting to ORM: ', err)
@@ -55,7 +56,9 @@ export default class BaseApi extends EventEmitter {
 
       })
       //}
-
+      }catch(e){
+        process.nextTick(()=>{this._connect(cb)});
+      }
     }
   }
 

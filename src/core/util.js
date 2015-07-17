@@ -3,6 +3,7 @@
  */
 
 let _ = require('lodash')
+const hasher = require('wordpress-hash-node')
 
 let findValue = function (collection, keys) {
   let result = null
@@ -24,15 +25,15 @@ let findValue = function (collection, keys) {
   return result
 }
 
-let makeObjectFromKeyCollection = function(collection){
+let makeObjectFromKeyCollection = function (collection) {
   let result = {}
   _.forEach(collection, (item) => {
     //console.log('make from collection:', item)
-    if (_.has(item,'key') && _.has(item,'value')){
-      result = _.extend(result, {[item.key]:item.value})
+    if (_.has(item, 'key') && _.has(item, 'value')) {
+      result = _.extend(result, {[item.key]: item.value})
     }
   })
   return result
 }
 
-export {_,findValue,makeObjectFromKeyCollection}
+export {_,findValue,makeObjectFromKeyCollection, hasher}
