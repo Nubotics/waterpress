@@ -4,6 +4,7 @@ import {
   makeObjectFromKeyCollection
 } from '../core/util'
 const hasher = require('wordpress-hash-node')
+const slugger = require('slug')
 
 const user = {
   identity: 'user',
@@ -73,20 +74,24 @@ const user = {
   beforeCreate: (values, next) => {
     if (_.has(values, 'password')) {
       let hash = hasher.HashPassword(values.password)
-      next(null, hash)
-      //var checked = hasher.CheckPassword(password, hash);
-    } else {
-      next(null, values)
+      values.password = hash
     }
+    if (_.has(values, 'slug')) {
+      let slug = slugger(values.slug)
+      values.slug = slug
+    }
+
+    next(null, values)
+
   },
   beforeUpdate: (values, next) => {
     if (_.has(values, 'password')) {
       let hash = hasher.HashPassword(values.password)
-      next(null, hash)
-      //var checked = hasher.CheckPassword(password, hash);
-    } else {
-      next(null, values)
+      values.password = hash
     }
+
+    next(null, values)
+
   },
   toJSON: ()=> {
     let obj = this.toObject()

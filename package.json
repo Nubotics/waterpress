@@ -26,6 +26,7 @@
     "eventemitter3": "^1.1.1",
     "lodash": "^3.10.0",
     "sails-mysql": "^0.10.12",
+    "slug": "^0.9.1",
     "waterline": "^0.10.25",
     "wordpress-hash-node": "0.0.3"
   },
