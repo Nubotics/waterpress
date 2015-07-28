@@ -27,7 +27,7 @@ const user = {
       autoIncrement: true
     },
     slug: {
-      type: 'integer',
+      type: 'string',
       columnName: 'user_nicename',
       defaultsTo: ''
     },
@@ -78,7 +78,7 @@ const user = {
     }
     if (_.has(values, 'slug')) {
       let slug = slugger(values.slug)
-      values.slug = slug
+      values.slug = slug.toLowerCase()
     }
 
     next(null, values)
@@ -188,14 +188,14 @@ const userMeta = {
   migrate: 'safe',
   autoPK: false,
   autoCreatedAt: false,
-  autoUpdatedAt: false,
+  autoUpdatedAt: false/*,
 
   beforeCreate: (values, next) => {
 
   },
   beforeUpdate: (values, next) => {
 
-  }
+  }*/
 }
 
 export {user,userMeta}

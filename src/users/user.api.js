@@ -145,6 +145,9 @@ let userApi = {
   save(userObj, chainStart, chainEnd, cb){
 
     const updateAction = (collections)=> {
+
+      console.log('UPDATE USER ACTION', userObj)
+
       collections.user
         .update({id: userObj.id}, userObj)
         .exec((e, users)=> {
@@ -164,6 +167,9 @@ let userApi = {
     }
 
     const createAction = (collections)=> {
+
+      console.log('CREATE USER ACTION', userObj)
+
       collections.user
         .create(userObj)
         .exec((e, user)=> {
@@ -184,7 +190,7 @@ let userApi = {
 
     const action = (collections)=> {
       collections.user
-        .one({email: userObj.email}, (err, user)=> {
+        .findOne({email: userObj.email}, (err, user)=> {
           if (user) {
 
             updateAction(collections)
@@ -203,13 +209,13 @@ let userApi = {
       this.safeConnect((error)=> {
         if (error) throw(error)
 
-        action(this.connections)
+        action(this.collections)
 
       })
 
     } else {
 
-      action(this.connections)
+      action(this.collections)
 
     }
 
