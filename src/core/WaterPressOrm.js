@@ -50,7 +50,7 @@ class WaterpressOrm extends Waterline {
 
     this.config = config
 
-    //console.log('WaterpressOrm: config ext', this.config)
+    console.log('WaterpressOrm: config ext', this.config)
 
     //init models
     this._safeOverride('user', user)
@@ -76,7 +76,7 @@ class WaterpressOrm extends Waterline {
       if (!_.has(this.config.override, 'model')) {
         this.load(model)
       } else if (_.has(this.config.override.model, key)) {
-        //console.log('Model override', key, this.config.override.model[key])
+        console.log('Model override', key, this.config.override.model[key])
         this.load(this.config.override.model[key])
       } else {
         this.load(model)
