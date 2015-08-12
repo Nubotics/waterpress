@@ -7,7 +7,7 @@ let userApi = {
       collections.user
         .findOneWithMeta(params, (err, user)=> {
           if (chainEnd) {
-            console.log('ABOUT TO SAFE KILL')
+            //console.log('ABOUT TO SAFE KILL')
             this.safeKill(()=> {
               cb(err, user)
             })
@@ -17,7 +17,7 @@ let userApi = {
           }
         })
     }
-    console.log('find one user, chainstart', chainStart)
+    //console.log('find one user, chainstart', chainStart)
     if (chainStart) {
       this.safeConnect((error)=> {
         if (error) throw(error)
@@ -34,7 +34,7 @@ let userApi = {
       collections.user
         .findWithMeta(params, (e, userArr)=> {
           if (chainEnd) {
-            console.log('find ABOUT TO SAFE KILL')
+            //console.log('find ABOUT TO SAFE KILL')
             this.safeKill(()=> {
               cb(e, userArr)
             })
@@ -81,7 +81,7 @@ let userApi = {
           } else {
 
             if (chainEnd) {
-              console.log('byRole 2 ABOUT TO SAFE KILL')
+              //console.log('byRole 2 ABOUT TO SAFE KILL')
               this.safeKill(()=> {
                 cb(err, null)
               })
@@ -146,7 +146,7 @@ let userApi = {
 
     const updateAction = (collections)=> {
 
-      console.log('UPDATE USER ACTION', userObj)
+      //console.log('UPDATE USER ACTION', userObj)
 
       collections.user
         .update({id: userObj.id}, userObj)
@@ -168,7 +168,7 @@ let userApi = {
 
     const createAction = (collections)=> {
 
-      console.log('CREATE USER ACTION', userObj)
+      //console.log('CREATE USER ACTION', userObj)
 
       collections.user
         .create(userObj)

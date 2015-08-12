@@ -6,7 +6,7 @@ import Waterline from 'waterline'
 import mysqlAdapter from 'sails-mysql'
 let _ = require('lodash')
 //let extend = require('waterline/lib/waterline/utils/extend')
-
+import log from './log'
 //models
 import {user, userMeta} from '../users/user.model'
 import {post, postMeta} from '../posts/post.model'
@@ -50,7 +50,7 @@ class WaterpressOrm extends Waterline {
 
     this.config = config
 
-    console.log('WaterpressOrm: config ext', this.config)
+    //console.log('WaterpressOrm: config ext', this.config)
 
     //init models
     this._safeOverride('user', user)
@@ -63,6 +63,7 @@ class WaterpressOrm extends Waterline {
     this._safeOverride('termTaxonomy', termTaxonomy)
     this._safeOverride('termRelationship', termRelationship)
 
+    log.info('waterpress | ORM | init | super initialize')
     super.initialize(this.config, cb)
 
     //console.log('wp instance init', this)
@@ -76,7 +77,7 @@ class WaterpressOrm extends Waterline {
       if (!_.has(this.config.override, 'model')) {
         this.load(model)
       } else if (_.has(this.config.override.model, key)) {
-        console.log('Model override', key, this.config.override.model[key])
+        //console.log('Model override', key, this.config.override.model[key])
         this.load(this.config.override.model[key])
       } else {
         this.load(model)
@@ -89,7 +90,7 @@ class WaterpressOrm extends Waterline {
   }
 
   kill(cb) {
-    console.log('teardown')
+    log.info('waterpress | ORM | teardown')
     this.teardown(cb)
   }
 

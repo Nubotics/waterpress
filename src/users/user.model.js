@@ -124,7 +124,7 @@ const user = {
       .populate('metaCollection')
       .exec((error, userArr) => {
         //if (error) throw(error)
-        console.log('user model find', userArr)
+        //console.log('user model find', userArr)
         let result = null
         if (_.isArray(userArr)) {
           result = []

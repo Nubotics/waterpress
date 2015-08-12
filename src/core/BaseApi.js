@@ -4,7 +4,7 @@
 import WpOrm from './WaterpressOrm'
 import EventEmitter from 'eventemitter3'
 import {_} from './util'
-
+import log from './log'
 export default class BaseApi extends EventEmitter {
   constructor(options) {
     super()
@@ -33,7 +33,7 @@ export default class BaseApi extends EventEmitter {
     if (!this._isConnecting) {
       this._isConnecting = true
 
-      console.log('_connect', this.orm)
+      ////console.log('_connect', this.orm)
 
       //&& this.connections && this.collections
 
@@ -45,8 +45,8 @@ export default class BaseApi extends EventEmitter {
       try{
       this.orm.init(this.options, (err, schema)=> {
         if (err) {
-          console.log('Error in Waterpress API connecting to ORM: ', err)
-          cb(err)
+          ////console.log('Error in Waterpress API connecting to ORM: ', err)
+          this.emit('connected', err, this.collections)
         } else {
           this.connections = schema.connections
           this.collections = schema.collections
@@ -64,13 +64,13 @@ export default class BaseApi extends EventEmitter {
 
   safeConnect(cb) {
 
-    console.log('checkAndConnect')
+    log.info('Waterpress | base api | safe connect', this.clientConnections)
     if (this.clientConnections == 0) {
-      console.log('no connection')
+      //console.log('no connection')
       this.clientConnections++
       this._connect(cb)
     } else {
-      console.log('existing connection')
+      //console.log('existing connection')
       //this.clientConnections++
       cb(null, this.collections)
     }
@@ -78,13 +78,14 @@ export default class BaseApi extends EventEmitter {
   }
 
   safeKill(cb) {
-    console.log('safe kill', this.clientConnections)
+    log.info('Waterpress | base api | safe kill', this.clientConnections)
+    //console.log('safe kill', this.clientConnections)
     if (this.clientConnections <= 1) {
-      console.log('safe kill', 'kill')
+      //console.log('safe kill', 'kill')
       this.clientConnections = 0
       this.orm.kill(cb)
     } else {
-      console.log('safe kill', 'continue')
+      //console.log('safe kill', 'continue')
       this.clientConnections--
       if (cb) cb()
     }
