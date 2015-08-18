@@ -1,12 +1,25 @@
 import {_} from '../core/util'
 
 let postApi = {
-  all(params, take, skip, chainStart, chainEnd, cb) {
+  all(params, limit, sort, chainStart, chainEnd, cb) {
 
     const action = (collections)=> {
-      collections.post
+
+      let query = collections.post
         .find()
         .where(params)
+
+      console.log('POST ALL | params', params)
+
+      if (limit)
+        query
+          .limit(limit)
+
+      if (sort)
+        query
+          .sort(sort)
+
+      query
         .populate('author')
         .populate('relationshipCollection')
         .populate('metaCollection')
