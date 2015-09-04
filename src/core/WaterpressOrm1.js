@@ -7,6 +7,8 @@ import mysqlAdapter from 'sails-mysql'
 let _ = require('lodash')
 //let extend = require('waterline/lib/waterline/utils/extend')
 import log from './log'
+
+
 //models
 import {user, userMeta} from '../users/user.model'
 import {post, postMeta} from '../posts/post.model'
