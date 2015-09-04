@@ -1,7 +1,7 @@
 /**
  * Created by nubuck on 15/07/12.
  */
-import WpOrm from './WaterPressOrm'
+import WpOrm from './WaterpressOrm'
 import EventEmitter from 'eventemitter3'
 import {_} from './util'
 import log from './log'
