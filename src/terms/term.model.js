@@ -107,7 +107,7 @@ const termRelationship = {
       columnName: 'term_order'
     }
   },
-  migrate: 'alter',
+  migrate: 'safe',
   autoPK: false,
   autoCreatedAt: false,
   autoUpdatedAt: false
