@@ -3,10 +3,12 @@ var env = require('get-env')({
   production: ['production', 'prod', 'live', 'staging']
 })
 
-module.exports.env = env;
+
 
 if (env === 'production'){
   module.exports = require('./lib/index');
 }else{
   module.exports = require('./src/index');
 }
+
+module.exports.env = env;
