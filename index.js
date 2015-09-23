@@ -5,10 +5,10 @@ var env = require('get-env')({
 
 
 
-if (env === 'production'){
+/*if (env === 'production'){*/
   module.exports = require('./lib/index');
-}else{
+/*}else{
   module.exports = require('./src/index');
-}
+}*/
 
 module.exports.env = env;
