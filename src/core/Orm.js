@@ -15,7 +15,7 @@ import {
 import models from '../models'
 
 //main
-class WaterpressOrm extends Waterline {
+class Orm extends Waterline {
   constructor() {
     super()
     this._safeOverride.bind(this)
@@ -68,7 +68,7 @@ class WaterpressOrm extends Waterline {
       this._safeOverride(key, models[key])
     })
 
-    super.initialize(this.config, cb)
+    this.initialize(this.config, cb)
 
   }
 
@@ -81,3 +81,5 @@ class WaterpressOrm extends Waterline {
   }
 
 }
+
+export default Orm

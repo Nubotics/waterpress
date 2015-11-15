@@ -35,6 +35,10 @@ import {
   }
 
   api
+    .connect((err, models, next)=> {
+      console.log('connect -> connections,collections', err, models)
+      next()
+    })
     //user api
     .set('userId', 0)
     .user
@@ -71,7 +75,12 @@ import {
 
       next()
     })
-    .done(end)
+    .done(noop)
+
+    // finish up
+    .disconnect(()=> {
+      console.log('disconnect')
+    })
 
   console.log('test done', api)
 

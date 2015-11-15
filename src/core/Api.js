@@ -19,11 +19,9 @@ import {
  *
  * pure function action
  *
- *
- *
- *
  * */
 
+import Orm from './Orm'
 import wpApi from '../api'
 
 //main
@@ -33,9 +31,7 @@ class Api extends EventApi {
       throw('options parameter required')
       //TODO: add more constructor validation
     }
-    options = assign(options, {
-
-      }) || {}
+    options = assign(options, {}) || {}
     super(options)
 
     this.orm = null
@@ -46,6 +42,12 @@ class Api extends EventApi {
       this.connections = options.connections
       this.collections = options.collections
     }
+
+    this._bind(
+      'connect',
+      'disconnect',
+      'plug'
+    )
 
     eachKey(wpApi, key=> {
       //console.log('api -> key', wpApi, key)
@@ -62,51 +64,66 @@ class Api extends EventApi {
         }, key, true)
     })
 
-
   }
 
   _bind(...methods) {
-    forEach(methods, method => this[method] = this[method].bind(this))
+    methods.forEach((method) => this[method] = this[method].bind(this))
   }
 
-  _bindApiMethods(namespace, api) {
-    /*   if (!has(this, namespace)) {
-     this[namespace] = merge({}, api)
-     this[namespace]['done'] = (cb)=> {
-     this.chain((next)=> {
-     cb(next)
-     })
-     return this
-     }
-     } else {
-     this[namespace] = merge(this[namespace], api)
-     }*/
-    /*  eachKey(api, key => {
-     this[namespace][key] = function () {
-     let args = arguments
-     this.chain((next)=> {
-     this[namespace][key].call(this, next, args)
-     })
-     return this[namespace]
-     }.bind(this)
-
-     })*/
-
-  }
-
-  _connect(cb) {
-
-  }
-
-  _kill(cb) {
-
-  }
-
-  plug(cb) {
+  connect(cb) {
     this.chain((next)=> {
-      cb(next)
+      if (this.collections && this.connections) {
+
+        if (cb) {
+          let { collections, connections } = this
+          cb(null, {collections, connections}, next)
+        }
+
+      } else {
+
+        this.orm = new Orm()
+        this.orm.init({connections: this.options.connections}, (err, models)=> {
+          //console.log('orm init -> err, models', err, models)
+          if (err) throw err
+          if (has(models, 'connections')) {
+            this.connections =  models.connections
+          }
+          if (has(models, 'collections')) {
+            this.collections = models.collections
+          }
+          if (cb) cb(err, models, next)
+        })
+
+      }
     })
     return this
+  }
+
+  disconnect(cb) {
+    this.chain((next)=> {
+      if (!this.orm) {
+        next()
+        this.orm.kill(cb)
+      } else {
+        next()
+        if (cb) cb()
+      }
+    })
+  }
+
+  plug(cb, namespace) {
+    this.chain((next)=> {
+      cb.apply(this, next)
+    })
+    if (namespace) {
+      if (has(this, namespace)) {
+        return this[namespace]
+      } else {
+        return this
+      }
+    } else {
+      return this
+    }
   }
 
 }
