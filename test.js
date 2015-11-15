@@ -1,3 +1,78 @@
-/**
- * Created by nubuck on 15/11/14.
- */
+import {
+  EventApi,
+  Api,
+  Orm,
+  u,
+
+} from './src'
+
+
+(function () {
+
+  const options = {
+    connections: {
+      mysql: {
+        adapter: 'mysql',
+        host: 'localhost',
+        port: 3306,
+        user: 'root',
+        password: 'root',
+        database: 'cms'
+      }
+    }
+
+  }
+
+  let api = new Api(options)
+
+  let noop = function (next) {
+    console.log('done noop')
+    next()
+  }
+
+  let end = function () {
+    console.log('done end')
+  }
+
+  api
+    //user api
+    .set('userId', 0)
+    .user
+    .find({}, (err, {userCollection}, next)=> {
+      console.log('api -> user -> find -> cb -> err, userCollection', err, userCollection)
+
+      next()
+    })
+    .done()
+
+    //term api
+    .set('userId', 1)
+    .term
+    .findOne({}, (err, {termCollection}, next)=> {
+      console.log('api -> term -> findOne -> cb -> err, termCollection', err, termCollection)
+
+      next()
+    })
+    .done()
+
+    //post api
+    .post
+    .find({}, (err, {postCollection}, next)=> {
+      console.log('api -> post -> find -> cb -> err, postCollection', err, postCollection)
+
+      next()
+    })
+    .done()
+
+    //comment api
+    .comment
+    .find({}, (err, {commentCollection}, next)=> {
+      console.log('api -> comment -> find -> cb -> err, commentCollection', err, commentCollection)
+
+      next()
+    })
+    .done(end)
+
+  console.log('test done', api)
+
+})()

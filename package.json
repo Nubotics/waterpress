@@ -4,7 +4,7 @@
   "description": "chainable and pluggable db direct wordpress api powered by waterline orm",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "babel-node test.js"
   },
   "repository": {
     "type": "git",

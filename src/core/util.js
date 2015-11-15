@@ -56,4 +56,6 @@ export default {
   merge,
   assign,
   has,
+  eachKey,
+
 }
