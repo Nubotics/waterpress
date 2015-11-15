@@ -36,9 +36,9 @@ class WaterpressOrm extends Waterline {
           adapter: 'mysql'
         }
       }/*,
-      defaults: {
-        migrate: 'safe'
-      }*/
+       defaults: {
+       migrate: 'safe'
+       }*/
     }
 
     Object.keys(options).forEach(key => {
