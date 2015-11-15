@@ -36,9 +36,10 @@ import {
 
   api
     .connect((err, models, next)=> {
-      console.log('connect -> connections,collections', err, models)
+      //console.log('connect -> connections,collections', err, models)
       next()
     })
+
     //user api
     .set('userId', 0)
     .user
