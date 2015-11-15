@@ -1,29 +1,28 @@
 {
   "name": "waterpress",
-  "version": "0.1.3",
-  "description": "A Waterline powered Wordpress DB API",
+  "version": "0.2.0",
+  "description": "chainable and pluggable db direct wordpress api powered by waterline orm",
   "main": "index.js",
   "scripts": {
-    "test": "babel-node test.js",
-    "build": "babel src --out-dir lib --stage 0 --loose all --source-maps-inline"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/nubotics/waterpress.git"
+    "url": "git+ssh://git@github.com/nubotics/waterpress.git"
   },
   "keywords": [
-    "nio",
     "wordpress",
-    "waterline"
+    "waterline",
+    "nio"
   ],
   "author": "@Nubuck",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/nubotics/waterpress/issues"
   },
-  "homepage": "https://github.com/nubotics/waterpress",
+  "homepage": "https://github.com/nubotics/waterpress#readme",
   "dependencies": {
-    "chalk": "^1.1.0",
+    "debug": "^2.2.0",
     "eventemitter3": "^1.1.1",
     "get-env": "^0.4.0",
     "lodash": "^3.10.0",
@@ -31,8 +30,5 @@
     "slug": "^0.9.1",
     "waterline": "^0.10.25",
     "wordpress-hash-node": "0.0.3"
-  },
-  "devDependencies": {
-    "weasel": "0.0.1"
   }
 }

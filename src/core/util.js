@@ -1,39 +1,59 @@
-/**
- * Created by nubuck on 15/07/10.
- */
-
-let _ = require('lodash')
+import _ from 'lodash'
 const hasher = require('wordpress-hash-node')
+import DeepMerge from 'deep-merge'
 
-let findValue = function (collection, keys) {
+const has = _.has
+const forEach = _.forEach
+const merge = DeepMerge(function (target, source, key) {
+  if (target instanceof Array) {
+    return [].concat(target, source);
+  }
+  return source;
+})
+const assign = function (source, override) {
+  return _.assign(_.clone(source), override)
+}
+const eachKey = function (object, cb) {
+  _.forEach(Object.keys(object), (key, i) => {
+    cb(key, i)
+  })
+}
+const findValue = function (collection, keys) {
   let result = null
   let item = null
   if (_.isArray(keys)) {
     result = {}
-    _.forEach(keys, (key)=> {
+    forEach(keys, (key)=> {
       item = _.find(collection, {'key': key})
-      if (_.has(item, 'value')) {
+      if (has(item, 'value')) {
         result = _.extend(result, {[key]: item.value})
       }
     })
   } else {
     item = _.find(collection, {'key': keys})
-    if (_.has(item, 'value')) {
+    if (has(item, 'value')) {
       result = {[keys]: item.value}
     }
   }
   return result
 }
-
-let makeObjectFromKeyCollection = function (collection) {
+const makeObjectFromKeyCollection = function (collection) {
   let result = {}
-  _.forEach(collection, (item) => {
+  forEach(collection, (item) => {
     //console.log('make from collection:', item)
-    if (_.has(item, 'key') && _.has(item, 'value')) {
-      result = _.extend(result, {[item.key]: item.value})
+    if (has(item, 'key') && has(item, 'value')) {
+      result = assign(result, {[item.key]: item.value})
     }
   })
   return result
 }
 
-export {_,findValue,makeObjectFromKeyCollection, hasher}
+export default {
+  _,
+  findValue,
+  makeObjectFromKeyCollection,
+  hasher,
+  merge,
+  assign,
+  has,
+}
