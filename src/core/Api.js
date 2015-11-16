@@ -53,7 +53,7 @@ class Api extends EventApi {
       //console.log('api -> key', wpApi, key)
       this
         ._addMethods(wpApi[key], key)
-        ._addMethod('done', (cb, next)=> {
+        ._addMethod('done', function (cb, next) {
           //console.log('done')
           if (cb) {
             cb(next)
@@ -86,12 +86,20 @@ class Api extends EventApi {
           //console.log('orm init -> err, models', err, models)
           if (err) throw err
           if (has(models, 'connections')) {
-            this.connections =  models.connections
+            console.log('orm init -> has connections')
+            //this.connections =  models.connections
+            this.set('connections', models.connections, true)
           }
           if (has(models, 'collections')) {
-            this.collections = models.collections
+            console.log('orm init -> has collections')
+            //this.collections = models.collections
+            this.set('collections', models.collections, true)
           }
-          if (cb) cb(err, models, next)
+          if (cb) {
+            cb(err, models, next)
+          } else {
+            next()
+          }
         })
 
       }
@@ -102,13 +110,16 @@ class Api extends EventApi {
   disconnect(cb) {
     this.chain((next)=> {
       if (!this.orm) {
-        next()
-        this.orm.kill(cb)
+        this.orm.kill(next)
       } else {
-        next()
-        if (cb) cb()
+        if (cb) {
+          cb(next)
+        } else {
+          next()
+        }
       }
     })
+    return this
   }
 
   plug(cb, namespace) {

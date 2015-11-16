@@ -35,10 +35,7 @@ import {
   }
 
   api
-    .connect((err, models, next)=> {
-      //console.log('connect -> connections,collections', err, models)
-      next()
-    })
+    .connect()
 
     //user api
     .set('userId', 0)
@@ -50,39 +47,39 @@ import {
     })
     .done()
 
-    //term api
-    .set('userId', 1)
-    .term
-    .findOne({}, (err, {termCollection}, next)=> {
-      console.log('api -> term -> findOne -> cb -> err, termCollection', err, termCollection)
+    /*//term api
+     .set('userId', 1)
+     .term
+     .findOne({}, function (err, {termCollection}, next) {
+     console.log('api -> term -> findOne -> cb -> err, termCollection', err, termCollection)
 
-      next()
-    })
-    .done()
+     next()
+     })
+     .done()
 
-    //post api
-    .post
-    .find({}, (err, {postCollection}, next)=> {
-      console.log('api -> post -> find -> cb -> err, postCollection', err, postCollection)
+     //post api
+     .post
+     .find({}, function (err, {postCollection}, next) {
+     console.log('api -> post -> find -> cb -> err, postCollection', err, postCollection)
 
-      next()
-    })
-    .done()
+     next()
+     })
+     .done()
 
-    //comment api
-    .comment
-    .find({}, (err, {commentCollection}, next)=> {
-      console.log('api -> comment -> find -> cb -> err, commentCollection', err, commentCollection)
+     //comment api
+     .comment
+     .find({}, function (err, {commentCollection}, next) {
+     console.log('api -> comment -> find -> cb -> err, commentCollection', err, commentCollection, this)
 
-      next()
-    })
-    .done(noop)
+     next()
+     })
+     .done(noop)*/
 
     // finish up
-    .disconnect(()=> {
+   /* .disconnect(()=> {
       console.log('disconnect')
-    })
+    })*/
 
-  console.log('test done', api)
+  console.log('test done')
 
 })()
