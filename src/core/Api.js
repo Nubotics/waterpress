@@ -109,8 +109,14 @@ class Api extends EventApi {
 
   disconnect(cb) {
     this.chain((next)=> {
-      if (!this.orm) {
-        this.orm.kill(next)
+      if (this.orm) {
+        if (cb) {
+          this.orm.kill(()=>{
+            cb(next)
+          })
+        }else{
+          this.orm.kill(next)
+        }
       } else {
         if (cb) {
           cb(next)

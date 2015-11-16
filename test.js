@@ -76,9 +76,10 @@ import {
      .done(noop)*/
 
     // finish up
-   /* .disconnect(()=> {
+    .disconnect((next)=> {
       console.log('disconnect')
-    })*/
+      next()
+    })
 
   console.log('test done')
 
