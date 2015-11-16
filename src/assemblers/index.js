@@ -16,7 +16,4 @@ import {
 *
 * Assemble category
 *
-*
-*
-*
 * */

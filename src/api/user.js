@@ -48,37 +48,32 @@ export default {
             })
             this.collections
               .user
-              .findWithMeta(params, (e, userArr)=> {
+              .findWithMeta({id: userIdArr}, (e, userArr)=> {
                 cb(e, userArr, next)
               })
-
           } else {
-
             cb(err, null, next)
-
           }
-
         })
-
     } else {
       cb('Not connected', null, next)
     }
   },
-  existsByEmail(email, cb){
+  existsByEmail(email, cb, next){
+    this.user.one({email}, (err, user, cbNext)=> {
+      let result = false
+      if (user) result = true
+      cb(err, result, cbNext)
+    }, next)
+  },
+  save(userObj, cb, next){
     if (this.collections) {
 
     } else {
       cb('Not connected', null, next)
     }
   },
-  save(userObj, chainStart, chainEnd, cb){
-    if (this.collections) {
-
-    } else {
-      cb('Not connected', null, next)
-    }
-  },
-  login(identifier, password, cb){
+  login(identifier, password, cb, next){
     if (this.collections) {
 
     } else {

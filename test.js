@@ -40,14 +40,28 @@ import {
     //user api
     .set('userId', 0)
     .user
-    .find({}, (err, {userCollection}, next)=> {
-      console.log('api -> user -> find -> cb -> err, userCollection', err, userCollection)
+    .find({}, (err, userCollection, next)=> {
+      let len = 0
+      if (userCollection) len = userCollection.length
+      console.log('api -> user -> find -> cb -> err, userCollection.length', err, len)
+
+      next()
+    })
+    .one({id: 1}, (err, user, next)=> {
+      console.log('api -> user -> one -> cb -> err, user', err, user)
+
+      next()
+    })
+    .byRole('',(err,userCollection,next)=>{
+      let len = 0
+      if (userCollection) len = userCollection.length
+      console.log('api -> user -> byRole -> cb -> err, userCollection.length', err, len)
 
       next()
     })
     .done()
 
-    //term api
+    /*    //term api
      .set('userId', 1)
      .term
      .findOne({}, function (err, {termCollection}, next) {
@@ -73,7 +87,7 @@ import {
 
      next()
      })
-     .done(noop)
+     .done(noop)*/
 
     // finish up
     .disconnect((next)=> {

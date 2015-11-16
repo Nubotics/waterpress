@@ -6,7 +6,9 @@ const slugger = require('slug')
 import {
   _,
   findValue,
-  makeObjectFromKeyCollection
+  makeObjectFromKeyCollection,
+  assign,
+
 } from '../core/util'
 
 const user = {
@@ -110,12 +112,13 @@ const user = {
         //if (error) throw(error)
         //console.log('user model', userObj)
         if (_.has(userObj, 'metaCollection')) {
-          cb(error,
-            _.extend(userObj,
-              {metaObj: makeObjectFromKeyCollection(userObj.metaCollection)}
-            )
-          )
+          let userResult = assign(userObj, {
+              metaObj: makeObjectFromKeyCollection(userObj.metaCollection)
+            })
+          delete userResult.password
+          cb(error,userResult)
         } else {
+          if (userObj) delete userObj.password
           cb(error, userObj)
         }
       })
@@ -133,12 +136,13 @@ const user = {
           result = []
           _.forEach(userArr, (userObj)=> {
             if (_.has(userObj, 'metaCollection')) {
-              result.push(
-                _.extend(userObj,
-                  {metaObj: makeObjectFromKeyCollection(userObj.metaCollection)}
-                )
-              )
+              let userResult = assign(userObj, {
+                metaObj: makeObjectFromKeyCollection(userObj.metaCollection)
+              })
+              delete userResult.password
+              result.push(userResult)
             } else {
+              if (userObj) delete userObj.password
               result.push(userObj)
             }
           })
@@ -192,12 +196,12 @@ const userMeta = {
   autoCreatedAt: false,
   autoUpdatedAt: false/*,
 
-  beforeCreate: (values, next) => {
+   beforeCreate: (values, next) => {
 
-  },
-  beforeUpdate: (values, next) => {
+   },
+   beforeUpdate: (values, next) => {
 
-  }*/
+   }*/
 }
 
-export default {user,userMeta}
+export default {user, userMeta}
