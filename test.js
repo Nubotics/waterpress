@@ -47,7 +47,7 @@ import {
     })
     .done()
 
-    /*//term api
+    //term api
      .set('userId', 1)
      .term
      .findOne({}, function (err, {termCollection}, next) {
@@ -73,7 +73,7 @@ import {
 
      next()
      })
-     .done(noop)*/
+     .done(noop)
 
     // finish up
     .disconnect((next)=> {
