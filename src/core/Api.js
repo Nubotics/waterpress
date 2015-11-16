@@ -64,6 +64,7 @@ class Api extends EventApi {
         }, key, true)
     })
 
+
   }
 
   _bind(...methods) {
@@ -111,10 +112,10 @@ class Api extends EventApi {
     this.chain((next)=> {
       if (this.orm) {
         if (cb) {
-          this.orm.kill(()=>{
+          this.orm.kill(()=> {
             cb(next)
           })
-        }else{
+        } else {
           this.orm.kill(next)
         }
       } else {
@@ -130,7 +131,8 @@ class Api extends EventApi {
 
   plug(cb, namespace) {
     this.chain((next)=> {
-      cb.apply(this, next)
+      let args = [this, next]
+      cb.apply(this, args)
     })
     if (namespace) {
       if (has(this, namespace)) {

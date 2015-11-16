@@ -60,6 +60,10 @@ import {
       next()
     })
     .done()
+    .plug((context, next)=>{
+      console.log('plug')
+      next()
+    })
 
     /*    //term api
      .set('userId', 1)
