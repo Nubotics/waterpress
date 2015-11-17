@@ -102,9 +102,7 @@ export default {
   },
   save(userObj, cb, next){
     if (this.collections) {
-
       let { id, email } = userObj
-
       const updateAction = ()=> {
         this.collections
           .user
@@ -121,7 +119,6 @@ export default {
 
           })
       }
-
       const createAction = ()=> {
         this.collections
           .user
