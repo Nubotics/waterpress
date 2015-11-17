@@ -1,13 +1,16 @@
 //util
-import {
+import { pluginUtils } from '../../../addons'
+let {
   _,
-  has,
   assign,
-  merge,
   eachKey,
   findValue,
+  forEach,
+  has,
+  makeObjectFromKeyCollection,
+  merge,
 
-} from '../../../core'
+  } = pluginUtils
 
 //api
 let categoryApi = {

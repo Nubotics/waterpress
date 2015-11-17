@@ -1,4 +1,5 @@
-import {
+//lib
+import wp, {
   EventApi,
   Api,
   Orm,
@@ -6,21 +7,26 @@ import {
 
 } from './src'
 
-import wp from './src'
+//plugins
+import pluginNioPressCommunity from './src/plugins/nio-press-community'
+import pluginWpCategoryMeta from './src/plugins/wp-category-meta'
 
 (function () {
 
   const options = {
-    connections: {
-      mysql: {
-        adapter: 'mysql',
-        host: 'localhost',
-        port: 3306,
-        user: 'root',
-        password: 'root',
-        database: 'cms'
+    db: {
+      connections: {
+        mysql: {
+          adapter: 'mysql',
+          host: 'localhost',
+          port: 3306,
+          user: 'root',
+          password: 'root',
+          database: 'cms'
+        }
       }
-    }
+    },
+    plugins: []
 
   }
 
@@ -53,7 +59,7 @@ import wp from './src'
 
       next()
     })
-    .byRole('',(err,userCollection,next)=>{
+    .byRole('', (err, userCollection, next)=> {
       let len = 0
       if (userCollection) len = userCollection.length
       console.log('api -> user -> byRole -> cb -> err, userCollection.length', err, len)
@@ -61,7 +67,7 @@ import wp from './src'
       next()
     })
     .done()
-    .plug((context, next)=>{
+    .plug((context, next)=> {
       console.log('plug')
       next()
     })

@@ -12,7 +12,7 @@ import {
 } from './util'
 
 //models
-import models from '../models'
+//import models from '../models'
 
 //main
 class Orm extends Waterline {
@@ -39,7 +39,7 @@ class Orm extends Waterline {
     }
   }
 
-  init(options, cb) {
+  init(options, models, cb) {
     let config = {
       adapters: {
         default: mysqlAdapter,

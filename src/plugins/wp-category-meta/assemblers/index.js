@@ -1,14 +1,21 @@
 //util
-import {
+import { pluginUtils } from '../../../addons'
+let {
   _,
-  has,
   assign,
-  merge,
   eachKey,
   findValue,
+  forEach,
+  has,
+  makeObjectFromKeyCollection,
+  merge,
 
-} from '../core/util'
+  } = pluginUtils
 
+//alias
+let makeObj = makeObjectFromKeyCollection
+
+//main
 const assemble = {
   category: {
     top (item, collection, termMetaCollection, activityCollection) {

@@ -3,7 +3,7 @@ const bookmark = {
   identity: 'bookmark',
   //connection: 'mongo',
   connection: 'mysql',
-  tableName:'nio_bookmark',
+  tableName: 'nio_bookmark',
   attributes: {
     id: {
       type: 'integer',
@@ -35,7 +35,7 @@ const curation = {
   identity: 'curation',
   //connection: 'mongo',
   connection: 'mysql',
-  tableName:'nio_curation',
+  tableName: 'nio_curation',
 
   attributes: {
     id: {
@@ -71,7 +71,7 @@ const curationBookmark = {
   identity: 'curationBookmark',
   //connection: 'mongo',
   connection: 'mysql',
-  tableName:'nio_curationBookmark',
+  tableName: 'nio_curationBookmark',
   attributes: {
     id: {
       type: 'integer',
@@ -100,7 +100,7 @@ const following = {
   identity: 'following',
   //connection: 'mongo',
   connection: 'mysql',
-  tableName:'nio_following',
+  tableName: 'nio_following',
   attributes: {
     id: {
       type: 'integer',
@@ -114,12 +114,12 @@ const following = {
       model: 'user'
     },
     followUser: {
-      columnName:'follow_user',
+      columnName: 'follow_user',
       type: 'integer',
       model: 'user'
     },
     followTerm: {
-      columnName:'follow_term',
+      columnName: 'follow_term',
       type: 'integer',
       model: 'term'
     }
@@ -134,24 +134,24 @@ const like = {
   identity: 'like',
   //connection: 'mongo',
   connection: 'mysql',
-  tableName:'nio_like',
+  tableName: 'nio_like',
 
-  attributes:{
+  attributes: {
     id: {
       type: 'integer',
       columnName: 'id',
       primaryKey: true,
       autoIncrement: true
     },
-    user:{
-      type:'integer',
-      required:true,
-      model:'user'
+    user: {
+      type: 'integer',
+      required: true,
+      model: 'user'
     },
-    post:{
-      type:'integer',
-      required:true,
-      model:'post'
+    post: {
+      type: 'integer',
+      required: true,
+      model: 'post'
     }
   },
   migrate: 'create',
@@ -164,20 +164,20 @@ const passport = {
   identity: 'passport',
   connection: 'mysql',
   tableName: 'nio_passport',
-  attributes:{
+  attributes: {
     id: {
       type: 'integer',
       columnName: 'id',
       primaryKey: true,
       autoIncrement: true
     },
-    user:{
-      type:'integer',
+    user: {
+      type: 'integer',
       //required:true,
-      model:'user'
+      model: 'user'
     },
-    protocol:{
-      type:'alphanumeric',
+    protocol: {
+      type: 'alphanumeric',
       //required:true
     },
     provider: {
@@ -200,24 +200,24 @@ const read = {
   identity: 'read',
   //connection: 'mongo',
   connection: 'mysql',
-  tableName:'nio_read',
+  tableName: 'nio_read',
 
-  attributes:{
+  attributes: {
     id: {
       type: 'integer',
       columnName: 'id',
       primaryKey: true,
       autoIncrement: true
     },
-    user:{
-      type:'integer',
-      required:true,
-      model:'user'
+    user: {
+      type: 'integer',
+      required: true,
+      model: 'user'
     },
-    post:{
-      type:'integer',
-      required:true,
-      model:'post'
+    post: {
+      type: 'integer',
+      required: true,
+      model: 'post'
     }
   },
   migrate: 'create',
@@ -227,6 +227,36 @@ const read = {
 }
 
 const settings = {
+  identity: 'settings',
+  //connection: 'mongo',
+  connection: 'mysql',
+  tableName: 'nio_profile_settings',
+
+  attributes: {
+    id: {
+      type: 'integer',
+      columnName: 'id',
+      primaryKey: true,
+      autoIncrement: true
+    },
+    user: {
+      type: 'integer',
+      required: true,
+      model: 'user'
+    },
+    key: {
+      type: 'string',
+      required: true,
+
+    },
+    value: {
+      type: 'json',
+    }
+  },
+  migrate: 'create',
+  autoPK: false,
+  autoCreatedAt: true,
+  autoUpdatedAt: true
 
 }
 
@@ -234,24 +264,24 @@ const share = {
   identity: 'share',
   //connection: 'mongo',
   connection: 'mysql',
-  tableName:'nio_share',
+  tableName: 'nio_share',
 
-  attributes:{
+  attributes: {
     id: {
       type: 'integer',
       columnName: 'id',
       primaryKey: true,
       autoIncrement: true
     },
-    user:{
-      type:'integer',
-      required:true,
-      model:'user'
+    user: {
+      type: 'integer',
+      required: true,
+      model: 'user'
     },
-    post:{
-      type:'integer',
-      required:false,
-      model:'post'
+    post: {
+      type: 'integer',
+      required: false,
+      model: 'post'
     },
     url: {
       type: 'string'
@@ -259,8 +289,8 @@ const share = {
     provider: {
       type: 'alphanumericdashed'
     },
-    responseId:{
-      type:'string'
+    responseId: {
+      type: 'string'
     }
   },
   migrate: 'create',
@@ -269,6 +299,7 @@ const share = {
   autoUpdatedAt: true
 }
 
+//main
 export default {
   bookmark,
   curation,
@@ -279,5 +310,4 @@ export default {
   read,
   settings,
   share,
-
 }

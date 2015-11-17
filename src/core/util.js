@@ -1,15 +1,6 @@
 import _ from 'lodash'
-const hasher = require('wordpress-hash-node')
 import DeepMerge from 'deep-merge'
 
-const has = _.has
-const forEach = _.forEach
-const merge = DeepMerge(function (target, source, key) {
-  if (target instanceof Array) {
-    return [].concat(target, source);
-  }
-  return source;
-})
 const assign = function (source, override) {
   return _.assign(_.clone(source), override)
 }
@@ -37,6 +28,8 @@ const findValue = function (collection, keys) {
   }
   return result
 }
+const forEach = _.forEach
+const has = _.has
 const makeObjectFromKeyCollection = function (collection) {
   let result = {}
   forEach(collection, (item) => {
@@ -47,15 +40,21 @@ const makeObjectFromKeyCollection = function (collection) {
   })
   return result
 }
+const merge = DeepMerge(function (target, source, key) {
+  if (target instanceof Array) {
+    return [].concat(target, source);
+  }
+  return source;
+})
 
 export default {
   _,
-  findValue,
-  makeObjectFromKeyCollection,
-  hasher,
-  merge,
   assign,
-  has,
   eachKey,
+  findValue,
+  forEach,
+  has,
+  makeObjectFromKeyCollection,
+  merge,
 
 }
