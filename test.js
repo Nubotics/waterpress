@@ -6,6 +6,7 @@ import {
 
 } from './src'
 
+import wp from './src'
 
 (function () {
 
@@ -23,7 +24,7 @@ import {
 
   }
 
-  let api = new Api(options)
+  let api = wp(options)
 
   let noop = function (next) {
     console.log('done noop')

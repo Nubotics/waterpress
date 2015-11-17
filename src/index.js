@@ -5,14 +5,18 @@ import {
   u,
 } from './core'
 
-/*import {
+import models from './models'
 
-} from './assemblers'*/
-
-export default {
+export {
   EventApi,
   Api,
   Orm,
   u,
+  models,
+
+}
+
+export default function (options){
+  return new Api(options)
 }
 

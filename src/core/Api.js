@@ -71,6 +71,43 @@ class Api extends EventApi {
     methods.forEach((method) => this[method] = this[method].bind(this))
   }
 
+  _safeBindApiMethods(namespace, api) {
+
+    let shouldOverride = false
+    if (has(this.options, 'plugins')) {
+
+    }
+
+    if (has(this.options, 'override')) {
+      if (has(this.options.override, 'api')) {
+        if (has(this.options.override.api, namespace)) {
+          shouldOverride = true
+        }
+      }
+    }
+
+    if (shouldOverride){
+      this._addMethods(namespace, this.options.override.api[namespace])
+    }else{
+      this._addMethods(namespace, api)
+    }
+
+
+    if (has(this.options, 'override')) {
+      if (has(this.options.override, 'api')) {
+        if (has(this.options.override.api, namespace)) {
+          this._addMethods(namespace, this.options.override.api[namespace])
+        } else {
+          this._addMethods(namespace, api)
+        }
+      } else {
+        this._addMethods(namespace, api)
+      }
+    } else {
+      this._addMethods(namespace, api)
+    }
+  }
+
   connect(cb) {
     this.chain((next)=> {
       if (this.collections && this.connections) {

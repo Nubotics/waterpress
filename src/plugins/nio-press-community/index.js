@@ -34,25 +34,20 @@ import {
 //::: OVERRIDES :::
 
 //models
-import user from '../../models/user'
-user.attributes = assign(user.attributes, {
-  passportCollection: {
-    collection: 'passport',
-    via: 'user'
-  },
-  followersCollection:{
-    collection: 'following',
-    via: 'followUser'
-  }
-})
 
-//api
-let categoryApi = {
-  namespace:'category',
-  methods:{
-
+let user = {
+  attributes: {
+    passportCollection: {
+      collection: 'passport',
+      via: 'user'
+    },
+    followersCollection: {
+      collection: 'following',
+      via: 'followUser'
+    }
   }
 }
+
 
 //plugin
 const pluginNioPressCommunity = {
@@ -78,7 +73,9 @@ const pluginNioPressCommunity = {
   ],
   //-> overrides
   override: {
-    model: {user},
+    model: {
+      user
+    },
     api: {}
   }
 }
