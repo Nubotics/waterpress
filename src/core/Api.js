@@ -72,7 +72,7 @@ class Api extends EventApi {
 
     //:: check db waterline connection options
     if (has(options, 'db')) {
-      this.setOption('db', options[db])
+      this.setOption('db', options.db)
     }
 
     //:: Waterline data instance
@@ -150,7 +150,7 @@ class Api extends EventApi {
           merge(defaultModels[modKey], overrideModelCollection[modKey])
         )
       } else {
-        modelCollection = merge(modelCollection, defaultModels[modKey])
+        modelCollection = merge(modelCollection, {[modKey]: defaultModels[modKey]})
       }
     })
     this.set('modelCollection', modelCollection)
@@ -162,7 +162,7 @@ class Api extends EventApi {
           merge(defaultApi[apiKey], overrideApiCollection[apiKey])
         )
       } else {
-        apiCollection = merge(apiCollection, defaultApi[apiKey])
+        apiCollection = merge(apiCollection, {[apiKey]: defaultApi[apiKey]})
       }
     })
     //this.set('apiCollection', apiCollection)
@@ -177,17 +177,20 @@ class Api extends EventApi {
 
     //:: construct api methods
     eachKey(apiCollection, structKey=> {
-      this
-        ._addMethods(apiCollection[structKey], structKey)
-        ._addMethod('done', function (cb, next) {
-          //console.log('done')
-          if (cb) {
-            cb(next)
-          } else {
-            next()
-          }
+      if (has(apiCollection, structKey)) {
+        this
+          ._addMethods(apiCollection[structKey], structKey)
+          ._addMethod('done', function (cb, next) {
+            //console.log('done')
+            if (cb) {
+              cb(next)
+            } else {
+              next()
+            }
 
-        }, structKey, true)
+          }, structKey, true)
+      }
+
     })
 
   }
@@ -202,7 +205,7 @@ class Api extends EventApi {
         if (cb) {
           let { collections, connections } = this
           cb(null, {collections, connections}, next)
-        }else{
+        } else {
           next()
         }
       } else {
@@ -215,11 +218,11 @@ class Api extends EventApi {
             //console.log('orm init -> err, models', err, models)
             if (err) throw err
             if (has(models, 'connections')) {
-              console.log('orm init -> has connections')
+              //console.log('orm init -> has connections')
               this.set('connections', models.connections, true)
             }
             if (has(models, 'collections')) {
-              console.log('orm init -> has collections')
+              //console.log('orm init -> has collections')
               this.set('collections', models.collections, true)
             }
             if (cb) {

@@ -4,15 +4,17 @@ const hasher = require('wordpress-hash-node')
 //util
 import {
   _,
-  has,
   assign,
-  forEach,
-  merge,
   eachKey,
   findValue,
+  forEach,
+  has,
+  makeObjectFromKeyCollection,
+  merge,
 
 } from '../core/util'
 
+//::: reference
 /*
  * wp_capabilities:
  * ----------------

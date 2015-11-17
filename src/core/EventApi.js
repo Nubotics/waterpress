@@ -74,6 +74,7 @@ var APIPrototype = {
     if (!namespace) {
       this[name] = methodHandler.bind(this)
     } else {
+      if (!has(this, namespace)) this[namespace] = {}
       this[namespace][name] = methodHandler.bind(this)
     }
 
@@ -88,7 +89,6 @@ var APIPrototype = {
         if (!namespace) {
           this._addMethod(name, methods[name])
         } else {
-          if (!has(this, namespace)) this[namespace] = {}
           this._addMethod(name, methods[name], namespace)
         }
 

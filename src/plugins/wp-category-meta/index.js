@@ -1,15 +1,3 @@
-//util
-import {
-  _,
-  has,
-  assign,
-  forEach,
-  merge,
-  eachKey,
-  findValue,
-
-} from '../core/util'
-
 //models
 import { termMeta, term } from './models'
 //api

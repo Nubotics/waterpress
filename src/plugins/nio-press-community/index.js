@@ -1,3 +1,5 @@
+//:: NEW
+//-> models
 import {
   bookmark,
   curation,
@@ -11,6 +13,7 @@ import {
 
 } from './models'
 
+//-> api
 import {
   activityApi,
   advertApi,
@@ -20,11 +23,9 @@ import {
 
 } from './api'
 
-//::: OVERRIDES :::
-
-//models
-
-let user = {
+//:: OVERRIDES
+//->models
+let userModel = {
   attributes: {
     passportCollection: {
       collection: 'passport',
@@ -36,9 +37,24 @@ let user = {
     }
   }
 }
+//->api
+let userApi = {
+  one(parans, cb, next){
+  },
+  find(params, cb, next){
+  },
+  byRole(roleName, cb, next){
+  },
+  byPassport(params, cb, next){
+  },
+  register(userObj, cb, next){
+  },
+  save(userObj, cb, next){
 
+  }
+}
 
-//plugin
+//:: plugin
 const pluginNioPressCommunity = {
   name: 'nio-press-community',
   modelCollection: [
@@ -63,9 +79,11 @@ const pluginNioPressCommunity = {
   //-> overrides
   override: {
     model: {
-      user
+      user: userModel,
     },
-    api: {}
+    api: {
+      user: userApi,
+    }
   }
 }
 

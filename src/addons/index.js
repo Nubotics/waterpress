@@ -1,6 +1,6 @@
-import {u} from '../core'
+import pluginUtils from '../core/util'
 
 export default {
-  pluginUtils:u,
+  pluginUtils
 
 }
