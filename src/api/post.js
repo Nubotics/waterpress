@@ -13,6 +13,7 @@ import {
 
 //main
 export default {
+  //general crud
   find(params, options, cb, next){
     if (this.collections) {
 
@@ -23,6 +24,10 @@ export default {
 
       if (has(options, 'limit')) {
         query.limit(options.limit)
+      }
+
+      if (has(options, 'skip')) {
+        query.skip(options.skip)
       }
 
       if (has(options, 'sort')) {
@@ -81,5 +86,7 @@ export default {
     } else {
       cb('Not connected', null, next)
     }
-  }
+  },
+  //help crud
+  
 }

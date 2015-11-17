@@ -44,6 +44,15 @@ import pluginWpCategoryMeta from './src/plugins/wp-category-meta'
   api
     .connect()
 
+    //post api
+    .post
+    .find({},{limit:1,skip:3}, (err, postCollection, next)=> {
+      if (postCollection) {
+        console.log('post -> find -> postCollection',postCollection)
+      }
+      next()
+    })
+    .done()
     //user api
     /*
      .set('userId', 0)

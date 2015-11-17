@@ -181,7 +181,7 @@ class Api extends EventApi {
         this
           ._addMethods(apiCollection[structKey], structKey)
           ._addMethod('done', function (cb, next) {
-            //console.log('done')
+            //console.log('done', cb, next)
             if (cb) {
               cb(next)
             } else {
