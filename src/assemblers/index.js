@@ -123,18 +123,18 @@ const assemble = {
         user.lastName = ''
         user.nickname = ''
         user.description = ''
-        if (_.has(user, 'password')) {
+        if (has(user, 'password')) {
           delete user.password
         }
-        if (_.has(user, 'metaObj')) {
-          if (_.has(user.metaObj, 'first_name')) user.firstName = user.metaObj.first_name
-          if (_.has(user.metaObj, 'last_name')) user.lastName = user.metaObj.last_name
-          if (_.has(user.metaObj, 'nickname')) user.nickname = user.metaObj.nickname
-          if (_.has(user.metaObj, 'description')) user.description = user.metaObj.description
-          if (_.has(user.metaObj, 'mobile')) user.mobile = user.metaObj.mobile
-          if (_.has(user.metaObj, 'nio_profile_picture')) {
+        if (has(user, 'metaObj')) {
+          if (has(user.metaObj, 'first_name')) user.firstName = user.metaObj.first_name
+          if (has(user.metaObj, 'last_name')) user.lastName = user.metaObj.last_name
+          if (has(user.metaObj, 'nickname')) user.nickname = user.metaObj.nickname
+          if (has(user.metaObj, 'description')) user.description = user.metaObj.description
+          if (has(user.metaObj, 'mobile')) user.mobile = user.metaObj.mobile
+          if (has(user.metaObj, 'nio_profile_picture')) {
             user.avatar = user.metaObj.nio_profile_picture
-          } else if (_.has(user.metaObj, 'cupp_upload_meta')) {
+          } else if (has(user.metaObj, 'cupp_upload_meta')) {
             user.avatar = user.metaObj.cupp_upload_meta
           }
           return user
