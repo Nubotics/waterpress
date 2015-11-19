@@ -11,21 +11,24 @@ import {
 
 } from '../core/util'
 
-//main
+//methods
+let find = function(params, cb, next){
+  cb(null, {commentCollection: []}, next)
+}
+let one = function(params, cb, next){
+  cb(null, null, next)
+}
+let save = function(commentObj, cb, next){
+  cb(null, null, next)
+}
+let kill = function(commentId, cb, next){
+  cb(null, null, next)
+}
+
+//api export
 export default {
-  find(params, cb, next){
-    //console.log('user -> find',arguments, params)
-    //console.log('user -> find', params, cb, next)
-    cb(null, {commentCollection: []}, next)
-
-  },
-  one(params, cb, next){
-
-  },
-  save(commentObj, cb, next){
-
-  },
-  kill(commentId, cb, next){
-
-  }
+  find,
+  one,
+  save,
+  kill,
 }

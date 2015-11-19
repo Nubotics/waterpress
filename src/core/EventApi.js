@@ -59,7 +59,12 @@ var APIPrototype = {
 
       this.chain((next)=> {
         args.push(next)
-        //console.log('methodHandler', name, namespace,args)
+        //args.push(this)
+        if (namespace === 'catgory') {
+          console.log('methodHandler', name, namespace, args)
+          console.log('methodHandler', args)
+        }
+
         method.apply(this, args)
       })
 

@@ -14,7 +14,7 @@ import {
 
 } from '../core/util'
 
-//::: reference
+//:: reference
 /*
  * wp_capabilities:
  * ----------------
@@ -43,116 +43,126 @@ import {
  *
  * */
 
+//methods
 
-export default {
-  one(params, cb, next){
-    if (this.collections) {
-      this.collections
-        .user
-        .findOneWithMeta(params, (err, user)=> {
-          cb(err, user, next)
-        })
-    } else {
-      cb('Not connected', null, next)
-    }
-  },
-  find(params, cb, next){
-    if (this.collections) {
-      this.collections
-        .user
-        .findWithMeta(params, (e, userArr)=> {
-          cb(e, userArr, next)
-        })
-    } else {
-      cb('Not connected', null, next)
-    }
-  },
-  byRole(roleName, cb, next){
-    if (this.collections) {
-      this.collections
-        .usermeta
-        .find()
-        .where({key: 'wp_capabilities', value: {'contains': roleName}})
-        .exec((err, meta)=> {
-          let userIdArr = []
-          if (meta) {
-            meta.map((item)=> {
-              //console.log('item', item.userId)
-              userIdArr.push(item.user)
+let find = function (params, cb, next) {
+  if (this.collections) {
+    this.collections
+      .user
+      .findWithMeta(params, (e, userArr)=> {
+        cb(e, userArr, next)
+      })
+  } else {
+    cb('Not connected', null, next)
+  }
+}
+let one = function (params, cb, next) {
+  //console.log('api/user -> this.user.one, context.user.one', params)
+  if (this.collections) {
+    this.collections
+      .user
+      .findOneWithMeta(params, (err, user)=> {
+        cb(err, user, next)
+      })
+  } else {
+    cb('Not connected', null, next)
+  }
+}
+let byRole = function (roleName, cb, next) {
+  if (this.collections) {
+    this.collections
+      .usermeta
+      .find()
+      .where({key: 'wp_capabilities', value: {'contains': roleName}})
+      .exec((err, meta)=> {
+        let userIdArr = []
+        if (meta) {
+          meta.map((item)=> {
+            //console.log('item', item.userId)
+            userIdArr.push(item.user)
+          })
+          this.collections
+            .user
+            .findWithMeta({id: userIdArr}, (e, userArr)=> {
+              cb(e, userArr, next)
             })
-            this.collections
-              .user
-              .findWithMeta({id: userIdArr}, (e, userArr)=> {
-                cb(e, userArr, next)
-              })
-          } else {
-            cb(err, null, next)
-          }
-        })
-    } else {
-      cb('Not connected', null, next)
-    }
-  },
-  existsByEmail(email, cb, next){
-    this.user.one({email}, (err, user, cbNext)=> {
-      let result = false
-      if (user) result = true
-      cb(err, result, cbNext)
-    }, next)
-  },
-  save(userObj, cb, next){
-    if (this.collections) {
-      let { id, email } = userObj
-      const updateAction = ()=> {
-        this.collections
-          .user
-          .update({id}, userObj)
-          .exec((e, users)=> {
-            //TODO: validate the response before callback
-            let resultUser = undefined
-            if (Array.isArray(users)) {
-              if (users.length > 0) {
-                resultUser = users[0]
-              }
+        } else {
+          cb(err, null, next)
+        }
+      })
+  } else {
+    cb('Not connected', null, next)
+  }
+}
+let existsByEmail = function (email, cb, next) {
+  one.call(this, {email}, function (err, user) {
+    let result = false
+    if (user) result = true
+    cb(err, result, next)
+  })
+}
+let save = function (userObj, cb, next) {
+  if (this.collections) {
+    let { id, email } = userObj
+    const updateAction = ()=> {
+      this.collections
+        .user
+        .update({id}, userObj)
+        .exec((e, users)=> {
+          //TODO: validate the response before callback
+          let resultUser = undefined
+          if (Array.isArray(users)) {
+            if (users.length > 0) {
+              resultUser = users[0]
             }
-            cb(e, resultUser, next)
-
-          })
-      }
-      const createAction = ()=> {
-        this.collections
-          .user
-          .create(userObj)
-          .exec((e, user)=> {
-            //TODO: validate the response before callback
-            cb(e, user, next)
-          })
-      }
-
-      this.collections
-        .user
-        .findOne({email}, (err, user)=> {
-          if (user) {
-            updateAction()
-          } else {
-            createAction()
           }
-        })
+          cb(e, resultUser, next)
 
-    } else {
-      cb('Not connected', null, next)
+        })
     }
-  },
-  checkLogin(email, password, cb, next){
-    if (this.collections) {
-      let hash = hasher.HashPassword(password)
+    const createAction = ()=> {
       this.collections
         .user
-        .findOne({email, password: hash}, (err, user)=> {
-          cb(err, user, next)
+        .create(userObj)
+        .exec((e, user)=> {
+          //TODO: validate the response before callback
+          cb(e, user, next)
         })
-    } else {
-      cb('Not connected', null, next)
     }
-  },
+
+    this.collections
+      .user
+      .findOne({email}, (err, user)=> {
+        if (user) {
+          updateAction()
+        } else {
+          createAction()
+        }
+      })
+
+  } else {
+    cb('Not connected', null, next)
+  }
+}
+let checkLogin = function (email, password, cb, next) {
+  if (this.collections) {
+    let hash = hasher.HashPassword(password)
+    this.collections
+      .user
+      .findOne({email, password: hash}, (err, user)=> {
+        cb(err, user, next)
+      })
+  } else {
+    cb('Not connected', null, next)
+  }
+}
+
+//api export
+export default {
+  find,
+  one,
+  byRole,
+  existsByEmail,
+  save,
+  checkLogin,
 }

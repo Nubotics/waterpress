@@ -103,10 +103,10 @@ const assemble = {
       collection.map(item => {
         if (!isFlat) {
           if (item.parent == 0) {
-            result.push(assemble.category.top(item, collection, termMetaCollection))
+            result.push(assemble.category.top(item, collection, activityCollection))
           }
         } else {
-          result.push(assemble.category.entity(item, termMetaCollection, activityCollection, isFlat))
+          result.push(assemble.category.entity(item, activityCollection, isFlat))
         }
       })
       result = _.sortBy(result, 'name')
