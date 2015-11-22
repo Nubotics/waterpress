@@ -13,8 +13,6 @@ import stringifyObject from 'stringify-object'
 
 //plugins
 
-import pluginNioPressCommunity from './src/plugins/nio-press-community'
-import pluginWpCategoryMeta from './src/plugins/wp-category-meta'
 
 //contained context
 

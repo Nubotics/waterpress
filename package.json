@@ -1,10 +1,11 @@
 {
-  "name": "waterpress",
-  "version": "0.2.1",
+  "name": "waterpress2",
+  "version": "0.2.2",
   "description": "chainable and pluggable db direct wordpress api powered by waterline orm",
-  "main": "index.js",
+  "main": "./lib/index.js",
   "scripts": {
-    "test": "babel-node test.js"
+    "test": "babel-node test.js",
+    "build": "babel src --out-dir lib --stage 0 --loose all --source-maps-inline"
   },
   "repository": {
     "type": "git",

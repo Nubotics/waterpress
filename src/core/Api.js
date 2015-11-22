@@ -86,17 +86,17 @@ class Api extends EventApi {
     let pluginCollection = []
     if (has(options, 'plugins')) {
       if (Array.isArray(options.plugins)) {
-        pluginCollection.concat(options.plugins)
+        pluginCollection = options.plugins
       }
     }
 
     //:: flatten plugin tree
     let pluginNames = []
     //-> models
-    let newModelCollection = []
+    let newModelCollection = {}
     let overrideModelCollection = {}
     //-> api
-    let newApiCollection = []
+    let newApiCollection = {}
     let overrideApiCollection = {}
     //-> deconstruct
     if (pluginCollection.length > 0) {
@@ -106,13 +106,22 @@ class Api extends EventApi {
           //-> new models
           if (has(plugin, 'modelCollection')) {
             if (Array.isArray(plugin.modelCollection)) {
-              newModelCollection.concat(plugin.modelCollection)
+              _.forEach(plugin.modelCollection, model=>{
+                if (has(model,'identity')){
+                  newModelCollection[model.identity] = model
+                }
+              })
+
             }
           }
           //-> new api
           if (has(plugin, 'apiCollection')) {
             if (Array.isArray(plugin.apiCollection)) {
-              newApiCollection.concat(plugin.apiCollection)
+              _.forEach(plugin.apiCollection, api=>{
+                if (has(api,'namespace')){
+                  newApiCollection[api.namespace] = api
+                }
+              })
             }
           }
           //-> overrides
@@ -140,6 +149,7 @@ class Api extends EventApi {
         //TODO: does a plugin need a name?
       })
     }
+    this.set('pluginNames', pluginNames)
 
     //:: safe loadable collections
     //-> models
@@ -153,7 +163,8 @@ class Api extends EventApi {
         modelCollection = merge(modelCollection, {[modKey]: defaultModels[modKey]})
       }
     })
-    this.set('modelCollection', modelCollection)
+    modelCollection = merge(modelCollection, newModelCollection)
+    this.set('modelCollection',modelCollection)
     //-> api
     let apiCollection = {}
     eachKey(defaultApi, apiKey=> {
@@ -165,7 +176,7 @@ class Api extends EventApi {
         apiCollection = merge(apiCollection, {[apiKey]: defaultApi[apiKey]})
       }
     })
-    //this.set('apiCollection', apiCollection)
+    apiCollection = merge(apiCollection, newApiCollection)
 
     //:: Bind.bind ^_^
     this._bind.bind(this)
