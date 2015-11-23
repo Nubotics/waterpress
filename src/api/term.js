@@ -30,6 +30,7 @@ let find = function (params, cb, next) {
 }
 let byTaxonomy = function (params, cb, next) {
   if (this.collections) {
+    //TODO: deconstruct params
     this.collections
       .termtaxonomy
       .find()

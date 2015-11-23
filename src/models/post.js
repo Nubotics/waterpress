@@ -71,6 +71,10 @@ const post = {
     relationshipCollection: {
       collection: 'termRelationship',
       via: 'object'
+    },
+    childCollection:{
+      collection:'post',
+      via:'parent'
     }
     /*,
      commentCollection: {

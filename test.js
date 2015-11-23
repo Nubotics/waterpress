@@ -27,26 +27,58 @@ import stringifyObject from 'stringify-object'
   const end = function () {
     console.log('done end')
   }
-  const inspectResult = function (err, result) {
+  const inspectResult = function (err, result, withValues) {
     let report = 'result:\n'
+    //don't like to hoist :/
+    const deepInspectObject = (object, depth) => {
+      depth = depth || ''
+      let keyVal = null
+      _.mapKeys(object, (currentValue, key)=> {
+        keyVal = object[key]
+        if (_.isArray(keyVal)) {
+          _.forEach(keyVal, value=> {
+            report += `${depth}${chalk.yellow(`${key} keys:`)}\n`
+            deepInspectObject(value, depth += '--')
+          })
+        } else if (_.isPlainObject(keyVal) || _.isObject(keyVal)) {
+          report += `${depth}${chalk.yellow(`${key} keys:`)}\n`
+          deepInspectObject(keyVal, '--')
+        } else {
+          report += `${depth}-> ${chalk.yellow(key)} ${withValues ? `${object[key]}` : ''}\n`
+        }
 
-    const inspectObject = (object)=> {
-      report += `-> ${chalk.green('object returned')}\n`
-      report += `--> ${chalk.yellow('keys:')}\n`
-      _.mapKeys(object,(value,key)=>{
-        report += `---> ${chalk.yellow(key)}\n`
       })
-      //TODO: further inspect contents of object
     }
-    const inspectArray = (array)=> {
-      report += `-> ${chalk.green('array returned')}\n`
-      report += `--> ${chalk.magenta('array length:')} ${array.length}\n`
-      //TODO: further inspect contents of array
-
+    const inspectObject = (object, depth)=> {
+      depth = depth || ''
+      report += `${depth}-> ${chalk.green('object returned')}\n`
+      report += `${depth}--> ${chalk.yellow('keys:')}\n`
+      deepInspectObject(object, depth)
+      //TODO: further inspect contents of object
     }
     const inspectValue = (value)=> {
       report += `-> ${chalk.green('value returned')}\n`
       report += `--> ${chalk.cyan('value:')} ${value}\n`
+    }
+    const deepInspectArray = (array)=> {
+      if (array.length > 0) {
+        if (_.isPlainObject(array[0])) {
+          report += `--> ${chalk.magenta('array first plain object:')}\n`
+          inspectObject(array[0])
+        } else if (_.isObject(array[0])) {
+          report += `--> ${chalk.magenta('array first object:')}\n`
+          inspectObject(array[0])
+        } else {
+          report += `--> ${chalk.magenta('array first value:')}\n`
+          report += `--> ${array[0]}\n`
+        }
+      }
+    }
+    const inspectArray = (array)=> {
+      report += `-> ${chalk.green('array returned')}\n`
+      report += `--> ${chalk.magenta('array length:')} ${array.length}\n`
+      deepInspectArray(array)
+
     }
 
     let stringOpts = {
@@ -56,7 +88,7 @@ import stringifyObject from 'stringify-object'
 
     if (err) {
       report += `${chalk.red('err')}\n`
-      report += `--> ${stringifyObject(err,stringOpts)}`
+      report += `--> ${stringifyObject(err, stringOpts)}`
     } else if (_.isObject(result)) {
       if (_.isArray(result)) {
         inspectArray(result)
@@ -89,7 +121,7 @@ import stringifyObject from 'stringify-object'
           port: 3306,
           user: 'root',
           password: 'root',
-          database: 'cms'
+          database: 'buildaidcms'
         }
       }
     },
@@ -119,8 +151,9 @@ import stringifyObject from 'stringify-object'
 
     .set('postId', 0)
     .post
-    .find({}, {limit: 1, skip: 3}, (err, result, next)=> {
-      console.log('post -> find -> ', inspectResult(err, result))
+    .find({}, {limit: 3, skip: 3}, (err, result, next)=> {
+      console.log('post -> find -> ', inspectResult(err, result, true))
+      console.log('post -> find -> result', result)
       next()
     })
     .older(100, (err, result, next)=> {
@@ -131,8 +164,9 @@ import stringifyObject from 'stringify-object'
       console.log('post -> newer -> ', inspectResult(err, result))
       next()
     })
-    .one({}, (err, result, next)=> {
-      console.log('post -> one -> ', inspectResult(err, result))
+    .one({slug:'video-post-eg'}, (err, result, next)=> {
+      console.log('post -> one -> ', inspectResult(err, result, true))
+      console.log('post -> one -> result', result)
       next()
     })
     .save({/* stub post here */}, (err, result, next)=> {
@@ -149,48 +183,52 @@ import stringifyObject from 'stringify-object'
     })
 
     //user api
+    /*
 
-    .set('userId', 0)
-    .user
-    .find({id: {'>': 10}}, (err, result, next)=> {
-      console.log('user -> find ->', inspectResult(err, result))
-      next()
-    })
-    .one({id: 1}, (err, result, next)=> {
-      console.log('user -> one ->', inspectResult(err, result))
-      next()
-    })
-    .byRole('rolename', (err, result, next)=> {
-      console.log('user -> byRole ->', inspectResult(err, result))
-      next()
-    })
-    .existsByEmail('email', (err, result, next)=> {
-      console.log('user -> existsByEmail ->', inspectResult(err, result))
-      next()
-    })
-    .save({/* stub user here */}, (err, result, next)=> {
-      console.log('user -> save ->', inspectResult(err, result))
-      next()
-    })
-    .checkLogin('email', 'password', (err, result, next)=> {
-      console.log('user -> checkLogin ->', inspectResult(err, result))
-      next()
-    })
-    .done(next=> {
-      console.log('user -> done\n')
-      next()
-    })
+     .set('userId', 0)
+     .user
+     .find({id: {'>': 10}}, (err, result, next)=> {
+     console.log('user -> find ->', inspectResult(err, result))
+     next()
+     })
+     .one({id: 1}, (err, result, next)=> {
+     console.log('user -> one ->', inspectResult(err, result))
+     next()
+     })
+     .byRole('rolename', (err, result, next)=> {
+     console.log('user -> byRole ->', inspectResult(err, result))
+     next()
+     })
+     .existsByEmail('email', (err, result, next)=> {
+     console.log('user -> existsByEmail ->', inspectResult(err, result))
+     next()
+     })
+     .save({/!* stub user here *!/}, (err, result, next)=> {
+     console.log('user -> save ->', inspectResult(err, result))
+     next()
+     })
+     .checkLogin('email', 'password', (err, result, next)=> {
+     console.log('user -> checkLogin ->', inspectResult(err, result))
+     next()
+     })
+     .done(next=> {
+     console.log('user -> done\n')
+     next()
+     })
+     */
 
     //term api
 
     .set('termId', 0)
     .term
-    .find({name: {'contains': 'test'}}, (err, result, next)=> {
-      console.log('term -> find ->', inspectResult(err, result))
+    .find({name: {'contains': 'video'}}, (err, result, next)=> {
+      console.log('term -> find ->', inspectResult(err, result, true))
+      console.log('term -> find -> result ->', result)
       next()
     })
-    .byTaxonomy({name: {'contains': 'test'}}, (err, result, next)=> {
-      console.log('term -> byTaxonomy ->', inspectResult(err, result))
+    .byTaxonomy({taxonomy: 'category'}, (err, result, next)=> {
+      console.log('term -> byTaxonomy ->', inspectResult(err, result, true))
+      console.log('term -> byTaxonomy -> result ->', result)
       next()
     })
     .done(next=> {
@@ -200,127 +238,128 @@ import stringifyObject from 'stringify-object'
 
     //comment api
 
-    .set('commentId', 0)
-    .comment
-    .find({term: {'>': 1}}, (err, result, next)=> {
-      console.log('comment -> find ->', inspectResult(err, result))
-      next()
-    })
-    .one({id: 1}, (err, result, next)=> {
-      console.log('comment -> one ->', inspectResult(err, result))
-      next()
-    })
-    .save({/* comment stub */}, (err, result, next)=> {
-      console.log('comment -> save ->', inspectResult(err, result))
-      next()
-    })
-    .kill(1, (err, result, next)=> {
-      console.log('comment -> kill ->', inspectResult(err, result))
-      next()
-    })
-    .done(next=> {
-      console.log('comment -> done\n')
-      next()
-    })
+    /*   .set('commentId', 0)
+     .comment
+     .find({term: {'>': 1}}, (err, result, next)=> {
+     console.log('comment -> find ->', inspectResult(err, result))
+     next()
+     })
+     .one({id: 1}, (err, result, next)=> {
+     console.log('comment -> one ->', inspectResult(err, result))
+     next()
+     })
+     .save({/!* comment stub *!/}, (err, result, next)=> {
+     console.log('comment -> save ->', inspectResult(err, result))
+     next()
+     })
+     .kill(1, (err, result, next)=> {
+     console.log('comment -> kill ->', inspectResult(err, result))
+     next()
+     })
+     .done(next=> {
+     console.log('comment -> done\n')
+     next()
+     })*/
 
     //:: Api that have assembled models
 
     //category api
-
+/*
     .set('categoryId', 0)
     .category
-    .find({term: {'>': 1}}, false, (err, result, next)=> {
-      console.log('category -> find ->', inspectResult(err, result))
+    .find({name: {'contains': 'build'}}, false, (err, result, next)=> {
+      console.log('category -> find ->', inspectResult(err, result, true))
       next()
     })
-    .one({id: 1}, (err, result, next)=> {
-      console.log('category -> one ->', inspectResult(err, result))
+    .one({name: 'engineer'}, (err, result, next)=> {
+      console.log('category -> one ->', inspectResult(err, result, true))
       next()
     })
     .done(next=> {
       console.log('category -> done\n')
       next()
     })
+*/
 
     //format api
 
-    .set('postFormat', 'post')
-    .format
-    .find({}, (err, result, next)=> {
-      console.log('format -> find ->', inspectResult(err, result))
-      next()
-    })
-    .done(next=> {
-      console.log('format -> done\n')
-      next()
-    })
-
+    /*  .set('postFormat', 'post')
+     .format
+     .find({}, (err, result, next)=> {
+     console.log('format -> find ->', inspectResult(err, result))
+     next()
+     })
+     .done(next=> {
+     console.log('format -> done\n')
+     next()
+     })
+     */
     //media api
 
-    .set('mediaId', 0)
-    .media
-    .find({}, (err, result, next)=> {
-      console.log('media -> find ->', inspectResult(err, result))
-      next()
-    })
-    .one({id: 1}, (err, result, next)=> {
-      console.log('media -> one ->', inspectResult(err, result))
-      next()
-    })
-    .save({/* media stub */}, (err, result, next)=> {
-      console.log('media -> save ->', inspectResult(err, result))
-      next()
-    })
-    .kill(1, (err, result, next)=> {
-      console.log('media -> kill ->', inspectResult(err, result))
-      next()
-    })
-    .done(next=> {
-      console.log('media -> done\n')
-      next()
-    })
+    /*  .set('mediaId', 0)
+     .media
+     .find({}, (err, result, next)=> {
+     console.log('media -> find ->', inspectResult(err, result))
+     next()
+     })
+     .one({id: 1}, (err, result, next)=> {
+     console.log('media -> one ->', inspectResult(err, result))
+     next()
+     })
+     .save({/!* media stub *!/}, (err, result, next)=> {
+     console.log('media -> save ->', inspectResult(err, result))
+     next()
+     })
+     .kill(1, (err, result, next)=> {
+     console.log('media -> kill ->', inspectResult(err, result))
+     next()
+     })
+     .done(next=> {
+     console.log('media -> done\n')
+     next()
+     })*/
 
     //page api
 
-    .set('pageId', 0)
-    .page
-    .find({}, (err, result, next)=> {
-      console.log('page -> find ->', inspectResult(err, result))
-      next()
-    })
-    .one({id: 1}, (err, result, next)=> {
-      console.log('page -> one ->', inspectResult(err, result))
-      next()
-    })
-    .save({/* page stub */}, (err, result, next)=> {
-      console.log('page -> save ->', inspectResult(err, result))
-      next()
-    })
-    .kill(1, (err, result, next)=> {
-      console.log('page -> kill ->', inspectResult(err, result))
-      next()
-    })
-    .done(next=> {
-      console.log('page -> done\n')
-      next()
-    })
-
+    /*  .set('pageId', 0)
+     .page
+     .find({}, (err, result, next)=> {
+     console.log('page -> find ->', inspectResult(err, result))
+     next()
+     })
+     .one({id: 1}, (err, result, next)=> {
+     console.log('page -> one ->', inspectResult(err, result))
+     next()
+     })
+     .save({/!* page stub *!/}, (err, result, next)=> {
+     console.log('page -> save ->', inspectResult(err, result))
+     next()
+     })
+     .kill(1, (err, result, next)=> {
+     console.log('page -> kill ->', inspectResult(err, result))
+     next()
+     })
+     .done(next=> {
+     console.log('page -> done\n')
+     next()
+     })
+     */
     //tag api
 
-    .set('pageId', 0)
-    .page
-    .find({}, (err, result, next)=> {
-      console.log('tag -> find ->', inspectResult(err, result))
-      next()
-    })
-    .one({id: 1}, (err, result, next)=> {
-      console.log('tag -> one ->', inspectResult(err, result))
-      next()
-    })
-    .done(next=> {
-      console.log('tag -> done\n')
-      next()
-    })
+    /* .set('tagId', 0)
+     .tag
+     .find({}, (err, result, next)=> {
+     console.log('tag -> find ->', inspectResult(err, result))
+     next()
+     })
+     .one({id: 1}, (err, result, next)=> {
+     console.log('tag -> one ->', inspectResult(err, result))
+     next()
+     })
+     .done(next=> {
+     console.log('tag -> done\n')
+     next()
+     })*/
 
     // finish up
 
