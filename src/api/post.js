@@ -293,6 +293,47 @@ let findByFormat = function (format, options, cb, next) {
   }
 
 }
+let findByCategory = function (category, options, cb, next) {
+  if (this.collections) {
+    let params = {taxonomy: 'category'}
+    this.collections
+      .termtaxonomy
+      .find()
+      .where(params)
+      .populate('term')
+      .populate('relationshipCollection')
+      .exec((e, termTaxCollection)=> {
+        let filterResult = []
+        _.map(termTaxCollection, termTax=> {
+          if (_.contains(termTax.term.slug, category)
+            || _.contains(termTax.term.name, category)) {
+            filterResult.push(termTax)
+          }
+        })
+        let postIdCollection = []
+        if (filterResult.length > 0) {
+          _.map(filterResult, filterTermTax=> {
+            if (has(filterTermTax, 'relationshipCollection')) {
+              _.map(filterTermTax.relationshipCollection, relation=> {
+                postIdCollection.push(relation.object)
+              })
+            }
+          })
+          if (postIdCollection.length > 0) {
+            find.call(this, {id: postIdCollection}, options, cb, next)
+          } else {
+            cb(e, [], next)
+          }
+
+        } else {
+          cb(e, [], next)
+        }
+      })
+  } else {
+    cb('Not connected', null, next)
+  }
+
+}
 //api export
 export default {
   find,
@@ -303,5 +344,6 @@ export default {
   kill,
   findChildren,
   findByFormat,
+  findByCategory,
 
 }

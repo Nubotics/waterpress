@@ -166,7 +166,6 @@ import stringifyObject from 'stringify-object'
     })
     .one({slug: 'video-post-eg'}, (err, result, next)=> {
       console.log('post -> one -> ', inspectResult(err, result, true))
-
       next()
     })
     .save({/* stub post here */}, (err, result, next)=> {
@@ -180,6 +179,11 @@ import stringifyObject from 'stringify-object'
     .findByFormat('post-format-video',{}, (err, result, next)=> {
       console.log('post -> findByFormat -> ', inspectResult(err, result, true))
       console.log('post -> findByFormat -> result', result)
+      next()
+    })
+    .findByCategory('owner-builder',{}, (err, result, next)=> {
+      console.log('post -> findByCategory -> ', inspectResult(err, result, true))
+      console.log('post -> findByCategory -> result', result)
       next()
     })
     .done(next=> {
