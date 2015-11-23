@@ -13,59 +13,100 @@ import {
 
 //methods
 //general crud
+let assemblePostMeta = function (post) {
+  if (has(post, 'metaCollection')) {
+    post.metaObj = makeObjectFromKeyCollection(post.metaCollection)
+    return post
+  } else {
+    return post
+  }
+}
+
+let updatePostInPostCollection = function (termTaxId, postCollection, updatedPost) {
+  let newPostCollection = postCollection.map(post=> {
+    if (has(post, 'relationshipCollection')) {
+      let currTermTax = _.find(post.relationshipCollection, {termTaxonomy: termTaxId})
+      if (currTermTax) {
+        post = merge(post, updatedPost)
+        return post
+      } else {
+        return post
+      }
+    } else {
+      return post
+    }
+  })
+  return newPostCollection
+}
+let populatePostCollection = function (e, postCollection, cb, next) {
+  if (_.isArray(postCollection)) {
+    let termTaxIdCollection = []
+    postCollection.map(post=> {
+      post = assemblePostMeta(post)
+      post.categoryCollection = []
+      post.formatCollection = []
+      post.format = {name: 'standard', slug: 'standard', id: 0}
+      if (has(post, 'relationshipCollection')) {
+        if (_.isArray(post.relationshipCollection)) {
+          if (post.relationshipCollection.length > 0) {
+            post.relationshipCollection.map(relationship=> {
+              termTaxIdCollection.push(relationship.termTaxonomy)
+            })
+          }
+        }
+      }
+    })
+    if (termTaxIdCollection.length > 0) {
+      this.collections
+        .termtaxonomy
+        .find()
+        .where({id: termTaxIdCollection})
+        .populate('term')
+        //.populate('relationshipCollection')
+        .exec((err, collection)=> {
+          if (err) {
+            cb(err, postCollection, next)
+          } else {
+            if (_.isArray(collection)) {
+              collection.map(termTax=> {
+                let postUpdate = {
+                  categoryCollection: [],
+                  formatCollection: [],
+                  format: {name: 'standard', slug: 'standard', id: 0},
+                }
+                if (termTax.taxonomy == 'category') {
+                  postUpdate.categoryCollection.push(termTax.term)
+                } else if (_.endsWith(termTax.taxonomy, '_format')) {
+                  postUpdate.formatCollection.push(termTax.term)
+                  postUpdate.format = termTax.term
+                }
+                postCollection = updatePostInPostCollection(termTax.id, postCollection, postUpdate)
+              })
+
+              cb(err, postCollection, next)
+            } else {
+              cb(err, post, next)
+            }
+          }
+
+        })
+    } else {
+      cb(e, postCollection, next)
+    }
+
+
+  }
+
+
+}
 let find = function (params, options, cb, next) {
   if (this.collections) {
 
-    //let query =
-    this.collections
-      .post
-      .find()
-      .where(params)
-      .populate('author')
-      .populate('metaCollection')
-      .populate('relationshipCollection')
-      .limit(3)
-      /*
-       if (has(options, 'limit')) {
-       query.limit(options.limit)
-       }
-
-       if (has(options, 'skip')) {
-       query.skip(options.skip)
-       }
-
-       if (has(options, 'sort')) {
-       query.sort(options.sort)
-       }
-
-       query
-       .populate('author')
-       .populate('relationshipCollection')
-       .populate('metaCollection')
-
-       if (has(options, 'includeChildCollection')){
-       if (options.includeChildCollection){
-       query.populate('childCollection')
-       }
-       }
-
-       query*/
-      .exec((e, postCollection)=> {
-        cb(e, postCollection, next)
-      })
-
-
-  } else {
-    cb('Not connected', null, next)
-  }
-}
-let findAll = function (params, options, cb, next) {
-  if (this.collections) {
-
-    let query = this.collections
-      .post
-      .find()
-      .where(params)
+    let query =
+      this.collections
+        .post
+        .find()
+        .where(params)
 
     if (has(options, 'limit')) {
       query.limit(options.limit)
@@ -80,9 +121,19 @@ let findAll = function (params, options, cb, next) {
     }
 
     query
-      .populateAll()
+      .populate('author')
+      .populate('metaCollection')
+      .populate('relationshipCollection')
+
+    if (has(options, 'includeChildCollection')) {
+      if (options.includeChildCollection) {
+        query.populate('childCollection')
+      }
+    }
+
+    query
       .exec((e, postCollection)=> {
-        cb(e, postCollection, next)
+        populatePostCollection.call(this, e, postCollection, cb, next)
       })
 
 
@@ -90,18 +141,69 @@ let findAll = function (params, options, cb, next) {
     cb('Not connected', null, next)
   }
 }
-let older = function (lastId, cb, next) {
+let older = function (lastId, limit, cb, next) {
   if (this.collections) {
-    cb(null, null, next)
+    let params = {id: {'<': lastId}}
+    let options = {sort: 'id ASC', limit}
+    find.call(this, params, options, cb, next)
+    //cb(null, null, next)
   } else {
     cb('Not connected', null, next)
   }
 }
-let newer = function (firstId, cb, next) {
+let newer = function (firstId, limit, cb, next) {
   if (this.collections) {
-    cb(null, null, next)
+    let params = {id: {'>': firstId}}
+    let options = {sort: 'id DESC', limit}
+    find.call(this, params, options, cb, next)
   } else {
     cb('Not connected', null, next)
+  }
+}
+
+let populatePost = function (e, post, cb, next) {
+  post = assemblePostMeta(post)
+  post.categoryCollection = []
+  post.formatCollection = []
+  post.format = {name: 'standard', slug: 'standard', id: 0}
+  let termTaxIdCollection = []
+  if (has(post, 'relationshipCollection')) {
+    if (_.isArray(post.relationshipCollection)) {
+      if (post.relationshipCollection.length > 0) {
+        post.relationshipCollection.map(relationship=> {
+          termTaxIdCollection.push(relationship.termTaxonomy)
+        })
+      }
+    }
+  }
+  if (termTaxIdCollection.length > 0) {
+    this.collections
+      .termtaxonomy
+      .find()
+      .where({id: termTaxIdCollection})
+      .populate('term')
+      .exec((err, collection)=> {
+        if (err) {
+          cb(err, post, next)
+        } else {
+          if (_.isArray(collection)) {
+            collection.map(termTax=> {
+              if (termTax.taxonomy == 'category') {
+                post.categoryCollection.push(termTax.term)
+              } else if (_.endsWith(termTax.taxonomy, '_format')) {
+                post.formatCollection.push(termTax.term)
+                post.format = termTax.term
+              }
+            })
+            cb(err, post, next)
+          } else {
+            cb(err, post, next)
+          }
+        }
+
+      })
+  } else {
+    cb(e, post, next)
   }
 }
 let one = function (params, cb, next) {
@@ -114,12 +216,17 @@ let one = function (params, cb, next) {
       .populate('relationshipCollection')
       .populate('metaCollection')
       .exec((e, post)=> {
-        cb(e, post, next)
+        if (e) {
+          cb(e, post, next)
+        } else {
+          populatePost.call(this, e, post, cb, next)
+        }
       })
   } else {
     cb('Not connected', null, next)
   }
 }
+
 let save = function (postObj, cb, next) {
   if (this.collections) {
     cb(null, null, next)
@@ -137,16 +244,9 @@ let kill = function (postId, cb, next) {
 //help crud
 let findChildren = function (postId, cb, next) {
   if (this.collections) {
-    this.collections
-      .post
-      .find()
-      .where({parent: postId})
-      .populate('author')
-      .populate('relationshipCollection')
-      .populate('metaCollection')
-      .exec((e, postCollection)=> {
-        cb(e, postCollection, next)
-      })
+    let params = {parent: postId}
+    let options = {sort: 'id DESC'}
+    find.call(this, params, options, cb, next)
   } else {
     cb('Not connected', null, next)
   }
@@ -155,7 +255,6 @@ let findChildren = function (postId, cb, next) {
 //api export
 export default {
   find,
-  findAll,
   older,
   newer,
   one,
