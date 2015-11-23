@@ -241,6 +241,7 @@ let kill = function (postId, cb, next) {
     cb('Not connected', null, next)
   }
 }
+
 //help crud
 let findChildren = function (postId, cb, next) {
   if (this.collections) {
@@ -251,7 +252,47 @@ let findChildren = function (postId, cb, next) {
     cb('Not connected', null, next)
   }
 }
+let findByFormat = function (format, options, cb, next) {
+  if (this.collections) {
+    let params = {taxonomy: {'endsWith': '_format'}}
+    this.collections
+      .termtaxonomy
+      .find()
+      .where(params)
+      .populate('term')
+      .populate('relationshipCollection')
+      .exec((e, termTaxCollection)=> {
+        let filterResult = []
+        _.map(termTaxCollection, termTax=> {
+          if (_.contains(termTax.term.slug, format)
+            || _.contains(termTax.term.name, format)) {
+            filterResult.push(termTax)
+          }
+        })
+        let postIdCollection = []
+        if (filterResult.length > 0) {
+          _.map(filterResult, filterTermTax=> {
+            if (has(filterTermTax, 'relationshipCollection')) {
+              _.map(filterTermTax.relationshipCollection, relation=> {
+                postIdCollection.push(relation.object)
+              })
+            }
+          })
+          if (postIdCollection.length > 0) {
+            find.call(this, {id: postIdCollection}, options, cb, next)
+          } else {
+            cb(e, [], next)
+          }
 
+        } else {
+          cb(e, [], next)
+        }
+      })
+  } else {
+    cb('Not connected', null, next)
+  }
+
+}
 //api export
 export default {
   find,
@@ -261,5 +302,6 @@ export default {
   save,
   kill,
   findChildren,
+  findByFormat,
 
 }

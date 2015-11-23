@@ -166,7 +166,7 @@ import stringifyObject from 'stringify-object'
     })
     .one({slug: 'video-post-eg'}, (err, result, next)=> {
       console.log('post -> one -> ', inspectResult(err, result, true))
-      console.log('post -> one -> result', result)
+
       next()
     })
     .save({/* stub post here */}, (err, result, next)=> {
@@ -175,6 +175,11 @@ import stringifyObject from 'stringify-object'
     })
     .findChildren(100, (err, result, next)=> {
       console.log('post -> findChildren -> ', inspectResult(err, result))
+      next()
+    })
+    .findByFormat('post-format-video',{}, (err, result, next)=> {
+      console.log('post -> findByFormat -> ', inspectResult(err, result, true))
+      console.log('post -> findByFormat -> result', result)
       next()
     })
     .done(next=> {
