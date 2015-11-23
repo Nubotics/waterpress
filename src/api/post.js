@@ -16,35 +16,40 @@ import {
 let find = function (params, options, cb, next) {
   if (this.collections) {
 
-    let query = this.collections
+    //let query =
+    this.collections
       .post
       .find()
       .where(params)
-
-    if (has(options, 'limit')) {
-      query.limit(options.limit)
-    }
-
-    if (has(options, 'skip')) {
-      query.skip(options.skip)
-    }
-
-    if (has(options, 'sort')) {
-      query.sort(options.sort)
-    }
-
-    query
       .populate('author')
-      .populate('relationshipCollection')
       .populate('metaCollection')
+      .populate('relationshipCollection')
+      .limit(3)
+      /*
+       if (has(options, 'limit')) {
+       query.limit(options.limit)
+       }
 
-    if (has(options, 'includeChildCollection')){
-      if (options.includeChildCollection){
-        query.populate('childCollection')
-      }
-    }
+       if (has(options, 'skip')) {
+       query.skip(options.skip)
+       }
 
-    query
+       if (has(options, 'sort')) {
+       query.sort(options.sort)
+       }
+
+       query
+       .populate('author')
+       .populate('relationshipCollection')
+       .populate('metaCollection')
+
+       if (has(options, 'includeChildCollection')){
+       if (options.includeChildCollection){
+       query.populate('childCollection')
+       }
+       }
+
+       query*/
       .exec((e, postCollection)=> {
         cb(e, postCollection, next)
       })
@@ -139,7 +144,7 @@ let findChildren = function (postId, cb, next) {
       .populate('author')
       .populate('relationshipCollection')
       .populate('metaCollection')
-      .exec((e, postCollection)=>{
+      .exec((e, postCollection)=> {
         cb(e, postCollection, next)
       })
   } else {

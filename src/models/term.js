@@ -83,14 +83,12 @@ const termRelationship = {
   attributes: {
     id: {
       type: 'integer',
+      columnName: 'object_id',
       primaryKey: true,
-      autoIncrement: true
     },
     object: {
       type: 'integer',
       columnName: 'object_id',
-      //primaryKey: true,
-      required: true,
       model: 'post',
       index: true
     },
