@@ -101,7 +101,7 @@ let populatePostCollection = function (e, postCollection, cb, next) {
 }
 let find = function (params, options, cb, next) {
   if (this.collections) {
-
+    params = assign(params, {postType: 'post'})
     let query =
       this.collections
         .post
@@ -208,6 +208,7 @@ let populatePost = function (e, post, cb, next) {
 }
 let one = function (params, cb, next) {
   if (this.collections) {
+    params = assign(params, {postType: 'post'})
     this.collections
       .post
       .findOne()
