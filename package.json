@@ -1,6 +1,6 @@
 {
   "name": "waterpress2",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "chainable and pluggable db direct wordpress api powered by waterline orm",
   "main": "./lib/index.js",
   "scripts": {
@@ -28,14 +28,16 @@
     "get-env": "^0.4.0",
     "html-truncate": "^1.2.1",
     "lodash": "^3.10.0",
+    "password-generator": "^2.0.2",
     "sails-mysql": "^0.10.12",
     "slug": "^0.9.1",
     "striptags": "^2.0.4",
     "waterline": "^0.10.25",
-    "wordpress-hash-node": "0.0.3"
-  },
-  "devDependencies": {
+    "wordpress-hash-node": "0.0.3",
     "chalk": "^1.1.1",
     "stringify-object": "^2.3.1"
+  },
+  "devDependencies": {
+
   }
 }
