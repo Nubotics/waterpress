@@ -2,7 +2,7 @@
   "name": "waterpress2",
   "version": "0.2.5",
   "description": "chainable and pluggable db direct wordpress api powered by waterline orm",
-  "main": "./lib/index.js",
+  "main": "./lib",
   "scripts": {
     "test": "babel-node test.js",
     "build": "babel src --out-dir lib --stage 0 --loose all --source-maps-inline"
