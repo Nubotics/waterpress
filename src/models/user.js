@@ -76,7 +76,7 @@ const user = {
   autoCreatedAt: false,
   autoUpdatedAt: false,
 
-  beforeCreate: (values, next) => {
+  beforeCreate(values, next){
     if (_.has(values, 'password')) {
       let hash = hasher.HashPassword(values.password)
       values.password = hash
@@ -89,7 +89,7 @@ const user = {
     next(null, values)
 
   },
-  beforeUpdate: (values, next) => {
+  beforeUpdate(values, next){
     if (_.has(values, 'password')) {
       let hash = hasher.HashPassword(values.password)
       values.password = hash
@@ -98,12 +98,12 @@ const user = {
     next(null, values)
 
   },
-  toJSON: ()=> {
+  toJSON() {
     let obj = this.toObject()
     delete obj.password
     return obj
   },
-  findOneWithMeta: function (params, cb) {
+  findOneWithMeta (params, cb) {
     this
       .findOne()
       .where(params)
@@ -123,7 +123,7 @@ const user = {
         }
       })
   },
-  findWithMeta: function (params, cb) {
+  findWithMeta (params, cb) {
     this
       .find()
       .where(params)
@@ -151,7 +151,7 @@ const user = {
 
       })
   },
-  findMeta: function (params, key, cb) {
+  findMeta (params, key, cb) {
     //console.log('findMeta', this)
     this
       .findOne()

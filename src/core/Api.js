@@ -106,8 +106,8 @@ class Api extends EventApi {
           //-> new models
           if (has(plugin, 'modelCollection')) {
             if (Array.isArray(plugin.modelCollection)) {
-              _.forEach(plugin.modelCollection, model=>{
-                if (has(model,'identity')){
+              _.forEach(plugin.modelCollection, model=> {
+                if (has(model, 'identity')) {
                   newModelCollection[model.identity] = model
                 }
               })
@@ -117,8 +117,8 @@ class Api extends EventApi {
           //-> new api
           if (has(plugin, 'apiCollection')) {
             if (Array.isArray(plugin.apiCollection)) {
-              _.forEach(plugin.apiCollection, api=>{
-                if (has(api,'namespace')){
+              _.forEach(plugin.apiCollection, api=> {
+                if (has(api, 'namespace')) {
                   newApiCollection[api.namespace] = api
                 }
               })
@@ -164,7 +164,7 @@ class Api extends EventApi {
       }
     })
     modelCollection = merge(modelCollection, newModelCollection)
-    this.set('modelCollection',modelCollection)
+    this.set('modelCollection', modelCollection)
     //-> api
     let apiCollection = {}
     eachKey(defaultApi, apiKey=> {
@@ -212,9 +212,11 @@ class Api extends EventApi {
 
   connect(cb) {
     this.chain((next)=> {
+      console.log('connect -> hasInstance', this.hasInstance)
       if (this.hasInstance) {
         if (cb) {
           let { collections, connections } = this
+          console.log('connect -> collections, connections ', collections, connections)
           cb(null, {collections, connections}, next)
         } else {
           next()

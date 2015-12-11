@@ -1,6 +1,6 @@
 {
   "name": "waterpress2",
-  "version": "0.2.3",
+  "version": "0.2.5",
   "description": "chainable and pluggable db direct wordpress api powered by waterline orm",
   "main": "./lib/index.js",
   "scripts": {
@@ -38,6 +38,6 @@
     "stringify-object": "^2.3.1"
   },
   "devDependencies": {
-
+    "express": "^4.13.3"
   }
 }
