@@ -153,16 +153,13 @@ app.use('/waterpress', (req, res)=> {
 
   wpApi
     .connect()
-    .user
-    .one({id: 1}, (err, result, next)=> {
-      console.log('user -> one ->', inspectResult(err, result))
+    .post
+    .one({slug:'hello-world'}, (err, result, next)=> {
+      console.log('post -> one ->', inspectResult(err, result))
       globalResult = result
       next()
     })
-    .done(next=> {
-      console.log('user -> done\n')
-      next()
-    })
+    .done()
     .disconnect((next)=> {
       console.log('disconnect')
       next()

@@ -119,7 +119,7 @@ class Api extends EventApi {
             if (Array.isArray(plugin.apiCollection)) {
               _.forEach(plugin.apiCollection, api=> {
                 if (has(api, 'namespace')) {
-                  newApiCollection[api.namespace] = api
+                  newApiCollection[api.namespace] = api.methods
                 }
               })
             }

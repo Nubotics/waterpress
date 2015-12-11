@@ -12,6 +12,7 @@ import {
 } from '../core/util'
 
 //methods
+
 //general crud
 let assemblePostMeta = function (post) {
   if (has(post, 'metaCollection')) {
@@ -54,6 +55,9 @@ let populatePostCollection = function (e, postCollection, cb, next) {
             })
           }
         }
+      }
+      if (has(post,'author')){
+        delete post.author.password
       }
     })
     if (termTaxIdCollection.length > 0) {
@@ -101,7 +105,7 @@ let populatePostCollection = function (e, postCollection, cb, next) {
 }
 let find = function (params, options, cb, next) {
   if (this.collections) {
-    params = assign(params, {postType: 'post'})
+    params = assign(params, {postType: 'post', status:['publish','inherit']})
     let query =
       this.collections
         .post
@@ -176,6 +180,9 @@ let populatePost = function (e, post, cb, next) {
       }
     }
   }
+  if (has(post,'author')){
+    delete post.author.password
+  }
   if (termTaxIdCollection.length > 0) {
     this.collections
       .termtaxonomy
@@ -208,7 +215,7 @@ let populatePost = function (e, post, cb, next) {
 }
 let one = function (params, cb, next) {
   if (this.collections) {
-    params = assign(params, {postType: 'post'})
+    params = assign(params, {postType: 'post', status:['publish','inherit']})
     this.collections
       .post
       .findOne()
@@ -335,6 +342,7 @@ let findByCategory = function (category, options, cb, next) {
   }
 
 }
+
 //api export
 export default {
   find,
