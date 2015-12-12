@@ -164,7 +164,6 @@ class Api extends EventApi {
     //-> models
     let modelCollection = {}
     eachKey(defaultModels, modKey=> {
-      console.log('modKey', modKey)
       if (has(overrideModelCollection, modKey)) {
         modelCollection[modKey] = mergeModelOverrides(defaultModels[modKey], overrideModelCollection[modKey])
       } else {
