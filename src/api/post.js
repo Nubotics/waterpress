@@ -105,7 +105,12 @@ let populatePostCollection = function (e, postCollection, cb, next) {
 }
 let find = function (params, options, cb, next) {
   if (this.collections) {
-    params = assign(params, {postType: 'post', status: ['publish', 'inherit']})
+    if (!has(params,'postType')){
+      params = assign(params, {postType: 'post'})
+    }
+    if (!has(params,'status')){
+      params = assign(params, {status: ['publish', 'inherit']})
+    }
     let query =
       this.collections
         .post
@@ -243,7 +248,12 @@ let populatePost = function (e, post, cb, next) {
 }
 let one = function (params, cb, next) {
   if (this.collections) {
-    params = assign(params, {postType: 'post', status: ['publish', 'inherit']})
+    if (!has(params,'postType')){
+      params = assign(params, {postType: 'post'})
+    }
+    if (!has(params,'status')){
+      params = assign(params, {status: ['publish', 'inherit']})
+    }
     this.collections
       .post
       .findOne()
