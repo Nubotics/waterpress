@@ -272,7 +272,7 @@ let one = function (params, cb, next) {
     cb('Not connected', null, next)
   }
 }
-
+//TODO: save
 let save = function (postObj, cb, next) {
   if (this.collections) {
     cb(null, null, next)
@@ -280,6 +280,7 @@ let save = function (postObj, cb, next) {
     cb('Not connected', null, next)
   }
 }
+//TODO: kill
 let kill = function (postId, cb, next) {
   if (this.collections) {
     cb(null, null, next)

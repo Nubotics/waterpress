@@ -56,7 +56,7 @@ let find = function (params, cb, next) {
                 .find()
                 .where(params)
                 .exec((error, termCollection)=> {
-                  cb(error,assembler.category.detailCollection(collection,termCollection),next)
+                  cb(error, assembler.category.detailCollection(collection, termCollection), next)
                 })
 
             } else {
@@ -106,7 +106,7 @@ let findChildren = function (params, cb, next) {
                 .where(params)
                 .exec((error, termCollection)=> {
                   //cb(error, termCollection, next)
-                  cb(error,assembler.category.detailCollection(collection,termCollection),next)
+                  cb(error, assembler.category.detailCollection(collection, termCollection), next)
                 })
 
             } else {
@@ -200,8 +200,8 @@ let findWithChildren = function (params, cb, next) {
             }
 
 
-            getTermDetail((errTerm,detailCollection)=>{
-              cb(errTerm,assembler.category.detailCollection(collection,detailCollection),next)
+            getTermDetail((errTerm, detailCollection)=> {
+              cb(errTerm, assembler.category.detailCollection(collection, detailCollection), next)
             })
 
           } else {
@@ -216,18 +216,25 @@ let findWithChildren = function (params, cb, next) {
 }
 let one = function (params, cb, next) {
   if (this.collections) {
-    let query = {taxonomy: 'category'}
-    //query = assign(params, query)
-    //termApi.byTaxonomy.call(this, query, function (err, collection) {
-    this.collections
-      .term
-      .find()
-      .where(params)
-      //.populate('term')
-      .exec((err, collection)=> {
-        cb(err, collection, next)
-      })
-    //}, next)
+    find.call(this, params, function (err, categoryCollection) {
+      if (err) {
+        cb(err, null, next)
+      } else {
+        if (categoryCollection) {
+          if (_.isArray(categoryCollection)) {
+            if (categoryCollection.length > 0) {
+              cb(err, categoryCollection[0], next)
+            } else {
+              cb(err, null, next)
+            }
+          } else {
+            cb(err, categoryCollection, next)
+          }
+        } else {
+          cb(err, null, next)
+        }
+      }
+    })
   } else {
     cb('Not connected', null, next)
   }
