@@ -278,6 +278,17 @@ class Api extends EventApi {
     return this
   }
 
+  end(cb) {
+    this.chain((next)=> {
+      if (cb) {
+        cb(next)
+      } else {
+        next()
+      }
+    })
+    return this
+  }
+
   plug(cb, namespace) {
     this.chain((next)=> {
       let args = [this, next]

@@ -60,7 +60,7 @@ let find = function (params, cb, next) {
                 })
 
             } else {
-
+              cb(err, collection, next)
             }
 
           } else {
@@ -109,7 +109,7 @@ let findChildren = function (params, cb, next) {
                 })
 
             } else {
-
+              cb(err, collection, next)
             }
 
           } else {
@@ -190,7 +190,7 @@ let findWithChildren = function (params, cb, next) {
                 })
 
             } else {
-
+              cb(err, collection, next)
             }
 
           } else {
@@ -215,7 +215,6 @@ let one = function (params, cb, next) {
       //.populate('term')
       .exec((err, collection)=> {
         cb(err, collection, next)
-
       })
     //}, next)
   } else {

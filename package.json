@@ -1,6 +1,6 @@
 {
   "name": "waterpress2",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "description": "chainable and pluggable db direct wordpress api powered by waterline orm",
   "main": "./lib",
   "scripts": {
