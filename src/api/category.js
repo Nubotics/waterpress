@@ -12,14 +12,14 @@ import {
 } from '../core/util'
 
 import termApi from './term'
-import assemble from '../assemblers'
+import assembler from '../assemblers'
 
 let pushChildToTermInCollection = function (termId, termCollection, childTerm) {
   return _.map(termCollection, term=> {
     if (term.id === termId) {
-      if (has(term, 'childCollection')){
+      if (has(term, 'childCollection')) {
         term.childCollection.push(childTerm)
-      }else{
+      } else {
         term.childCollection = []
         term.childCollection.push(childTerm)
       }
@@ -32,7 +32,7 @@ let pushChildToTermInCollection = function (termId, termCollection, childTerm) {
 
 let find = function (params, cb, next) {
   if (this.collections) {
-    let query = {taxonomy: 'category', parent: 0}
+    let query = {taxonomy: 'category'}
     let termIdCollection = []
 
     this.collections
@@ -56,7 +56,7 @@ let find = function (params, cb, next) {
                 .find()
                 .where(params)
                 .exec((error, termCollection)=> {
-                  cb(error, termCollection, next)
+                  cb(error,assembler.category.detailCollection(collection,termCollection),next)
                 })
 
             } else {
@@ -105,7 +105,8 @@ let findChildren = function (params, cb, next) {
                 .find()
                 .where(params)
                 .exec((error, termCollection)=> {
-                  cb(error, termCollection, next)
+                  //cb(error, termCollection, next)
+                  cb(error,assembler.category.detailCollection(collection,termCollection),next)
                 })
 
             } else {
@@ -151,47 +152,57 @@ let findWithChildren = function (params, cb, next) {
                 }
               }
             })
-            if (termIdCollection.length > 0) {
-              params = assign({id: termIdCollection}, params)
-              this.collections
-                .term
-                .find()
-                .where(params)
-                .exec((error, termCollection)=> {
 
-                  if (error) {
-                    cb(error, termCollection, next)
-                  } else {
+            //let categoryCollection = assembler.category.collection(collection,null,false)
 
-                    if (termCollection) {
-                      let resultTermCollection = []
-                      let resultChildTermCollection = []
+            let getTermDetail = (termCb)=> {
+              if (termIdCollection.length > 0) {
+                params = assign({id: termIdCollection}, params)
+                this.collections
+                  .term
+                  .find()
+                  .where(params)
+                  .exec((error, termCollection)=> {
 
-                      termCollection.map(term=> {
-                        let currentTermTax = _.find(childTermIdCollection, {termId: term.id})
-                        if (!currentTermTax) {
-                          resultTermCollection.push(merge(term, {childCollection: []}))
-                        } else {
-                          resultChildTermCollection.push(merge(term, {parent: currentTermTax.parent}))
-                        }
-                      })
-
-                      resultChildTermCollection.map(childTerm=> {
-                        resultTermCollection = pushChildToTermInCollection(childTerm.parent, resultTermCollection, childTerm)
-                      })
-
-                      cb(error, resultTermCollection, next)
-
-                    } else {
+                    if (error) {
                       cb(error, termCollection, next)
+                    } else {
+
+                      if (termCollection) {
+                        let resultTermCollection = []
+                        let resultChildTermCollection = []
+
+                        termCollection.map(term=> {
+                          let currentTermTax = _.find(childTermIdCollection, {termId: term.id})
+                          if (!currentTermTax) {
+                            resultTermCollection.push(merge(term, {childCollection: []}))
+                          } else {
+                            resultChildTermCollection.push(merge(term, {parent: currentTermTax.parent}))
+                          }
+                        })
+
+                        resultChildTermCollection.map(childTerm=> {
+                          resultTermCollection = pushChildToTermInCollection(childTerm.parent, resultTermCollection, childTerm)
+                        })
+
+                        termCb(error, resultTermCollection)
+
+                      } else {
+                        termCb(error, termCollection)
+                      }
                     }
-                  }
 
-                })
+                  })
 
-            } else {
-              cb(err, collection, next)
+              } else {
+                termCb(err, collection)
+              }
             }
+
+
+            getTermDetail((errTerm,detailCollection)=>{
+              cb(errTerm,assembler.category.detailCollection(collection,detailCollection),next)
+            })
 
           } else {
             cb(err, collection, next)

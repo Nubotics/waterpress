@@ -12,7 +12,7 @@ import {
 } from '../core/util'
 
 const assemble = {
-  user:{
+  user: {
     entity(user){
       if (user) {
         user.firstName = ''
@@ -113,8 +113,67 @@ const assemble = {
     flatCollection (categoryCollection, activityCollection) {
       let result = category.collection(categoryCollection, activityCollection, true)
       return result
-    }
+    },
+    detailCollection(collection, detailCollection){
+      let newCollection = []
+      let newItem = undefined
+      let newChildCollection = []
+      let newChildItem = undefined
+      let detailItem = undefined
+      let detailChildItem = undefined
+      forEach(collection, ogItem=> {
+        //-> find ogItem in detail collection
+        detailItem = _.find(detailCollection, {id: ogItem.id})
+        if (detailItem) {
+          //-> if -> has -> childCollection
+          if (has(ogItem, 'childCollection')
+            && has(detailItem, 'childCollection')) {
+            //--> each child -> merge ->  new child item
+            newChildCollection = []
+            forEach(ogItem.childCollection, ogChildItem=> {
+              detailChildItem = _.find(detailItem.childCollection, {id: ogChildItem.term})
+              if (detailChildItem) {
+                newChildItem = merge(detailChildItem, ogChildItem)
+              } else {
+                newChildItem = ogChildItem
+              }
+              newChildCollection.push(newChildItem)
+            })
+          }
+          let {
+            id,
+            description,
+            taxonomy,
+            parent,
 
+            } = ogItem
+          let {
+            slug,
+            name,
+            group,
+
+            } = detailItem
+
+          newItem = {
+            id,
+            slug,
+            name,
+            description,
+            taxonomy,
+            parent,
+            group,
+            childCollection: newChildCollection
+          }
+          //-> push new item to new collection
+          newCollection.push(newItem)
+        }
+        //-> else &&
+
+
+      })
+      //-> return
+      return newCollection
+    }
   },
 
 
