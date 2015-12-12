@@ -4,9 +4,8 @@ import {
   Orm,
   u,
 } from './core'
-
 import models from './models'
-
+import methods from './api'
 import addons from './addons'
 
 export {
@@ -15,6 +14,7 @@ export {
   Orm,
   u,
   models,
+  methods,
   addons,
 }
 

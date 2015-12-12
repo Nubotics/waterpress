@@ -56,7 +56,7 @@ let populatePostCollection = function (e, postCollection, cb, next) {
           }
         }
       }
-      if (has(post,'author')){
+      if (has(post, 'author')) {
         delete post.author.password
       }
     })
@@ -105,7 +105,7 @@ let populatePostCollection = function (e, postCollection, cb, next) {
 }
 let find = function (params, options, cb, next) {
   if (this.collections) {
-    params = assign(params, {postType: 'post', status:['publish','inherit']})
+    params = assign(params, {postType: 'post', status: ['publish', 'inherit']})
     let query =
       this.collections
         .post
@@ -180,8 +180,36 @@ let populatePost = function (e, post, cb, next) {
       }
     }
   }
-  if (has(post,'author')){
-    delete post.author.password
+
+  let populateUserMeta = (callback)=> {
+    this.collections
+      .usermeta
+      .find()
+      .where({user: post.author.id})
+      .exec((errUserMeta, metaCollection)=> {
+        if (errUserMeta) {
+          callback(errUserMeta, null, null)
+        } else {
+          let metaObj = makeObjectFromKeyCollection(metaCollection)
+          callback(errUserMeta, metaCollection, metaObj)
+        }
+      })
+  }
+  let actionCb = (err, post, next)=> {
+    if (has(post, 'author')) {
+      delete post.author.password
+      populateUserMeta((metaErr, metaCollection, metaObj)=> {
+        if (metaErr){
+          cb(metaErr, post, next)
+        }else{
+          post.author.metaCollection = metaCollection
+          post.author.metaObj = metaObj
+          cb(err, post, next)
+        }
+      })
+    } else {
+      cb(err, post, next)
+    }
   }
   if (termTaxIdCollection.length > 0) {
     this.collections
@@ -202,9 +230,9 @@ let populatePost = function (e, post, cb, next) {
                 post.format = termTax.term
               }
             })
-            cb(err, post, next)
+            actionCb(err, post, next)
           } else {
-            cb(err, post, next)
+            actionCb(err, post, next)
           }
         }
 
@@ -215,7 +243,7 @@ let populatePost = function (e, post, cb, next) {
 }
 let one = function (params, cb, next) {
   if (this.collections) {
-    params = assign(params, {postType: 'post', status:['publish','inherit']})
+    params = assign(params, {postType: 'post', status: ['publish', 'inherit']})
     this.collections
       .post
       .findOne()

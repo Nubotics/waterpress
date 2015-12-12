@@ -127,18 +127,19 @@ class Api extends EventApi {
           //-> overrides
           if (has(plugin, 'override')) {
             //--> override models
-            if (has(plugin, 'model')) {
-              if (plugin.model) {
-                eachKey(plugin.model, overModelKey=> {
-                  overrideModelCollection = merge(overrideModelCollection, plugin.model[overModelKey])
+            if (has(plugin.override, 'model')) {
+              if (plugin.override.model) {
+                console.log(`plugin ${plugin.name} model override`, plugin.override.model)
+                eachKey(plugin.override.model, overModelKey=> {
+                  overrideModelCollection = merge(overrideModelCollection, {[overModelKey]: plugin.override.model[overModelKey]})
                 })
               }
             }
             //--> override apis
-            if (has(plugin, 'api')) {
-              if (plugin.api) {
-                eachKey(plugin.api, overApiKey=> {
-                  overrideApiCollection = merge(overrideApiCollection, plugin.api[overApiKey])
+            if (has(plugin.override, 'api')) {
+              if (plugin.override.api) {
+                eachKey(plugin.override.api, overApiKey=> {
+                  overrideApiCollection = merge(overrideApiCollection, {[overApiKey]: plugin.override.api[overApiKey]})
                 })
               }
             }
@@ -152,13 +153,20 @@ class Api extends EventApi {
     this.set('pluginNames', pluginNames)
 
     //:: safe loadable collections
+    const mergeModelOverrides = (original, override)=> {
+      eachKey(original, ogKey=> {
+        if (has(override, ogKey)) {
+          original[ogKey] = merge(original[ogKey], override[ogKey])
+        }
+      })
+      return original
+    }
     //-> models
     let modelCollection = {}
     eachKey(defaultModels, modKey=> {
+      console.log('modKey', modKey)
       if (has(overrideModelCollection, modKey)) {
-        modelCollection = merge(modelCollection,
-          merge(defaultModels[modKey], overrideModelCollection[modKey])
-        )
+        modelCollection[modKey] = mergeModelOverrides(defaultModels[modKey], overrideModelCollection[modKey])
       } else {
         modelCollection = merge(modelCollection, {[modKey]: defaultModels[modKey]})
       }
