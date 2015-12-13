@@ -200,8 +200,9 @@ let findWithChildren = function (params, cb, next) {
             }
 
 
-            getTermDetail((errTerm, detailCollection)=> {
-              cb(errTerm, assembler.category.detailCollection(collection, detailCollection), next)
+            getTermDetail(function (errTerm, detailCollection) {
+              let resultCollection = assembler.category.detailCollection(collection, detailCollection)
+              cb(errTerm, resultCollection, next)
             })
 
           } else {

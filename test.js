@@ -153,9 +153,15 @@ app.use('/waterpress', (req, res)=> {
 
   wpApi
     .connect()
-    .post
-    .one({slug:'hello-world'}, (err, result, next)=> {
-      console.log('post -> one ->', inspectResult(err, result))
+    /*  .post
+     .one({slug:'hello-world'}, (err, result, next)=> {
+     console.log('post -> one ->', inspectResult(err, result))
+     globalResult = result
+     next()
+     })*/
+    .category
+    .findWithChildren({},(err,result,next)=>{
+      console.log('category -> findWithChildren ->', inspectResult(err, result))
       globalResult = result
       next()
     })
