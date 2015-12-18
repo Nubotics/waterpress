@@ -36,7 +36,7 @@ let byTaxonomy = function (params, cb, next) {
       .find()
       .where(params)
       .populate('term')
-      .populate('childCollection')
+      //.populate('childCollection')
       .populate('relationshipCollection')
       .exec((err, collection)=> {
         cb(err, collection, next)

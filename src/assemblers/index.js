@@ -114,24 +114,32 @@ const assemble = {
       let result = category.collection(categoryCollection, activityCollection, true)
       return result
     },
-    detailCollection(collection, detailCollection){
+    detailCollection(collection, termCollection){
+
+      //console.log('assembler -> category -> detailCollection -> collection, termCollection', collection, termCollection)
+
       let newCollection = []
       let newItem = undefined
       let newChildCollection = []
       let newChildItem = undefined
-      let detailItem = undefined
+      let termItem = undefined
       let detailChildItem = undefined
+
       forEach(collection, ogItem=> {
-        //-> find ogItem in detail collection
-        detailItem = _.find(detailCollection, {id: ogItem.id})
-        if (detailItem) {
+
+        //-> find ogItem in term collection
+        termItem = _.find(termCollection, {id: ogItem.term.id})
+        if (termItem) {
+          newChildCollection = []
+
           //-> if -> has -> childCollection
           if (has(ogItem, 'childCollection')
-            && has(detailItem, 'childCollection')) {
+            && has(termItem, 'childCollection')) {
+
             //--> each child -> merge ->  new child item
-            newChildCollection = []
             forEach(ogItem.childCollection, ogChildItem=> {
-              detailChildItem = _.find(detailItem.childCollection, {id: ogChildItem.term})
+              if (!ogChildItemTermId) ogChildItemTermId = 0
+              detailChildItem = _.find(termItem.childCollection, {id: ogChildItem.id})
               if (detailChildItem) {
                 newChildItem = merge(detailChildItem, ogChildItem)
               } else {
@@ -140,6 +148,7 @@ const assemble = {
               newChildCollection.push(newChildItem)
             })
           }
+
           let {
             id,
             description,
@@ -152,10 +161,11 @@ const assemble = {
             name,
             group,
 
-            } = detailItem
+            } = termItem
 
           newItem = {
-            id,
+            id: termItem.id,
+            taxonomyId: id,
             slug,
             name,
             description,
@@ -168,12 +178,48 @@ const assemble = {
           newCollection.push(newItem)
         }
         //-> else &&
-
+        else {
+          newCollection.push(ogItem)
+        }
 
       })
       //-> return
+      console.log('assembler -> category -> return -> newCollection', newCollection)
+
       return newCollection
-    }
+    },
+    collectionWithChildren(collection){
+      let newCollection = []
+      let newItem = {}
+      forEach(collection, item=> {
+        let {
+          term,
+          taxonomy,
+          description,
+          parent,
+          id,
+          childCollection,
+          } = item
+
+        let {
+          slug, name,group,
+          } = term
+
+        newItem = {
+          id: term.id,
+          taxonomyId: id,
+          slug,
+          name,
+          group,
+          description,
+          taxonomy,
+          parent,
+          childCollection,
+        }
+        newCollection.push(newItem)
+      })
+      return newCollection
+    },
   },
 
 

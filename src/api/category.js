@@ -14,19 +14,15 @@ import {
 import termApi from './term'
 import assembler from '../assemblers'
 
-let pushChildToTermInCollection = function (termId, termCollection, childTerm) {
-  return _.map(termCollection, term=> {
-    if (term.id === termId) {
-      if (has(term, 'childCollection')) {
-        term.childCollection.push(childTerm)
-      } else {
-        term.childCollection = []
-        term.childCollection.push(childTerm)
-      }
-      return term
-    } else {
-      return term
+let pushChildToTermInCollection = function (taxCollection, childCollection) {
+  let foundChildCollection = []
+  return _.map(taxCollection, tax=> {
+    tax.childCollection = []
+    foundChildCollection = _.filter(childCollection, {parent: tax.term.id})
+    if (_.isArray(foundChildCollection)) {
+      tax.childCollection = foundChildCollection
     }
+    return tax
   })
 }
 
@@ -73,6 +69,7 @@ let find = function (params, cb, next) {
     cb('Not connected', null, next)
   }
 }
+
 let findChildren = function (params, cb, next) {
   if (this.collections) {
     let parent = 0
@@ -99,11 +96,10 @@ let findChildren = function (params, cb, next) {
               return termTax.term.id
             })
             if (termIdCollection.length > 0) {
-              params = assign({id: termIdCollection}, params)
               this.collections
                 .term
                 .find()
-                .where(params)
+                .where({id: termIdCollection})
                 .exec((error, termCollection)=> {
                   //cb(error, termCollection, next)
                   cb(error, assembler.category.detailCollection(collection, termCollection), next)
@@ -125,96 +121,57 @@ let findChildren = function (params, cb, next) {
 }
 let findWithChildren = function (params, cb, next) {
   if (this.collections) {
+    //-> defaults
     let query = {taxonomy: 'category', parent: 0}
+    let termCollection = []
     let termIdCollection = []
     let childTermIdCollection = []
 
+    //-> helpers
+
+
+    //-> find -> top level termTaxonomy
+    //-> by -> tax = category
     this.collections
       .termtaxonomy
       .find()
       .where(query)
+      //.populate('childCollection')
       .populate('term')
-      .populate('childCollection')
+      //.populate('parent')
       .exec((err, collection)=> {
-        if (err) {
+        if (err || !_.isArray(collection)) {
+          console.log('findWithChildren -> err', err)
           cb(err, collection, next)
         } else {
-          if (_.isArray(collection)) {
-            //console.log('findWithChildren -> collection', collection)
-            collection.map(termTax=> {
-              termIdCollection.push(termTax.term.id)
-              if (has(termTax, 'childCollection')) {
-                if (_.isArray(termTax.childCollection)) {
-                  termTax.childCollection.map(childTermTax=> {
-                    termIdCollection.push(childTermTax.term)
-                    childTermIdCollection.push({termId: childTermTax.term, parent: termTax.term.id})
-                  })
-                }
-              }
+
+          termCollection = _.pluck(collection, 'term')
+          termIdCollection = _.pluck(termCollection, 'id')
+
+          findChildren
+            .call(this,
+            {parent: termIdCollection},
+            function (err, childCategoryCollection) {
+
+              let result = pushChildToTermInCollection(collection, childCategoryCollection)
+
+              let categoryCollection = assembler.category.collectionWithChildren(result)
+
+              console.log('findWithChildren -> err,categoryCollection', err, categoryCollection)
+
+              cb(err, categoryCollection, next)
+
             })
 
-            //let categoryCollection = assembler.category.collection(collection,null,false)
-
-            let getTermDetail = (termCb)=> {
-              if (termIdCollection.length > 0) {
-                params = assign({id: termIdCollection}, params)
-                this.collections
-                  .term
-                  .find()
-                  .where(params)
-                  .exec((error, termCollection)=> {
-
-                    if (error) {
-                      cb(error, termCollection, next)
-                    } else {
-
-                      if (termCollection) {
-                        let resultTermCollection = []
-                        let resultChildTermCollection = []
-
-                        termCollection.map(term=> {
-                          let currentTermTax = _.find(childTermIdCollection, {termId: term.id})
-                          if (!currentTermTax) {
-                            resultTermCollection.push(merge(term, {childCollection: []}))
-                          } else {
-                            resultChildTermCollection.push(merge(term, {parent: currentTermTax.parent}))
-                          }
-                        })
-
-                        resultChildTermCollection.map(childTerm=> {
-                          resultTermCollection = pushChildToTermInCollection(childTerm.parent, resultTermCollection, childTerm)
-                        })
-
-                        termCb(error, resultTermCollection)
-
-                      } else {
-                        termCb(error, termCollection)
-                      }
-                    }
-
-                  })
-
-              } else {
-                termCb(err, collection)
-              }
-            }
-
-
-            getTermDetail(function (errTerm, detailCollection) {
-              let resultCollection = assembler.category.detailCollection(collection, detailCollection)
-              cb(errTerm, resultCollection, next)
-            })
-
-          } else {
-            cb(err, collection, next)
-          }
         }
+
       })
 
   } else {
     cb('Not connected', null, next)
   }
 }
+
 let one = function (params, cb, next) {
   if (this.collections) {
     find.call(this, params, function (err, categoryCollection) {

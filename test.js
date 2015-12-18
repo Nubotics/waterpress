@@ -126,7 +126,7 @@ const options = {
         port: 3306,
         user: 'root',
         password: 'root',
-        database: 'buildaidcms'
+        database: 'cms'
       }
     }
   },
@@ -161,6 +161,11 @@ app.use('/waterpress', (req, res)=> {
      })*/
     .category
     .findWithChildren({},(err,result,next)=>{
+      console.log('category -> findWithChildren ->', inspectResult(err, result))
+      globalResult = result
+      next()
+    })
+    .find({},(err,result,next)=>{
       console.log('category -> findWithChildren ->', inspectResult(err, result))
       globalResult = result
       next()

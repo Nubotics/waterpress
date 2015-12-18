@@ -59,11 +59,7 @@ const termTaxonomy = {
     parent: {
       type: 'integer',
       columnName: 'parent',
-      model: 'termTaxonomy'
-    },
-    childCollection: {
-      collection: 'termTaxonomy',
-      via: 'parent'
+      //model: 'term'
     },
     relationshipCollection: {
       collection: 'termRelationship',
@@ -81,11 +77,11 @@ const termRelationship = {
   connection: 'mysql',
   tableName: 'wp_term_relationships',
   attributes: {
-    id: {
+  /*  id: {
       type: 'integer',
-      columnName: 'object_id',
+      columnName: 'id',
       primaryKey: true,
-    },
+    },*/
     object: {
       type: 'integer',
       columnName: 'object_id',
@@ -106,7 +102,8 @@ const termRelationship = {
     }
   },
   migrate: 'safe',
-  autoPK: false,
+  //autoPK: false,
+  autoPK: true,
   autoCreatedAt: false,
   autoUpdatedAt: false
 
