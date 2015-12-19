@@ -9,6 +9,9 @@ const eachKey = function (object, cb) {
     cb(key, i)
   })
 }
+const makeKey = function(key){
+  return _.snakeCase(key)
+}
 const findValue = function (collection, keys) {
   let result = null
   let item = null
@@ -40,6 +43,7 @@ const makeObjectFromKeyCollection = function (collection) {
   })
   return result
 }
+const makeObject = makeObjectFromKeyCollection
 const merge = DeepMerge(function (target, source, key) {
   if (target instanceof Array) {
     return [].concat(target, source);
@@ -51,10 +55,12 @@ export default {
   _,
   assign,
   eachKey,
+  makeKey,
   findValue,
   forEach,
   has,
   makeObjectFromKeyCollection,
+  makeObject,
   merge,
 
 }
