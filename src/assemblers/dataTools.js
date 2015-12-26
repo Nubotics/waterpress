@@ -74,7 +74,7 @@ const assembleUser = function (userObj) {
         value: ''
       },
       {
-        key: 'nio_profile_picture',
+        key: 'nio_avatar',
         value: userObj.avatar
       },
       {

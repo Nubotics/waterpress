@@ -28,8 +28,8 @@ const assemble = {
           if (has(user.metaObj, 'nickname')) user.nickname = user.metaObj.nickname
           if (has(user.metaObj, 'description')) user.description = user.metaObj.description
           if (has(user.metaObj, 'mobile')) user.mobile = user.metaObj.mobile
-          if (has(user.metaObj, 'nio_profile_picture')) {
-            user.avatar = user.metaObj.nio_profile_picture
+          if (has(user.metaObj, 'nio_avatar')) {
+            user.avatar = user.metaObj.nio_avatar
           } else if (has(user.metaObj, 'cupp_upload_meta')) {
             user.avatar = user.metaObj.cupp_upload_meta
           }
