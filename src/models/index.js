@@ -1,8 +1,8 @@
-import {user, userMeta} from './user'
-import {post, postMeta} from './post'
-import {term, termTaxonomy, termRelationship} from './term'
-import {comment,commentMeta} from './comment'
-
+import { user, userMeta } from './user'
+import { post, postMeta } from './post'
+import { term, termTaxonomy, termRelationship } from './term'
+import { comment,commentMeta } from './comment'
+import { option } from './option'
 export default {
   //user.js
   user,
@@ -20,4 +20,7 @@ export default {
   //comment.js
   comment,
   commentMeta,
+
+  //option.js
+  option,
 }
