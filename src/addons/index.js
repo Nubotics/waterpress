@@ -4,6 +4,7 @@ import striptags from 'striptags'
 import truncate from 'html-truncate'
 const hasher = require('wordpress-hash-node')
 const generatePassword = require('password-generator')
+const slugger = require('slug')
 import expressUtils from './expressUtils'
 
 export default {
@@ -13,5 +14,6 @@ export default {
   truncate,
   hasher,
   generatePassword,
+  slugger,
   expressUtils,
 }
