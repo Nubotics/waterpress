@@ -38,7 +38,7 @@ const makeObjectFromKeyCollection = function (collection) {
   forEach(collection, (item) => {
     //console.log('make from collection:', item)
     if (has(item, 'key') && has(item, 'value')) {
-      result = assign(result, {[item.key]: item.value})
+      result = assign(result, {[_.snakeCase(item.key)]: item.value})
     }
   })
   return result
