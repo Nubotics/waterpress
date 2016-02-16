@@ -77,10 +77,10 @@ const user = {
   autoUpdatedAt: false,
 
   beforeCreate(values, next){
-    if (_.has(values, 'password')) {
+/*    if (_.has(values, 'password')) {
       let hash = hasher.HashPassword(values.password)
       values.password = hash
-    }
+    }*/
     if (_.has(values, 'slug')) {
       let slug = slugger(values.slug)
       values.slug = slug.toLowerCase()
@@ -90,10 +90,10 @@ const user = {
 
   },
   beforeUpdate(values, next){
-    if (_.has(values, 'password')) {
+/*    if (_.has(values, 'password')) {
       let hash = hasher.HashPassword(values.password)
       values.password = hash
-    }
+    }*/
 
     next(null, values)
 
