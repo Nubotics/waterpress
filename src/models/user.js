@@ -4,9 +4,11 @@ const slugger = require('slug')
 
 //util
 import {
-  _,
+  has,
+  isArray,
+  forEach,
   findValue,
-  makeObjectFromKeyCollection,
+  makeObject,
   assign,
 
 } from '../core/util'
@@ -77,11 +79,11 @@ const user = {
   autoUpdatedAt: false,
 
   beforeCreate(values, next){
-/*    if (_.has(values, 'password')) {
+/*    if (has(values, 'password')) {
       let hash = hasher.HashPassword(values.password)
       values.password = hash
     }*/
-    if (_.has(values, 'slug')) {
+    if (has(values, 'slug')) {
       let slug = slugger(values.slug)
       values.slug = slug.toLowerCase()
     }
@@ -90,7 +92,7 @@ const user = {
 
   },
   beforeUpdate(values, next){
-/*    if (_.has(values, 'password')) {
+/*    if (has(values, 'password')) {
       let hash = hasher.HashPassword(values.password)
       values.password = hash
     }*/
@@ -111,9 +113,9 @@ const user = {
       .exec((error, userObj) => {
         //if (error) throw(error)
         //console.log('user model', userObj)
-        if (_.has(userObj, 'metaCollection')) {
+        if (has(userObj, 'metaCollection')) {
           let userResult = assign(userObj, {
-              metaObj: makeObjectFromKeyCollection(userObj.metaCollection)
+              metaObj: makeObject(userObj.metaCollection)
             })
           delete userResult.password
           cb(error,userResult)
@@ -132,12 +134,12 @@ const user = {
         //if (error) throw(error)
         //console.log('user model find', userArr)
         let result = null
-        if (_.isArray(userArr)) {
+        if (isArray(userArr)) {
           result = []
-          _.forEach(userArr, (userObj)=> {
-            if (_.has(userObj, 'metaCollection')) {
+          forEach(userArr, (userObj)=> {
+            if (has(userObj, 'metaCollection')) {
               let userResult = assign(userObj, {
-                metaObj: makeObjectFromKeyCollection(userObj.metaCollection)
+                metaObj: makeObject(userObj.metaCollection)
               })
               delete userResult.password
               result.push(userResult)

@@ -1,12 +1,16 @@
 //util
 import {
-  _,
+  includes,
+  map,
+  endsWith,
+  find,
   assign,
   eachKey,
   findValue,
   forEach,
   has,
-  makeObjectFromKeyCollection,
+  is,
+  makeObject,
   merge,
 
 } from '../core/util'
@@ -16,7 +20,7 @@ import {
 //general crud
 let assemblePostMeta = function (post) {
   if (has(post, 'metaCollection')) {
-    post.metaObj = makeObjectFromKeyCollection(post.metaCollection)
+    post.metaObj = makeObject(post.metaCollection)
     return post
   } else {
     return post
@@ -26,7 +30,7 @@ let assemblePostMeta = function (post) {
 let updatePostInPostCollection = function (termTaxId, postCollection, updatedPost) {
   let newPostCollection = postCollection.map(post=> {
     if (has(post, 'relationshipCollection')) {
-      let currTermTax = _.find(post.relationshipCollection, {termTaxonomy: termTaxId})
+      let currTermTax = find(post.relationshipCollection, {termTaxonomy: termTaxId})
       if (currTermTax) {
         post = merge(post, updatedPost)
         return post
@@ -40,7 +44,7 @@ let updatePostInPostCollection = function (termTaxId, postCollection, updatedPos
   return newPostCollection
 }
 let populatePostCollection = function (e, postCollection, cb, next) {
-  if (_.isArray(postCollection)) {
+  if (is(postCollection, 'array')) {
     let termTaxIdCollection = []
     postCollection.map(post=> {
       post = assemblePostMeta(post)
@@ -48,7 +52,7 @@ let populatePostCollection = function (e, postCollection, cb, next) {
       post.formatCollection = []
       post.format = {name: 'standard', slug: 'standard', id: 0}
       if (has(post, 'relationshipCollection')) {
-        if (_.isArray(post.relationshipCollection)) {
+        if (is(post.relationshipCollection, 'array')) {
           if (post.relationshipCollection.length > 0) {
             post.relationshipCollection.map(relationship=> {
               termTaxIdCollection.push(relationship.termTaxonomy)
@@ -71,7 +75,7 @@ let populatePostCollection = function (e, postCollection, cb, next) {
           if (err) {
             cb(err, postCollection, next)
           } else {
-            if (_.isArray(collection)) {
+            if (is(collection, 'array')) {
               collection.map(termTax=> {
                 let postUpdate = {
                   categoryCollection: [],
@@ -80,7 +84,7 @@ let populatePostCollection = function (e, postCollection, cb, next) {
                 }
                 if (termTax.taxonomy == 'category') {
                   postUpdate.categoryCollection.push(termTax.term)
-                } else if (_.endsWith(termTax.taxonomy, '_format')) {
+                } else if (endsWith(termTax.taxonomy, '_format')) {
                   postUpdate.formatCollection.push(termTax.term)
                   postUpdate.format = termTax.term
                 }
@@ -177,7 +181,7 @@ let populatePost = function (e, post, cb, next) {
   post.format = {name: 'standard', slug: 'standard', id: 0}
   let termTaxIdCollection = []
   if (has(post, 'relationshipCollection')) {
-    if (_.isArray(post.relationshipCollection)) {
+    if (is(post.relationshipCollection, 'array')) {
       if (post.relationshipCollection.length > 0) {
         post.relationshipCollection.map(relationship=> {
           termTaxIdCollection.push(relationship.termTaxonomy)
@@ -195,7 +199,7 @@ let populatePost = function (e, post, cb, next) {
         if (errUserMeta) {
           callback(errUserMeta, null, null)
         } else {
-          let metaObj = makeObjectFromKeyCollection(metaCollection)
+          let metaObj = makeObject(metaCollection)
           callback(errUserMeta, metaCollection, metaObj)
         }
       })
@@ -226,11 +230,11 @@ let populatePost = function (e, post, cb, next) {
         if (err) {
           cb(err, post, next)
         } else {
-          if (_.isArray(collection)) {
+          if (is(collection, 'array')) {
             collection.map(termTax=> {
               if (termTax.taxonomy == 'category') {
                 post.categoryCollection.push(termTax.term)
-              } else if (_.endsWith(termTax.taxonomy, '_format')) {
+              } else if (endsWith(termTax.taxonomy, '_format')) {
                 post.formatCollection.push(termTax.term)
                 post.format = termTax.term
               }
@@ -310,17 +314,17 @@ let findByFormat = function (format, options, cb, next) {
       .populate('relationshipCollection')
       .exec((e, termTaxCollection)=> {
         let filterResult = []
-        _.map(termTaxCollection, termTax=> {
-          if (_.contains(termTax.term.slug, format)
-            || _.contains(termTax.term.name, format)) {
+        map(termTaxCollection, termTax=> {
+          if (contains(termTax.term.slug, format)
+            || contains(termTax.term.name, format)) {
             filterResult.push(termTax)
           }
         })
         let postIdCollection = []
         if (filterResult.length > 0) {
-          _.map(filterResult, filterTermTax=> {
+          map(filterResult, filterTermTax=> {
             if (has(filterTermTax, 'relationshipCollection')) {
-              _.map(filterTermTax.relationshipCollection, relation=> {
+              map(filterTermTax.relationshipCollection, relation=> {
                 postIdCollection.push(relation.object)
               })
             }
@@ -351,17 +355,17 @@ let findByCategory = function (category, options, cb, next) {
       .populate('relationshipCollection')
       .exec((e, termTaxCollection)=> {
         let filterResult = []
-        _.map(termTaxCollection, termTax=> {
-          if (_.contains(termTax.term.slug, category)
-            || _.contains(termTax.term.name, category)) {
+        map(termTaxCollection, termTax=> {
+          if (contains(termTax.term.slug, category)
+            || contains(termTax.term.name, category)) {
             filterResult.push(termTax)
           }
         })
         let postIdCollection = []
         if (filterResult.length > 0) {
-          _.map(filterResult, filterTermTax=> {
+          map(filterResult, filterTermTax=> {
             if (has(filterTermTax, 'relationshipCollection')) {
-              _.map(filterTermTax.relationshipCollection, relation=> {
+              map(filterTermTax.relationshipCollection, relation=> {
                 postIdCollection.push(relation.object)
               })
             }

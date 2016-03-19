@@ -3,13 +3,13 @@ const hasher = require('wordpress-hash-node')
 
 //util
 import {
-  _,
+
   assign,
   eachKey,
   findValue,
   forEach,
   has,
-  makeObjectFromKeyCollection,
+  makeObject,
   merge,
 
 } from '../core/util'

@@ -4,7 +4,6 @@ import debug from 'debug'
 
 //util
 import {
-  _,
   has,
   assign,
   forEach,
@@ -106,7 +105,7 @@ class Api extends EventApi {
           //-> new models
           if (has(plugin, 'modelCollection')) {
             if (Array.isArray(plugin.modelCollection)) {
-              _.forEach(plugin.modelCollection, model=> {
+              forEach(plugin.modelCollection, model=> {
                 if (has(model, 'identity')) {
                   newModelCollection[model.identity] = model
                 }
@@ -117,7 +116,7 @@ class Api extends EventApi {
           //-> new api
           if (has(plugin, 'apiCollection')) {
             if (Array.isArray(plugin.apiCollection)) {
-              _.forEach(plugin.apiCollection, api=> {
+              forEach(plugin.apiCollection, api=> {
                 if (has(api, 'namespace')) {
                   newApiCollection[api.namespace] = api.methods
                 }

@@ -1,13 +1,15 @@
 //util
 import {
-  _,
+  find,
+  filter,
   has,
   assign,
   forEach,
   merge,
   eachKey,
   findValue,
-  makeObjectFromKeyCollection,
+  makeObject,
+sortBy,
 
 } from '../core/util'
 
@@ -55,13 +57,13 @@ const assemble = {
       let foundChild = null
       if (item.childCollection.length > 0) {
         item.childCollection.map(childItem=> {
-          foundChild = _.find(collection, {'id': childItem.id})
+          foundChild = find(collection, {'id': childItem.id})
           if (foundChild) {
             subCollection.push(assemble.category.entity(foundChild, activityCollection, false))
           }
         })
       } else {
-        let childCollection = _.filter(collection, {parent: category.termId})
+        let childCollection = filter(collection, {parent: category.termId})
         if (childCollection) {
           childCollection.map(childItem=> {
             subCollection.push(assemble.category.entity(childItem, activityCollection, false))
@@ -82,10 +84,10 @@ const assemble = {
         isFollowed: false
       }
       if (!isFlat) {
-        result = _.extend(result, {subCollection: item.subCollection})
+        result = merge(result, {subCollection: item.subCollection})
       }
       if (activityCollection) {
-        let currFollow = _.find(activityCollection,
+        let currFollow = find(activityCollection,
           {following_term_id: item.termId})
         if (currFollow) {
           result.isFollowed = true
@@ -106,7 +108,7 @@ const assemble = {
           result.push(assemble.category.entity(item, activityCollection, isFlat))
         }
       })
-      result = _.sortBy(result, 'name')
+      result = sortBy(result, 'name')
       return result
 
     },
@@ -128,7 +130,7 @@ const assemble = {
       forEach(collection, ogItem=> {
 
         //-> find ogItem in term collection
-        termItem = _.find(termCollection, {id: ogItem.term.id})
+        termItem = find(termCollection, {id: ogItem.term.id})
         if (termItem) {
           newChildCollection = []
 
@@ -139,7 +141,7 @@ const assemble = {
             //--> each child -> merge ->  new child item
             forEach(ogItem.childCollection, ogChildItem=> {
               if (!ogChildItemTermId) ogChildItemTermId = 0
-              detailChildItem = _.find(termItem.childCollection, {id: ogChildItem.id})
+              detailChildItem = find(termItem.childCollection, {id: ogChildItem.id})
               if (detailChildItem) {
                 newChildItem = merge(detailChildItem, ogChildItem)
               } else {

@@ -1,13 +1,13 @@
 //util
 import {
-  _,
+
   has,
   assign,
   forEach,
   merge,
   eachKey,
   findValue,
-  makeObjectFromKeyCollection,
+  makeObject,
 
 } from '../core/util'
 

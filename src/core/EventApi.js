@@ -1,11 +1,8 @@
 import EventEmitter from 'eventemitter3'
-//import {API} from 'api-chain'
-//const mixin = require('mixin')
-//const mixed = mixin(EventEmitter, API)
 import {
   has,
-
 } from './util'
+
 // to make this compatible with PhantomJS, add Function.prototype.bind polyfill if necessary
 // from https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Function/bind
 if (!Function.prototype.bind) {

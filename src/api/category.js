@@ -1,12 +1,16 @@
 //util
 import {
-  _,
+  map,
+  is,
+  filter,
+  pluck,
+  isArray,
   assign,
   eachKey,
   findValue,
   forEach,
   has,
-  makeObjectFromKeyCollection,
+  makeObject,
   merge,
 
 } from '../core/util'
@@ -16,10 +20,10 @@ import assembler from '../assemblers'
 
 let pushChildToTermInCollection = function (taxCollection, childCollection) {
   let foundChildCollection = []
-  return _.map(taxCollection, tax=> {
+  return map(taxCollection, tax=> {
     tax.childCollection = []
-    foundChildCollection = _.filter(childCollection, {parent: tax.term.id})
-    if (_.isArray(foundChildCollection)) {
+    foundChildCollection = filter(childCollection, {parent: tax.term.id})
+    if (isArray(foundChildCollection)) {
       tax.childCollection = foundChildCollection
     }
     return tax
@@ -41,7 +45,7 @@ let find = function (params, cb, next) {
         if (err) {
           cb(err, collection, next)
         } else {
-          if (_.isArray(collection)) {
+          if (isArray(collection)) {
             termIdCollection = collection.map(termTax=> {
               return termTax.term.id
             })
@@ -91,7 +95,7 @@ let findChildren = function (params, cb, next) {
         if (err) {
           cb(err, collection, next)
         } else {
-          if (_.isArray(collection)) {
+          if (isArray(collection)) {
             termIdCollection = collection.map(termTax=> {
               return termTax.term.id
             })
@@ -140,13 +144,13 @@ let findWithChildren = function (params, cb, next) {
       .populate('term')
       //.populate('parent')
       .exec((err, collection)=> {
-        if (err || !_.isArray(collection)) {
+        if (err || !isArray(collection)) {
           console.log('findWithChildren -> err', err)
           cb(err, collection, next)
         } else {
 
-          termCollection = _.pluck(collection, 'term')
-          termIdCollection = _.pluck(termCollection, 'id')
+          termCollection = pluck(collection, 'term')
+          termIdCollection = pluck(termCollection, 'id')
 
           findChildren
             .call(this,
@@ -179,7 +183,7 @@ let one = function (params, cb, next) {
         cb(err, null, next)
       } else {
         if (categoryCollection) {
-          if (_.isArray(categoryCollection)) {
+          if (isArray(categoryCollection)) {
             if (categoryCollection.length > 0) {
               cb(err, categoryCollection[0], next)
             } else {

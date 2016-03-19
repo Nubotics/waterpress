@@ -1,10 +1,11 @@
 {
   "name": "waterpress",
-  "version": "0.3.1",
-  "description": "chainable and pluggable db direct wordpress api powered by waterline orm",
+  "version": "0.3.2",
+  "description": "A chainable and pluggable db direct wordpress api powered by waterline orm",
   "main": "./lib",
   "scripts": {
-    "test": "babel-node test.js",
+    "test": "babel-node test.js --presets es2015,stage-0 --plugins add-module-exports",
+    "testserver": "babel-node test-server.js --presets es2015,stage-0 --plugins add-module-exports",
     "build": "babel src --out-dir lib --stage 0 --loose all --source-maps-inline"
   },
   "repository": {
@@ -23,21 +24,25 @@
   },
   "homepage": "https://github.com/nubotics/waterpress#readme",
   "dependencies": {
+    "chalk": "^1.1.1",
     "debug": "^2.2.0",
     "eventemitter3": "^1.1.1",
     "get-env": "^0.4.0",
     "html-truncate": "^1.2.1",
-    "lodash": "^3.10.0",
+    "nio-tools": "^0.2.2",
     "password-generator": "^2.0.2",
     "sails-mysql": "^0.10.12",
     "slug": "^0.9.1",
+    "stringify-object": "^2.3.1",
     "striptags": "^2.0.4",
     "waterline": "^0.10.25",
-    "wordpress-hash-node": "0.0.3",
-    "chalk": "^1.1.1",
-    "stringify-object": "^2.3.1"
+    "wordpress-hash-node": "0.0.3"
   },
   "devDependencies": {
-    "express": "^4.13.3"
+    "express": "^4.13.3",
+    "babel-cli": "^6.6.5",
+    "babel-preset-es2015": "^6.5.0",
+    "babel-preset-stage-0": "^6.5.0",
+    "babel-plugin-add-module-exports": "^0.1.2"
   }
 }

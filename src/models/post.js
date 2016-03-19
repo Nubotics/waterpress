@@ -1,4 +1,4 @@
-import { findValue, makeObjectFromKeyCollection} from '../core/util'
+import { findValue, makeObject} from '../core/util'
 
 const post = {
   identity: 'post',
