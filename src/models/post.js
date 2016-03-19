@@ -1,7 +1,4 @@
-import {
-  findValue,
-  makeObjectFromKeyCollection
-} from '../core/util'
+import { findValue, makeObjectFromKeyCollection} from '../core/util'
 
 const post = {
   identity: 'post',
@@ -15,7 +12,7 @@ const post = {
       autoIncrement: true
     },
     slug: {
-      type: 'integer',
+      type: 'string',
       columnName: 'post_name',
       defaultsTo: ''
     },
@@ -72,15 +69,14 @@ const post = {
       collection: 'termRelationship',
       via: 'object'
     },
-    childCollection:{
-      collection:'post',
-      via:'parent'
+    childCollection: {
+      collection: 'post',
+      via: 'parent'
+    },
+    commentCollection: {
+      collection: 'comment',
+      via: 'postId'
     }
-    /*,
-     commentCollection: {
-     collection: 'comment',
-     via: 'postId'
-     }*/
   },
   migrate: 'safe',
   autoPK: false,
@@ -120,4 +116,7 @@ const postMeta = {
   autoUpdatedAt: false
 }
 
-export default {post, postMeta}
+export default {
+  post,
+  postMeta
+}

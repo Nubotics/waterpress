@@ -9,29 +9,29 @@ const comment = {
       primaryKey: true,
       autoIncrement: true
     },
-    postId:{
-      type:'integer',
-      columnName:'comment_post_ID',
-      //model:'post'
+    postId: {
+      type: 'integer',
+      columnName: 'comment_post_ID',
+      model: 'post'
     },
-    authorId:{
-      type:'integer',
-      columnName:'comment_author',
-      model:'user'
+    authorId: {
+      type: 'integer',
+      columnName: 'comment_author',
+      model: 'user'
     },
     authorEmail: {
       type: 'string',
       columnName: 'comment_author_email'
     },
-    authorUrl:{
+    authorUrl: {
       type: 'string',
       columnName: 'comment_author_url'
     },
-    authorIp:{
+    authorIp: {
       type: 'string',
       columnName: 'comment_author_IP'
     },
-    createdAt:{
+    createdAt: {
       type: 'datetime',
       columnName: 'comment_date'
     },
@@ -77,4 +77,7 @@ const commentMeta = {
   autoUpdatedAt: false
 }
 
-export default {comment,commentMeta}
+export default {
+  comment,
+  commentMeta
+}
