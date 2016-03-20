@@ -107,7 +107,7 @@ let populatePostCollection = function (e, postCollection, cb, next) {
 
 
 }
-let find = function (params, options, cb, next) {
+let findPost = function (params, options, cb, next) {
   if (this.collections) {
     if (!has(params,'postType')){
       params = assign(params, {postType: 'post'})
@@ -158,7 +158,7 @@ let older = function (lastId, limit, cb, next) {
   if (this.collections) {
     let params = {id: {'<': lastId}}
     let options = {sort: 'id ASC', limit}
-    find.call(this, params, options, cb, next)
+    findPost.call(this, params, options, cb, next)
     //cb(null, null, next)
   } else {
     cb('Not connected', null, next)
@@ -168,7 +168,7 @@ let newer = function (firstId, limit, cb, next) {
   if (this.collections) {
     let params = {id: {'>': firstId}}
     let options = {sort: 'id DESC', limit}
-    find.call(this, params, options, cb, next)
+    findPost.call(this, params, options, cb, next)
   } else {
     cb('Not connected', null, next)
   }
@@ -279,6 +279,9 @@ let one = function (params, cb, next) {
 //TODO: save
 let save = function (postObj, cb, next) {
   if (this.collections) {
+
+
+
     cb(null, null, next)
   } else {
     cb('Not connected', null, next)
@@ -298,7 +301,7 @@ let findChildren = function (postId, cb, next) {
   if (this.collections) {
     let params = {parent: postId}
     let options = {sort: 'id DESC'}
-    find.call(this, params, options, cb, next)
+    findPost.call(this, params, options, cb, next)
   } else {
     cb('Not connected', null, next)
   }
@@ -330,7 +333,7 @@ let findByFormat = function (format, options, cb, next) {
             }
           })
           if (postIdCollection.length > 0) {
-            find.call(this, {id: postIdCollection}, options, cb, next)
+            findPost.call(this, {id: postIdCollection}, options, cb, next)
           } else {
             cb(e, [], next)
           }
@@ -371,7 +374,7 @@ let findByCategory = function (category, options, cb, next) {
             }
           })
           if (postIdCollection.length > 0) {
-            find.call(this, {id: postIdCollection}, options, cb, next)
+            findPost.call(this, {id: postIdCollection}, options, cb, next)
           } else {
             cb(e, [], next)
           }
@@ -388,7 +391,7 @@ let findByCategory = function (category, options, cb, next) {
 
 //api export
 export default {
-  find,
+  find:findPost,
   older,
   newer,
   one,
