@@ -14,9 +14,18 @@ import {
   merge,
 
 } from '../core/util'
+import {
+  striptags,
+  truncate,
+  slugger,
+} from '../addons'
 
 //methods
-
+const  makeExcerpt = function (content) {
+  let result = striptags(content)
+  result = truncate(result, 100)
+  return result
+}
 //general crud
 let assemblePostMeta = function (post) {
   if (has(post, 'metaCollection')) {
@@ -109,10 +118,10 @@ let populatePostCollection = function (e, postCollection, cb, next) {
 }
 let findPost = function (params, options, cb, next) {
   if (this.collections) {
-    if (!has(params,'postType')){
+    if (!has(params, 'postType')) {
       params = assign(params, {postType: 'post'})
     }
-    if (!has(params,'status')){
+    if (!has(params, 'status')) {
       params = assign(params, {status: ['publish', 'inherit']})
     }
     let query =
@@ -208,9 +217,9 @@ let populatePost = function (e, post, cb, next) {
     if (has(post, 'author')) {
       delete post.author.password
       populateUserMeta((metaErr, metaCollection, metaObj)=> {
-        if (metaErr){
+        if (metaErr) {
           cb(metaErr, post, next)
-        }else{
+        } else {
           post.author.metaCollection = metaCollection
           post.author.metaObj = metaObj
           cb(err, post, next)
@@ -252,10 +261,10 @@ let populatePost = function (e, post, cb, next) {
 }
 let one = function (params, cb, next) {
   if (this.collections) {
-    if (!has(params,'postType')){
+    if (!has(params, 'postType')) {
       params = assign(params, {postType: 'post'})
     }
-    if (!has(params,'status')){
+    if (!has(params, 'status')) {
       params = assign(params, {status: ['publish', 'inherit']})
     }
     this.collections
@@ -280,9 +289,61 @@ let one = function (params, cb, next) {
 let save = function (postObj, cb, next) {
   if (this.collections) {
 
+    //:-> validate postObj
+    //-> !has -> author -> error
+    if (!has(postObj, 'author')) {
+      cb('No author supplied', null, next)
+    } else {
+      let query = {}
+      //-> !has -> slug -> generate
+      if (!has(postObj, 'slug')) {
 
+      }
+      //-> !has -> postType -> default
+      if (!has(postObj, 'postType')) {
 
-    cb(null, null, next)
+      }
+      //-> !has -> excerpt -> generate
+      if (!has(postObj, 'excerpt')) {
+
+      }
+      //-> !has -> status -> default
+      if (!has(postObj, 'status')) {
+
+      }
+      //-> !has -> guid -> generate
+      if (!has(postObj, 'guid')) {
+
+      }
+      //-> !has -> relationshipCollection -> default
+      if (!has(postObj, 'relationshipCollection')) {
+
+      }
+
+      //:-> check slug exists && slug belongs to author
+      const findExistingPost = (cb)=>{
+        cb()
+      }
+      //-> exists -> generate suffix
+      const uniqueSlug = (slug)=>{
+
+      }
+      //-> if -> slug && author exist || has -> postObj -> id
+      //-> update
+      const updatePost = (cb)=>{
+
+      }
+      //-> else
+      //-> create
+      const createPost = (cb)=>{
+
+      }
+      //-> get populated post
+
+      //:-> yield
+      cb(null, null, next)
+    }
+
   } else {
     cb('Not connected', null, next)
   }
@@ -391,7 +452,7 @@ let findByCategory = function (category, options, cb, next) {
 
 //api export
 export default {
-  find:findPost,
+  find: findPost,
   older,
   newer,
   one,
