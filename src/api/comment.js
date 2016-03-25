@@ -55,7 +55,7 @@ let one = function (params, cb, next) {
   }
 }
 
-let save = function (commentObj, cb, next) {
+let save = function (commentObj, callback, next) {
   if (this.collections) {
     //-> !has -> post -> error
     if (!has(commentObj, 'postId')) {
