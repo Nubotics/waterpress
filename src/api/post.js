@@ -12,8 +12,9 @@ import {
   is,
   makeObject,
   merge,
-
+  generateUuid,
 } from '../core/util'
+
 import {
   striptags,
   truncate,
@@ -21,9 +22,9 @@ import {
 } from '../addons'
 
 //methods
-const  makeExcerpt = function (content) {
+const makeExcerpt = function (content) {
   let result = striptags(content)
-  result = truncate(result, 100)
+  result = truncate(result, 140)
   return result
 }
 //general crud
@@ -261,16 +262,20 @@ let populatePost = function (e, post, cb, next) {
 }
 let one = function (params, cb, next) {
   if (this.collections) {
+    let query = {}
     if (!has(params, 'postType')) {
-      params = assign(params, {postType: 'post'})
+      query = assign(params, {postType: 'post'})
     }
     if (!has(params, 'status')) {
-      params = assign(params, {status: ['publish', 'inherit']})
+      query = assign(params, {status: ['publish', 'inherit']})
+    } else if (params.status === 'all') {
+      let {status, ...other} = params
+      query = { ...other}
     }
     this.collections
       .post
       .findOne()
-      .where(params)
+      .where(query)
       .populate('author')
       .populate('relationshipCollection')
       .populate('metaCollection')
@@ -278,7 +283,7 @@ let one = function (params, cb, next) {
         if (e) {
           cb(e, post, next)
         } else {
-          populatePost.call(this, e, post, cb, next)
+          populatePost.call(this, e, post || {}, cb, next)
         }
       })
   } else {
@@ -286,66 +291,179 @@ let one = function (params, cb, next) {
   }
 }
 //TODO: save
-let save = function (postObj, cb, next) {
+let savePostCategory = function (relationObj, cb, next) {
+  if (this.collections) {
+
+
+  } else {
+    cb('Not connected', null, next)
+  }
+}
+
+let savePostMeta = function (item, cb, next) {
+  if (this.collections) {
+
+
+  } else {
+    cb('Not connected', null, next)
+  }
+}
+
+let save = function (postObj, callback, next) {
   if (this.collections) {
 
     //:-> validate postObj
     //-> !has -> author -> error
     if (!has(postObj, 'author')) {
-      cb('No author supplied', null, next)
+      callback('No author supplied', null, next)
+    } else if (!is(postObj.author, 'int')) {
+      callback('No valid author supplied', null, next)
     } else {
-      let query = {}
-      //-> !has -> slug -> generate
-      if (!has(postObj, 'slug')) {
-
+      //-> has -> id -> exists
+      const shouldUpdate = ()=> {
+        return has(postObj, 'id') && is(postObj, 'int')
       }
-      //-> !has -> postType -> default
-      if (!has(postObj, 'postType')) {
 
-      }
-      //-> !has -> excerpt -> generate
-      if (!has(postObj, 'excerpt')) {
+      const validatePost = ()=> {
+        let query = {...postObj}
+        //-> !has -> slug -> generate
+        if (!has(postObj, 'slug') || is(postObj.slug, 'zero')) {
+          if (has(postObj, 'title') && !is(postObj.title, 'zero')) {
+            query.slug = slugger(postObj.title)
+          }
+        }
+        //-> !has -> postType -> default
+        if (!has(postObj, 'postType') || is(postObj.postType, 'zero')) {
+          query.postType = 'post'
+        }
+        //-> !has -> excerpt -> generate
+        if (!has(postObj, 'excerpt') || is(postObj.excerpt, 'zero')) {
+          if (has(postObj, 'content')) {
+            query.excerpt = makeExcerpt(postObj.content)
+          }
+        }
+        //-> !has -> status -> default
+        if (!has(postObj, 'status') || is(postObj.status, 'zero')) {
+          query.status = 'draft'
+        }
+        //-> !has -> guid -> generate
+        if (!has(postObj, 'guid')) {
+          //TODO: for attachment
+        }
 
-      }
-      //-> !has -> status -> default
-      if (!has(postObj, 'status')) {
 
-      }
-      //-> !has -> guid -> generate
-      if (!has(postObj, 'guid')) {
+        let hasCategory = false
+        //-> !has -> relationshipCollection -> default
+        if (has(postObj, 'relationshipCollection') && !is(postObj, 'zero')) {
+          hasCategory = true
+        }
 
-      }
-      //-> !has -> relationshipCollection -> default
-      if (!has(postObj, 'relationshipCollection')) {
-
+        return query
       }
 
       //:-> check slug exists && slug belongs to author
-      const findExistingPost = (cb)=>{
-        cb()
+      const findExistingPost = (slug, author, cb)=> {
+        this.collections
+          .post
+          .findOne()
+          .where({slug})
+          .exec((err, post)=> {
+            if (err) {
+              cb(err, null)
+            } else {
+              if (has(post, 'id')) {
+                let {id, author, slug} = post
+                let authorId = 0
+                if (has(author, 'id')) {
+                  authorId = author.id
+                } else {
+                  authorId = author
+                }
+                cb(err, {exists: true, id, author: authorId, slug})
+              } else {
+                cb(err, {exists: false})
+              }
+            }
+          })
       }
       //-> exists -> generate suffix
-      const uniqueSlug = (slug)=>{
-
+      const uniqueSlug = (slug)=> {
+        return `${slug}-${generateUuid().slice(0, 8)}`
       }
       //-> if -> slug && author exist || has -> postObj -> id
       //-> update
-      const updatePost = (cb)=>{
-
+      const updatePost = (updateParams, cb)=> {
+        this.collections
+          .post
+          .update({id: updateParams.id}, updateParams)
+          .exec(cb)
       }
       //-> else
       //-> create
-      const createPost = (cb)=>{
+      const createPost = (createParams, cb)=> {
+        findExistingPost(
+          createParams.slug,
+          createParams.author,
+          (err,{exists,id,author,slug})=>{
+          if (err){
+            cb(err,null)
+          }else{
+            if (exists){
+              createParams.slug = uniqueSlug(createParams.slug)
+            }
+            this.collections
+              .post
+              .create(createParams)
+              .exec(cb)
+
+          }
+        })
 
       }
       //-> get populated post
+      const reloadPost = (id, cb)=> {
+        one.call(this, {id, status: 'all'}, function (err, post) {
+          cb(err, post)
+        })
+      }
 
-      //:-> yield
-      cb(null, null, next)
+      //:-> run
+
+      if (shouldUpdate()) {
+        updatePost(postObj, (err, post)=> {
+          if (err) {
+            callback(err, post, next)
+          } else {
+            if (has(post, 'id')) {
+              reloadPost(post.id, (err, freshPost)=> {
+                callback(err, freshPost, next)
+              })
+            } else {
+              callback(err, post, next)
+            }
+          }
+        })
+      } else {
+        let query = validatePost()
+        createPost(query, (err, newPost)=> {
+          if (err) {
+            callback(err, newPost, next)
+          } else {
+            if (has(newPost, 'id')) {
+              reloadPost(newPost.id, (err, freshPost)=> {
+                callback(err, freshPost, next)
+              })
+            } else {
+              callback(err, newPost, next)
+            }
+          }
+        })
+      }
+
     }
 
   } else {
-    cb('Not connected', null, next)
+    callback('Not connected', null, next)
   }
 }
 //TODO: kill

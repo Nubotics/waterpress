@@ -35,16 +35,17 @@ let result = null
 api
   .connect()
   .post
-  .save(post.create, (err, result, next)=> {
+  .save(post.create, (err, newPost, next)=> {
+    error = err
+    result = newPost
     next()
   })
-  .done(next=> {
-    console.log('post -> done\n')
-    next()
-  })
+  .done()
   .disconnect((next)=> {
-    console.log('disconnect')
     next()
+
+    console.log('disconnect -> error, result', error, result)
+
   })
 
 //::-> test service

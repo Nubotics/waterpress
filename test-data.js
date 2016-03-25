@@ -1,14 +1,14 @@
 let post = {
   create: {
     slug: '',
-    title: '',
-    postType: '',
+    title: 'post title',
+    postType: 'post',
     excerpt: '',
-    content: '',
-    status: '',
+    content: '<h1>Post title </h1><p>Yo Yo</p>',
+    status: 'draft',
     postDate: new Date(),
-    mimeType: '',
-    guid: '',
+    //mimeType: '',
+    //guid: '',
     parent: 0,
     metalCollection: [
       {

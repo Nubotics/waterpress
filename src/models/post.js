@@ -36,6 +36,10 @@ const post = {
       type: 'string',
       columnName: 'post_status'
     },
+    commentStatus: {
+      type: 'string',
+      columnName: 'comment_status'
+    },
     postDate: {
       type: 'datetime',
       columnName: 'post_date'
