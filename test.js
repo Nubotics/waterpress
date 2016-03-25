@@ -34,17 +34,23 @@ let result = {}
 
 api
   .connect()
-  .post
-  .save(post.update, (err, newPost, next)=> {
+  .term
+  .find({}, (err, collection, next)=> {
     if (err) error.push(err)
-    result.savedPost = newPost
+    result.terms = collection
     next()
   })
-/*  .find({title: 'post title', status:'all'}, {}, (err, postCollection, next)=> {
-    if (err) error.push(err)
-    result.postCollection = postCollection
-    next()
-  })*/
+  /*  .post
+   .save(post.update, (err, newPost, next)=> {
+   if (err) error.push(err)
+   result.savedPost = newPost
+   next()
+   })*/
+  /*  .find({title: 'post title', status:'all'}, {}, (err, postCollection, next)=> {
+   if (err) error.push(err)
+   result.postCollection = postCollection
+   next()
+   })*/
   .done()
   .disconnect((next)=> {
     next()

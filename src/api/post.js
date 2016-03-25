@@ -298,16 +298,23 @@ let one = function (params, cb, next) {
     cb('Not connected', null, next)
   }
 }
-//TODO: save
-let savePostCategory = function (relationObj, cb, next) {
+
+let savePostCategory = function (params, cb, next) {
   if (this.collections) {
+    let { postId } = params
+    let query = {}
+    if (has(params, 'categoryId')) {
+
+    } else if (has(params, 'categoryCollection')) {
+
+    }
+
 
 
   } else {
     cb('Not connected', null, next)
   }
 }
-
 let savePostMeta = function (item, cb, next) {
   if (this.collections) {
 
@@ -316,22 +323,21 @@ let savePostMeta = function (item, cb, next) {
     cb('Not connected', null, next)
   }
 }
-
 let save = function (postObj, callback, next) {
   if (this.collections) {
-
-    //:-> validate postObj
     //-> !has -> author -> error
     if (!has(postObj, 'author')) {
       callback('No author supplied', null, next)
     } else if (!is(postObj.author, 'int')) {
       callback('No valid author supplied', null, next)
     } else {
+
       //-> has -> id -> exists
       const shouldUpdate = ()=> {
         return has(postObj, 'id') && is(postObj.id, 'int')
       }
 
+      //:-> validate postObj
       const validatePost = ()=> {
         let query = {...postObj}
         //-> !has -> slug -> generate
@@ -394,10 +400,12 @@ let save = function (postObj, callback, next) {
             }
           })
       }
+
       //-> exists -> generate suffix
       const uniqueSlug = (slug)=> {
         return `${slug}-${generateUuid().slice(0, 8)}`
       }
+
       //-> if -> slug && author exist || has -> postObj -> id
       //-> update
       const updatePost = (updateParams, cb)=> {
@@ -419,12 +427,13 @@ let save = function (postObj, callback, next) {
           })
       }
       //-> else
-      //-> create
+
+      //:-> create
       const createPost = (createParams, cb)=> {
         findExistingPost(
           createParams.slug,
           createParams.author,
-          (err, {exists,id,author,slug})=> {
+          (err, {exists,...other})=> {
             if (err) {
               cb(err, null)
             } else {
@@ -440,7 +449,7 @@ let save = function (postObj, callback, next) {
           })
 
       }
-      //-> get populated post
+      //:-> get populated post
       const reloadPost = (id, cb)=> {
         one.call(this, {id, status: 'all'}, /*{limit:1},*/ function (err, post) {
           /*let freshPost = null
@@ -451,8 +460,7 @@ let save = function (postObj, callback, next) {
         })
       }
 
-      //:-> run
-
+      //::-> run
       if (shouldUpdate()) {
         updatePost(postObj, (err, post)=> {
           if (err) {
@@ -483,17 +491,21 @@ let save = function (postObj, callback, next) {
           }
         })
       }
-
     }
 
   } else {
     callback('Not connected', null, next)
   }
 }
-//TODO: kill
+
 let kill = function (postId, cb, next) {
   if (this.collections) {
-    cb(null, null, next)
+    this.collections
+      .post
+      .destroy({id: postId})
+      .exec((err, result)=> {
+        cb(err, result, next)
+      })
   } else {
     cb('Not connected', null, next)
   }
