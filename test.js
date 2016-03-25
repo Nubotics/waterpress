@@ -34,12 +34,23 @@ let result = {}
 
 api
   .connect()
-  .term
+  .comment
+  .save(comment.create,(err,newComment,next)=>{
+    if (err) error.push(err)
+    result.newComment = newComment
+    next()
+  })
+  .find({},(err,comments,next)=>{
+    if (err) error.push(err)
+    result.commentCollection = comments
+    next()
+  })
+/*  .category
   .find({}, (err, collection, next)=> {
     if (err) error.push(err)
     result.terms = collection
     next()
-  })
+  })*/
   /*  .post
    .save(post.update, (err, newPost, next)=> {
    if (err) error.push(err)

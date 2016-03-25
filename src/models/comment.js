@@ -14,10 +14,18 @@ const comment = {
       columnName: 'comment_post_ID',
       model: 'post'
     },
-    authorId: {
+    user: {
       type: 'integer',
-      columnName: 'comment_author',
+      columnName: 'user_id',
       model: 'user'
+    },
+    content:{
+      type:'text',
+      columnName:'comment_content',
+    },
+    author: {
+      type: 'string',
+      columnName: 'comment_author'
     },
     authorEmail: {
       type: 'string',
@@ -30,6 +38,15 @@ const comment = {
     authorIp: {
       type: 'string',
       columnName: 'comment_author_IP'
+    },
+    isApproved:{
+      type:'boolean',
+      columnName:'comment_approved'
+    },
+    parent:{
+      type:'integer',
+      columnName:'comment_parent',
+      model:'comment'
     },
     createdAt: {
       type: 'datetime',

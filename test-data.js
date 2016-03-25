@@ -54,12 +54,19 @@ let post = {
 }
 
 let comment = {
-  create: {},
+  create: {
+    postId:0,
+    user:0,
+    content:'<b>Deeeerrrrp</b>',
+
+  },
   update: {},
 }
 
 let attachment = {
-  create: {},
+  create: {
+
+  },
   update: {},
 }
 

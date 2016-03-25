@@ -9,7 +9,7 @@ import {
   eachKey,
   findValue,
   makeObject,
-sortBy,
+  sortBy,
 
 } from '../core/util'
 
@@ -223,8 +223,21 @@ const assemble = {
       return newCollection
     },
   },
-
-
+  comment: {
+    single(comment){
+      if (has(comment,'metaCollection')){
+        comment.metaObj = makeObject(comment.metaCollection)
+      }
+      return comment
+    },
+    collection(commentCollection){
+      let collection = []
+      forEach(commentCollection, comment=>{
+        collection.push(assemble.comment.single(comment))
+      })
+      return collection
+    },
+  },
 }
 
 export default assemble

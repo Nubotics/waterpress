@@ -309,8 +309,6 @@ let savePostCategory = function (params, cb, next) {
 
     }
 
-
-
   } else {
     cb('Not connected', null, next)
   }
