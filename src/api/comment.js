@@ -68,24 +68,69 @@ let save = function (commentObj, cb, next) {
 
       //-> has -> id -> exists
       const shouldUpdate = ()=> {
-        return has(postObj, 'id') && is(postObj.id, 'int')
+        return has(commentObj, 'id') && is(commentObj.id, 'int')
       }
 
       const createComment = (createParams, cb) => {
-
+        this.collections
+          .comment
+          .create(createParams)
+          .exec(cb)
       }
 
       const updateComment = (updateParams, cb) => {
-
+        this.collections
+          .comment
+          .update({id: updateParams.id}, updateParams)
+          .exec((err, updateCollection)=> {
+            if (err) {
+              cb(err, null)
+            } else {
+              let updatedComment = null
+              if (!is(updateCollection, 'zero')) {
+                updatedComment = updateCollection[0]
+              }
+              cb(err, updatedComment)
+            }
+          })
       }
 
-      const reloadComment = (commentId, cb)=>{
-        
+      const reloadComment = (commentId, cb)=> {
+        one.call(this, {id: commentId}, function (err, comment) {
+          cb(err, comment)
+        })
       }
 
-      //-> has -> id -> update
-
-      //-> else -> create
+      //::-> run
+      if (shouldUpdate()) {
+        updateComment(commentObj, (err, comment)=> {
+          if (err) {
+            callback(err, comment, next)
+          } else {
+            if (has(post, 'id')) {
+              reloadComment(comment.id, (err, freshComment)=> {
+                callback(err, freshComment, next)
+              })
+            } else {
+              callback(err, comment, next)
+            }
+          }
+        })
+      } else {
+        createComment(commentObj, (err, newComment)=> {
+          if (err) {
+            callback(err, newComment, next)
+          } else {
+            if (has(newComment, 'id')) {
+              reloadComment(newComment.id, (err, reloadComment)=> {
+                callback(err, reloadComment, next)
+              })
+            } else {
+              callback(err, newComment, next)
+            }
+          }
+        })
+      }
 
     }
   } else {
