@@ -29,17 +29,22 @@ let data = require('./test-data')
 
 let { post, comment } = data
 
-let error = null
-let result = null
+let error = []
+let result = {}
 
 api
   .connect()
   .post
   .save(post.create, (err, newPost, next)=> {
-    error = err
-    result = newPost
+    if (err) error.push(err)
+    result.savedPost = newPost
     next()
   })
+/*  .find({title: 'post title', status:'all'}, {}, (err, postCollection, next)=> {
+    if (err) error.push(err)
+    result.postCollection = postCollection
+    next()
+  })*/
   .done()
   .disconnect((next)=> {
     next()

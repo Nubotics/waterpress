@@ -10,10 +10,10 @@ let post = {
     //mimeType: '',
     //guid: '',
     parent: 0,
-    metalCollection: [
+    metaCollection: [
       {
-        key: '',
-        value: ''
+        key: '_test',
+        value: '1'
       }
     ],
     author: 1,

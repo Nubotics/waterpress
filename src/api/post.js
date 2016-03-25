@@ -119,17 +119,22 @@ let populatePostCollection = function (e, postCollection, cb, next) {
 }
 let findPost = function (params, options, cb, next) {
   if (this.collections) {
+    let queryParams = {}
     if (!has(params, 'postType')) {
-      params = assign(params, {postType: 'post'})
+      queryParams = assign(params, {postType: 'post'})
     }
     if (!has(params, 'status')) {
-      params = assign(params, {status: ['publish', 'inherit']})
+      queryParams = assign(params, {status: ['publish', 'inherit']})
+    } else if (params.status === 'all') {
+      let {status, ...other} = params
+      queryParams = { ...other}
     }
+
     let query =
       this.collections
         .post
         .find()
-        .where(params)
+        .where(queryParams)
 
     if (has(options, 'limit')) {
       query.limit(options.limit)
@@ -257,12 +262,12 @@ let populatePost = function (e, post, cb, next) {
 
       })
   } else {
-    cb(e, post, next)
+    actionCb(e, post, next)
   }
 }
 let one = function (params, cb, next) {
   if (this.collections) {
-    let query = {}
+    let query = {...params}
     if (!has(params, 'postType')) {
       query = assign(params, {postType: 'post'})
     }
@@ -277,12 +282,15 @@ let one = function (params, cb, next) {
       .findOne()
       .where(query)
       .populate('author')
-      .populate('relationshipCollection')
       .populate('metaCollection')
+      .populate('relationshipCollection')
       .exec((e, post)=> {
         if (e) {
           cb(e, post, next)
         } else {
+
+          console.log('POST -> ONE -> found post -> ', post)
+
           populatePost.call(this, e, post || {}, cb, next)
         }
       })
@@ -422,7 +430,11 @@ let save = function (postObj, callback, next) {
       }
       //-> get populated post
       const reloadPost = (id, cb)=> {
-        one.call(this, {id, status: 'all'}, function (err, post) {
+        one.call(this, {id, status: 'all'},/*{limit:1},*/ function (err, post) {
+          /*let freshPost = null
+          if (!is(collection,'zero')){
+            freshPost = collection[0]
+          }*/
           cb(err, post)
         })
       }
@@ -450,8 +462,8 @@ let save = function (postObj, callback, next) {
             callback(err, newPost, next)
           } else {
             if (has(newPost, 'id')) {
-              reloadPost(newPost.id, (err, freshPost)=> {
-                callback(err, freshPost, next)
+              reloadPost(newPost.id, (err, reloadPost)=> {
+                callback(err, reloadPost, next)
               })
             } else {
               callback(err, newPost, next)
