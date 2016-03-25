@@ -127,7 +127,7 @@ let findPost = function (params, options, cb, next) {
       queryParams = assign(params, {status: ['publish', 'inherit']})
     } else if (params.status === 'all') {
       let {status, ...other} = params
-      queryParams = { ...other}
+      queryParams = {...other}
     }
 
     let query =
@@ -275,7 +275,7 @@ let one = function (params, cb, next) {
       query = assign(params, {status: ['publish', 'inherit']})
     } else if (params.status === 'all') {
       let {status, ...other} = params
-      query = { ...other}
+      query = {...other}
     }
     this.collections
       .post
@@ -329,7 +329,7 @@ let save = function (postObj, callback, next) {
     } else {
       //-> has -> id -> exists
       const shouldUpdate = ()=> {
-        return has(postObj, 'id') && is(postObj, 'int')
+        return has(postObj, 'id') && is(postObj.id, 'int')
       }
 
       const validatePost = ()=> {
@@ -401,10 +401,22 @@ let save = function (postObj, callback, next) {
       //-> if -> slug && author exist || has -> postObj -> id
       //-> update
       const updatePost = (updateParams, cb)=> {
+        updateParams.updatedAt = new Date()
+
         this.collections
           .post
           .update({id: updateParams.id}, updateParams)
-          .exec(cb)
+          .exec((err, updateCollection)=> {
+            if (err) {
+              cb(err, null)
+            } else {
+              let updatedPost = null
+              if (!is(updateCollection, 'zero')) {
+                updatedPost = updateCollection[0]
+              }
+              cb(err, updatedPost)
+            }
+          })
       }
       //-> else
       //-> create
@@ -412,29 +424,29 @@ let save = function (postObj, callback, next) {
         findExistingPost(
           createParams.slug,
           createParams.author,
-          (err,{exists,id,author,slug})=>{
-          if (err){
-            cb(err,null)
-          }else{
-            if (exists){
-              createParams.slug = uniqueSlug(createParams.slug)
-            }
-            this.collections
-              .post
-              .create(createParams)
-              .exec(cb)
+          (err, {exists,id,author,slug})=> {
+            if (err) {
+              cb(err, null)
+            } else {
+              if (exists) {
+                createParams.slug = uniqueSlug(createParams.slug)
+              }
+              this.collections
+                .post
+                .create(createParams)
+                .exec(cb)
 
-          }
-        })
+            }
+          })
 
       }
       //-> get populated post
       const reloadPost = (id, cb)=> {
-        one.call(this, {id, status: 'all'},/*{limit:1},*/ function (err, post) {
+        one.call(this, {id, status: 'all'}, /*{limit:1},*/ function (err, post) {
           /*let freshPost = null
-          if (!is(collection,'zero')){
-            freshPost = collection[0]
-          }*/
+           if (!is(collection,'zero')){
+           freshPost = collection[0]
+           }*/
           cb(err, post)
         })
       }

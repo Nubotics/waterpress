@@ -35,7 +35,7 @@ let result = {}
 api
   .connect()
   .post
-  .save(post.create, (err, newPost, next)=> {
+  .save(post.update, (err, newPost, next)=> {
     if (err) error.push(err)
     result.savedPost = newPost
     next()

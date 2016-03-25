@@ -17,18 +17,40 @@ let post = {
       }
     ],
     author: 1,
-    relationshipCollection: [
+   /* relationshipCollection: [
       {
         termTaxonomy: 3,
         order: 0
       }
-    ],
+    ],*/
     /*
      childCollection:[],
      commentCollection:[],
      */
   },
-  update: {}
+  update: {
+    id:96,
+    title: 'post title',
+    content: '<h1>Post title </h1><p>Yes yess</p>',
+    status: 'publish',
+    //postDate: new Date(),
+    //mimeType: '',
+    //guid: '',
+    //parent: 0,
+    metaCollection: [
+      {
+        key: '_test',
+        value: '2'
+      }
+    ],
+    author: 1,
+    /*relationshipCollection: [
+      {
+        termTaxonomy: 3,
+        order: 0
+      }
+    ],*/
+  }
 }
 
 let comment = {
