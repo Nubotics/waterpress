@@ -63,7 +63,7 @@ let save = function (commentObj, callback, next) {
     } else
     //-> !has -> user || public author -> error
     if (!is(commentObj.postId, 'int')) {
-      callback('No postr supplied', null, next)
+      callback('No post supplied', null, next)
     } else {
 
       //-> has -> id -> exists
