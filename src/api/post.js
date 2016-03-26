@@ -313,7 +313,15 @@ let savePostCategory = function (params, cb, next) {
     cb('Not connected', null, next)
   }
 }
-let savePostMeta = function (item, cb, next) {
+let savePostMetaItem = function (item, cb, next) {
+  if (this.collections) {
+
+
+  } else {
+    cb('Not connected', null, next)
+  }
+}
+let savePostMetaCollection = function (item, cb, next) {
   if (this.collections) {
 
 
