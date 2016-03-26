@@ -1,6 +1,6 @@
 //util
 import {
-
+  is,
   assign,
   eachKey,
   findValue,
@@ -8,22 +8,104 @@ import {
   has,
   makeObject,
   merge,
-
+  pluck,
+  find,
+  map,
 } from '../core/util'
 
 import assembler from '../assemblers'
 
+//-> api imports
+import userApi from './user'
+
 let populateComment = function (e, comment, cb, next) {
-  let commentSingle = assembler.comment.single(comment)
-  cb(e, commentSingle, next)
+  const assembleComment = (err, rawComment)=> {
+    let commentSingle = assembler.comment.single(rawComment)
+    cb(err, commentSingle, next)
+  }
+
+  if (has(comment, 'user') && !is(comment.user, 'nothing')) {
+    let userId = 0
+    if (has(comment.user, 'id')) {
+      userId = comment.user.id
+    } else if (is(comment.user, 'int')) {
+      userId = comment.user
+    }
+    if (userId > 0) {
+      userApi.one.call(this, {id: userId}, function (err, foundUser) {
+        if (err) {
+          assembleComment(err, comment)
+        } else {
+          comment.user = foundUser
+          assembleComment(err, comment)
+        }
+      })
+    } else {
+      assembleComment(e, comment)
+    }
+  } else {
+    assembleComment(e, comment)
+  }
+
 }
 let populateCommentCollection = function (e, comments, cb, next) {
-  let commentCollection = assembler.comment.collection(comments)
-  cb(e, commentCollection, next)
+
+  const assembleComments = (err, rawComments)=> {
+    let commentCollection = assembler.comment.collection(rawComments)
+    cb(err, commentCollection, next)
+  }
+
+
+  let userIdCollection =[]
+  forEach(comments, comment=> {
+    if (has(comment, 'user')) {
+      if (!is(comment.user, 'nothing')) {
+        let userId = 0
+        if (has(comment.user, 'id')) {
+          userId = comment.user.id
+        } else if (is(comment.user, 'int')) {
+          userId = comment.user
+        }
+        if (userId > 0) {
+          userIdCollection.push( userId)
+        }
+      }
+    }
+  })
+
+  if (!is(userIdCollection, 'zero')) {
+
+    userApi.find.call(this, {id: userIdCollection}, function (err, userCollection) {
+      if (err) {
+        assembleComments(err, comments)
+      } else {
+        let commentCollection = map(comments, comment=> {
+          let userId = 0
+          if (has(comment.user, 'id')) {
+            userId = comment.user.id
+          } else if (is(comment.user, 'int')) {
+            userId = comment.user
+          }
+          if (userId > 0) {
+            let commentUser = find(userCollection, {id: userId})
+            if (!is(commentUser, 'nothing')) {
+              comment.user = commentUser
+            }
+          }
+          return comment
+        })
+
+        assembleComments(err, commentCollection)
+      }
+    })
+  } else {
+    assembleComments(e, comments)
+  }
+
 }
 
 //methods
-let find = function (params, cb, next) {
+let findComment = function (params, cb, next) {
   if (this.collections) {
     this.collections
       .comment
@@ -134,7 +216,7 @@ let save = function (commentObj, callback, next) {
 
     }
   } else {
-    cb('Not connected', null, next)
+    callback('Not connected', null, next)
   }
 }
 let kill = function (commentId, cb, next) {
@@ -152,7 +234,7 @@ let kill = function (commentId, cb, next) {
 
 //api export
 export default {
-  find,
+  find: findComment,
   one,
   save,
   kill,

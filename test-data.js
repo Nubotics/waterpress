@@ -55,8 +55,8 @@ let post = {
 
 let comment = {
   create: {
-    postId:0,
-    user:0,
+    postId:96,
+    user:1,
     content:'<b>Deeeerrrrp</b>',
 
   },

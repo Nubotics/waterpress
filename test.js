@@ -40,11 +40,11 @@ api
     result.newComment = newComment
     next()
   })
-  .find({},(err,comments,next)=>{
-    if (err) error.push(err)
-    result.commentCollection = comments
-    next()
-  })
+  //.find({},(err,comments,next)=>{
+  //  if (err) error.push(err)
+  //  result.commentCollection = comments
+  //  next()
+  //})
 /*  .category
   .find({}, (err, collection, next)=> {
     if (err) error.push(err)
