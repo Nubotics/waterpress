@@ -57,7 +57,6 @@ let find = function (params, cb, next) {
   }
 }
 let one = function (params, cb, next) {
-  //console.log('api/user -> this.user.one, context.user.one', params)
   if (this.collections) {
     this.collections
       .user
@@ -78,7 +77,6 @@ let byRole = function (roleName, cb, next) {
         let userIdArr = []
         if (meta) {
           meta.map((item)=> {
-            //console.log('item', item.userId)
             userIdArr.push(item.user)
           })
           this.collections

@@ -125,15 +125,11 @@ let findChildren = function (params, cb, next) {
 }
 let findWithChildren = function (params, cb, next) {
   if (this.collections) {
-    //-> defaults
+    //:-> defaults
     let query = {taxonomy: 'category', parent: 0}
     let termCollection = []
     let termIdCollection = []
-    let childTermIdCollection = []
-
-    //-> helpers
-
-
+    //:-> helpers
     //-> find -> top level termTaxonomy
     //-> by -> tax = category
     this.collections
@@ -145,32 +141,21 @@ let findWithChildren = function (params, cb, next) {
       //.populate('parent')
       .exec((err, collection)=> {
         if (err || !isArray(collection)) {
-          console.log('findWithChildren -> err', err)
           cb(err, collection, next)
         } else {
-
           termCollection = pluck(collection, 'term')
           termIdCollection = pluck(termCollection, 'id')
-
           findChildren
             .call(this,
             {parent: termIdCollection},
             function (err, childCategoryCollection) {
-
               let result = pushChildToTermInCollection(collection, childCategoryCollection)
-
               let categoryCollection = assembler.category.collectionWithChildren(result)
-
-              console.log('findWithChildren -> err,categoryCollection', err, categoryCollection)
-
               cb(err, categoryCollection, next)
 
             })
-
         }
-
       })
-
   } else {
     cb('Not connected', null, next)
   }

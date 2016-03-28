@@ -1,4 +1,3 @@
-import attachment from './attachment'
 import category from './category'
 import comment from './comment'
 import media from './media'
@@ -10,7 +9,6 @@ import term from './term'
 import user from './user'
 
 export default {
-  attachment,
   category,
   comment,
   media,

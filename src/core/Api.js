@@ -128,7 +128,6 @@ class Api extends EventApi {
             //--> override models
             if (has(plugin.override, 'model')) {
               if (plugin.override.model) {
-                console.log(`plugin ${plugin.name} model override`, plugin.override.model)
                 eachKey(plugin.override.model, overModelKey=> {
                   overrideModelCollection = merge(overrideModelCollection, {[overModelKey]: plugin.override.model[overModelKey]})
                 })
@@ -198,7 +197,6 @@ class Api extends EventApi {
         this
           ._addMethods(apiCollection[structKey], structKey)
           ._addMethod('done', function (cb, next) {
-            //console.log('done', cb, next)
             if (cb) {
               cb(next)
             } else {
@@ -218,11 +216,9 @@ class Api extends EventApi {
 
   connect(cb) {
     this.chain((next)=> {
-      console.log('connect -> hasInstance', this.hasInstance)
       if (this.hasInstance) {
         if (cb) {
           let { collections, connections } = this
-          console.log('connect -> collections, connections ', collections, connections)
           cb(null, {collections, connections}, next)
         } else {
           next()
@@ -234,14 +230,11 @@ class Api extends EventApi {
           },
           this.modelCollection,
           (err, models)=> {
-            //console.log('orm init -> err, models', err, models)
             if (err) throw err
             if (has(models, 'connections')) {
-              //console.log('orm init -> has connections')
               this.set('connections', models.connections, true)
             }
             if (has(models, 'collections')) {
-              //console.log('orm init -> has collections')
               this.set('collections', models.collections, true)
             }
             if (cb) {

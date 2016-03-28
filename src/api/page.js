@@ -12,33 +12,30 @@ import {
 } from '../core/util'
 
 import postApi from './post'
-//TODO: save + kill
+
 //main
 export default {
   find(params, cb, next){
-    params = assign(params, {postType: 'page'})
+    params = merge(params, {postType: 'page'})
     postApi.find.call(this, params, {}, function (err, pageCollection) {
       cb(err, pageCollection, next)
     })
   },
   one(params, cb, next){
-    params = assign(params, {postType: 'page'})
+    params = merge(params, {postType: 'page'})
     postApi.find.call(this, params, {}, function (err, page) {
       cb(err, page, next)
     })
   },
   save(postObj, cb, next){
-    if (this.collections) {
-      cb(null, null, next)
-    } else {
-      cb('Not connected', null, next)
-    }
+    postObj = merge(postObj, {postType: 'page'})
+    postApi.save.call(this, postObj, function (err, page) {
+      cb(err, page, next)
+    })
   },
   kill(postId, cb, next){
-    if (this.collections) {
-      cb(null, null, next)
-    } else {
-      cb('Not connected', null, next)
-    }
+    postApi.kill.call(this, postId, function (err, result) {
+      cb(err, result, next)
+    })
   }
 }

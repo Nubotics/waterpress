@@ -27,17 +27,17 @@ const api = wp(options)
 //::-> DATA
 let data = require('./test-data')
 
-let { post, comment } = data
+let { post, comment, media } = data
 
 let error = []
 let result = {}
 
 api
   .connect()
-  .comment
-  .save(comment.create,(err,newComment,next)=>{
+  .media
+  .save(media.create, (err, newMedia, next)=> {
     if (err) error.push(err)
-    result.newComment = newComment
+    result.newMedia = newMedia
     next()
   })
   //.find({},(err,comments,next)=>{
@@ -45,12 +45,12 @@ api
   //  result.commentCollection = comments
   //  next()
   //})
-/*  .category
-  .find({}, (err, collection, next)=> {
-    if (err) error.push(err)
-    result.terms = collection
-    next()
-  })*/
+  /*  .category
+   .find({}, (err, collection, next)=> {
+   if (err) error.push(err)
+   result.terms = collection
+   next()
+   })*/
   /*  .post
    .save(post.update, (err, newPost, next)=> {
    if (err) error.push(err)

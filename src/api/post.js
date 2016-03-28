@@ -288,9 +288,6 @@ let one = function (params, cb, next) {
         if (e) {
           cb(e, post, next)
         } else {
-
-          console.log('POST -> ONE -> found post -> ', post)
-
           populatePost.call(this, e, post || {}, cb, next)
         }
       })
@@ -299,32 +296,103 @@ let one = function (params, cb, next) {
   }
 }
 
-let savePostCategory = function (params, cb, next) {
+let savePostCategory = function ({id, categoryCollection}, cb, next) {
   if (this.collections) {
-    let { postId } = params
-    let query = {}
-    if (has(params, 'categoryId')) {
-
-    } else if (has(params, 'categoryCollection')) {
+    if (!is(id, 'int')) {
+      cb('No post identifier found', null, next)
+    } else {
 
     }
-
   } else {
     cb('Not connected', null, next)
   }
 }
-let savePostMetaItem = function (item, cb, next) {
+let savePostMetaItem = function (metaItem, cb, next) {
   if (this.collections) {
-
-
+    let {id, post} = metaItem
+    const updateAction = ()=> {
+      this.collections
+        .postmeta
+        .update({id}, metaItem)
+        .exec((e, collection)=> {
+          let resultItem = undefined
+          if (is(collection, 'array')) {
+            if (collection.length > 0) {
+              resultItem = collection[0]
+            }
+          }
+          cb(e, resultItem, next)
+        })
+    }
+    const createAction = ()=> {
+      this.collections
+        .postmeta
+        .create(metaItem)
+        .exec((e, newItem)=> {
+          cb(e, newItem, next)
+        })
+    }
+    if (!post) {
+      cb('No post identifier found', null, next)
+    } else if (id) {
+      updateAction()
+    } else {
+      createAction()
+    }
   } else {
     cb('Not connected', null, next)
   }
 }
-let savePostMetaCollection = function (item, cb, next) {
+let savePostMetaCollection = function ({ id, metaCollection }, cb, next) {
   if (this.collections) {
-
-
+    if (!is(id, 'int')) {
+      cb('No post identifier found', null, next)
+    } else {
+      let createCollection = []
+      let updateCollection = []
+      const createAction = (createCb)=> {
+        this.collections
+          .postmeta
+          .create(createCollection, createCb)
+      }
+      const updateAction = (updateCb)=> {
+        this.collections
+          .post
+          .update({id}, {metaCollection: updateCollection})
+          .exec(updateCb)
+      }
+      const refreshPost = (postCb)=> {
+        one.call(this, {id}, function (err, post) {
+          postCb(err, post)
+        })
+      }
+      forEach(metaCollection, item=> {
+        if (has(item, 'id')) {
+          if (is(item.id, 'int') && item.id > 0) {
+            updateCollection.push(item)
+          } else {
+            createCollection.push(item)
+          }
+        } else {
+          createCollection.push(item)
+        }
+      })
+      createAction(e=> {
+        if (e) {
+          cb(e, null, next)
+        } else {
+          updateAction(err=> {
+            if (err) {
+              cb(err, null, next)
+            } else {
+              refreshPost((error, post)=> {
+                cb(err, post, next)
+              })
+            }
+          })
+        }
+      })
+    }
   } else {
     cb('Not connected', null, next)
   }
@@ -617,6 +685,9 @@ export default {
   newer,
   one,
   save,
+  savePostCategory,
+  savePostMetaItem,
+  savePostMetaCollection,
   kill,
   findChildren,
   findByFormat,

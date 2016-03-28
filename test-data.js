@@ -58,12 +58,13 @@ let comment = {
     postId:96,
     user:1,
     content:'<b>Deeeerrrrp</b>',
+  },
+  update: {
 
   },
-  update: {},
 }
 
-let attachment = {
+let media = {
   create: {
 
   },
@@ -73,6 +74,6 @@ let attachment = {
 export default {
   post,
   comment,
-  attachment,
+  media,
 
 }

@@ -12,13 +12,13 @@ if (!Function.prototype.bind) {
       throw new TypeError("Function.prototype.bind - what is trying to be bound is not callable")
     }
     var aArgs = Array.prototype.slice.call(arguments, 1),
-      fToBind = this,
-      fNOP = function () {
-      },
-      fBound = function () {
-        return fToBind.apply(this instanceof fNOP && oThis ? this : oThis,
-          aArgs.concat(Array.prototype.slice.call(arguments)))
-      }
+    fToBind = this,
+    fNOP = function () {
+    },
+    fBound = function () {
+      return fToBind.apply(this instanceof fNOP && oThis ? this : oThis,
+        aArgs.concat(Array.prototype.slice.call(arguments)))
+    }
     fNOP.prototype = this.prototype
     fBound.prototype = new fNOP()
     return fBound
@@ -49,19 +49,12 @@ var APIPrototype = {
 
   // add a method to the prototype
   _addMethod(name, method, namespace, isNamespaceEnd) {
-    //console.log('name -> method -> namespace', name, method, namespace)
 
     let methodHandler = function () {
       var args = Array.prototype.slice.call(arguments)
 
       this.chain((next)=> {
         args.push(next)
-        //args.push(this)
-        if (namespace === 'catgory') {
-          console.log('methodHandler', name, namespace, args)
-          console.log('methodHandler', args)
-        }
-
         method.apply(this, args)
       })
 
@@ -85,7 +78,6 @@ var APIPrototype = {
 
   // add a collection of methods (key/value pairs) to the prototype
   _addMethods(methods, namespace) {
-    //console.log('methods -> namespace', methods, namespace)
     for (var name in methods) {
       if (methods.hasOwnProperty(name)) {
         if (!namespace) {
