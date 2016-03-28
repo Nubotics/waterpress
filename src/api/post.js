@@ -13,6 +13,7 @@ import {
   makeObject,
   merge,
   generateUuid,
+  pluck,
 } from '../core/util'
 
 import {
@@ -111,11 +112,7 @@ let populatePostCollection = function (e, postCollection, cb, next) {
     } else {
       cb(e, postCollection, next)
     }
-
-
   }
-
-
 }
 let findPost = function (params, options, cb, next) {
   if (this.collections) {
@@ -296,17 +293,144 @@ let one = function (params, cb, next) {
   }
 }
 
-let savePostCategory = function ({id, categoryCollection}, cb, next) {
+let savePostCategory = function ({id, categoryId, termId, taxonomyId, taxId}, cb, next) {
   if (this.collections) {
     if (!is(id, 'int')) {
       cb('No post identifier found', null, next)
+    } else if (!is(categoryId, 'int') || !is(termId, 'int')) {
+      cb('No category identifier found', null, next)
     } else {
+      if (!is(categoryId, 'int')) {
+        if (is(termId, 'int')) {
+          categoryId = termId
+        }
+      }
+      if (!is(taxId, 'int')) {
+        if (is(taxonomyId, 'int')) {
+          taxId = taxonomyId
+        }
+      }
+      const createRelation = (query, createCb)=> {
+        this.collections
+          .termrelationship
+          .create(query)
+          .exec(createCb)
+      }
+      const findRelation = (query, relCb)=> {
+        this.collections
+          .termrelationship
+          .findOne()
+          .where(query)
+          .exec(relCb)
+      }
+      const findTaxId = taxCb=> {
+        this.collections
+          .termtaxonomy
+          .findOne()
+          .where({term: categoryId, taxonomy: 'category'})
+          .exec(taxCb)
+      }
+      const findOrCreate = ()=> {
+        //-> if -> id + taxId -> exists -> cb
+        //-> else -> create
+        findRelation((err, relation)=> {
+          if (err) {
+            cb(err, null, next)
+          } else if (is(relation, 'nothing')) {
+            createRelation({
+              object: id,
+              termTaxonomy: taxId,
+            }, (error, result)=> {
+              cb(error, result, next)
+            })
+          } else {
+            cb(null, relation, next)
+          }
 
+        })
+      }
+      //-> if -> taxid -> useless -> find -> create
+      //-> else -> create
+      if (!is(taxId, 'nothing') && taxId > 0) {
+        findTaxId((err, tax)=> {
+          if (err || is(tax, 'nothing')) {
+            cb(err, tax, next)
+          } else {
+            taxId = tax.id
+            findOrCreate()
+          }
+        })
+      } else {
+        findOrCreate()
+      }
     }
   } else {
     cb('Not connected', null, next)
   }
 }
+let savePostCategoryCollection = function ({id, categoryCollection}, cb, next) {
+  if (this.collections) {
+    if (!is(id, 'int')) {
+      cb('No post identifier found', null, next)
+    } else {
+      let findTaxByTermIds = []
+      let saveCollection = []
+      const findTaxIds = taxCb=> {
+        this.collections
+          .termtaxonomy
+          .findOne()
+          .where({term: findTaxByTermIds, taxonomy: 'category'})
+          .exec(taxCb)
+      }
+      const createRelations = (query, createCb)=> {
+        this.collections
+          .termrelationship
+          .create(query)
+          .exec(createCb)
+      }
+      const assembleRelations = collection=> {
+        let result = []
+        forEach(collection, item=> {
+          result.push({
+            object: id,
+            termTaxonomy: item.taxonomyId,
+          })
+        })
+        return result
+      }
+      forEach(categoryCollection, category=> {
+        if (!has(category, 'id')) {
+          if (has(category, 'taxonomyId') || has(category, 'taxId')) {
+            saveCollection.push(category)
+          } else {
+            findTaxByTermIds.push(category.id)
+          }
+        }
+      })
+      if (is(findTaxByTermIds, 'zero')) {
+        createRelations(assembleRelations(saveCollection), (err, collection)=> {
+          cb(err, collection, next)
+        })
+      } else {
+        findTaxIds((err, taxCollection)=> {
+          let taxIds = pluck(taxCollection, 'id')
+          forEach(taxIds, taxonomyId=> {
+            saveCollection.push({
+              object: id,
+              termTaxonomy: taxonomyId,
+            })
+          })
+          createRelations(assembleRelations(saveCollection), (err, collection)=> {
+            cb(err, collection, next)
+          })
+        })
+      }
+    }
+  } else {
+    cb('Not connected', null, next)
+  }
+}
+
 let savePostMetaItem = function (metaItem, cb, next) {
   if (this.collections) {
     let {id, post} = metaItem
@@ -484,7 +608,6 @@ let save = function (postObj, callback, next) {
       //-> update
       const updatePost = (updateParams, cb)=> {
         updateParams.updatedAt = new Date()
-
         this.collections
           .post
           .update({id: updateParams.id}, updateParams)
@@ -518,18 +641,13 @@ let save = function (postObj, callback, next) {
                 .post
                 .create(createParams)
                 .exec(cb)
-
             }
           })
-
       }
+
       //:-> get populated post
       const reloadPost = (id, cb)=> {
-        one.call(this, {id, status: 'all'}, /*{limit:1},*/ function (err, post) {
-          /*let freshPost = null
-           if (!is(collection,'zero')){
-           freshPost = collection[0]
-           }*/
+        one.call(this, {id, status: 'all'}, function (err, post) {
           cb(err, post)
         })
       }
@@ -566,7 +684,6 @@ let save = function (postObj, callback, next) {
         })
       }
     }
-
   } else {
     callback('Not connected', null, next)
   }
@@ -634,7 +751,6 @@ let findByFormat = function (format, options, cb, next) {
   } else {
     cb('Not connected', null, next)
   }
-
 }
 let findByCategory = function (category, options, cb, next) {
   if (this.collections) {
@@ -667,7 +783,6 @@ let findByCategory = function (category, options, cb, next) {
           } else {
             cb(e, [], next)
           }
-
         } else {
           cb(e, [], next)
         }
@@ -675,7 +790,6 @@ let findByCategory = function (category, options, cb, next) {
   } else {
     cb('Not connected', null, next)
   }
-
 }
 
 //api export
@@ -686,11 +800,11 @@ export default {
   one,
   save,
   savePostCategory,
+  savePostCategoryCollection,
   savePostMetaItem,
   savePostMetaCollection,
   kill,
   findChildren,
   findByFormat,
   findByCategory,
-
 }

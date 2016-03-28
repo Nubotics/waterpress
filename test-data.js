@@ -7,8 +7,6 @@ let post = {
     content: '<h1>Post title </h1><p>Yo Yo</p>',
     status: 'draft',
     postDate: new Date(),
-    //mimeType: '',
-    //guid: '',
     parent: 0,
     metaCollection: [
       {
@@ -17,19 +15,9 @@ let post = {
       }
     ],
     author: 1,
-   /* relationshipCollection: [
-      {
-        termTaxonomy: 3,
-        order: 0
-      }
-    ],*/
-    /*
-     childCollection:[],
-     commentCollection:[],
-     */
   },
   update: {
-    id:96,
+    id: 96,
     title: 'post title',
     content: '<h1>Post title </h1><p>Yes yess</p>',
     status: 'publish',
@@ -45,30 +33,62 @@ let post = {
     ],
     author: 1,
     /*relationshipCollection: [
+     {
+     termTaxonomy: 3,
+     order: 0
+     }
+     ],*/
+  },
+  category: {
+    postId: 0,
+    taxonomyId: 0,
+    categoryId: 0,
+  },
+  meta: {
+    post: 96,
+    key: 'DERP_1',
+    value: 'that',
+  },
+  metaCollection: {
+    id: 96,
+    metaCollection: [
       {
-        termTaxonomy: 3,
-        order: 0
-      }
-    ],*/
+        key: 'DERP_1',
+        value: 'something',
+      },
+      {
+        key: 'DERP_2',
+        value: 'something',
+      },
+      {
+        key: 'DERP_3',
+        value: 'something',
+      },
+    ],
   }
 }
 
 let comment = {
   create: {
-    postId:96,
-    user:1,
-    content:'<b>Deeeerrrrp</b>',
+    postId: 96,
+    user: 1,
+    content: '<b>Deeeerrrrp</b>',
   },
   update: {
-
+    id: 1,
+    content: '<b>Derp Deeeerrrrp</b>',
+  },
+  meta: {
+    comment: 0,
+    key: 'DERP',
+    value: 'something',
   },
 }
 
 let media = {
-  create: {
-
-  },
+  create: {},
   update: {},
+  meta: {},
 }
 
 export default {
