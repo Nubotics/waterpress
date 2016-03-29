@@ -34,8 +34,8 @@ let result = {}
 
 api
   .connect()
-  .comment
-  .save(comment.create, (err, response, next)=> {
+  .media
+  .save(media.update, (err, response, next)=> {
     if (err) error.push(err)
     result = response
     next()

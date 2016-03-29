@@ -102,7 +102,7 @@ let media = {
     author: 1,
   },
   update: {
-    id: 96,
+    id: 97,
     status: 'inherit',
     slug: '96',
     guid: 'media/2/3',
@@ -113,6 +113,7 @@ let media = {
       }
     ],
     author: 1,
+    parent:96,
   },
   meta: {
     single: {
