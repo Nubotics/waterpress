@@ -21,51 +21,45 @@ let post = {
     title: 'post title',
     content: '<h1>Post title </h1><p>Yes yess</p>',
     status: 'publish',
-    //postDate: new Date(),
-    //mimeType: '',
-    //guid: '',
-    //parent: 0,
     metaCollection: [
       {
         key: '_test',
-        value: '2'
+        value: 'derp erp'
       }
     ],
     author: 1,
-    /*relationshipCollection: [
-     {
-     termTaxonomy: 3,
-     order: 0
-     }
-     ],*/
   },
   category: {
-    postId: 0,
-    taxonomyId: 0,
-    categoryId: 0,
+    id: 96,
+    //taxonomyId: 0,
+    categoryId: 4,
   },
   meta: {
-    post: 96,
-    key: 'DERP_1',
-    value: 'that',
+    single: {
+      //id:0,
+      post: 96,
+      key: '_test_1',
+      value: 'derp erp 123 456'
+    },
+    collection: {
+      id: 96,
+      metaCollection: [
+        {
+          //post: ,
+          post: 96,
+          key: '_test_2',
+          value: 'derp erp 123 456'
+        },
+        {
+          id: 292,
+          //post: 0,
+          post: 96,
+          key: '_test_3',
+          value: 'derp erp 123 456'
+        },
+      ]
+    },
   },
-  metaCollection: {
-    id: 96,
-    metaCollection: [
-      {
-        key: 'DERP_1',
-        value: 'something',
-      },
-      {
-        key: 'DERP_2',
-        value: 'something',
-      },
-      {
-        key: 'DERP_3',
-        value: 'something',
-      },
-    ],
-  }
 }
 
 let comment = {
@@ -86,9 +80,57 @@ let comment = {
 }
 
 let media = {
-  create: {},
-  update: {},
-  meta: {},
+  create: {
+    status: 'inherit',
+    postDate: new Date(),
+    mimeType: '',
+    guid: 'media/2',
+    parent: 0,
+    metaCollection: [
+      {
+        key: '_test',
+        value: 'derp erp'
+      }
+    ],
+    author: 1,
+  },
+  update: {
+    id: 96,
+    status: 'inherit',
+    slug: '96',
+    guid: 'media/2/3',
+    metaCollection: [
+      {
+        key: '_test',
+        value: 'derp erp 123'
+      }
+    ],
+    author: 1,
+  },
+  meta: {
+    single: {
+      //id:0,
+      post: 0,
+      key: '_test_1',
+      value: 'derp erp 123'
+    },
+    collection: {
+      id: 0,
+      metaCollection: [
+        {
+          post: 0,
+          key: '_test_2',
+          value: 'derp erp 123'
+        },
+        {
+          //id:0,
+          post: 0,
+          key: '_test_3',
+          value: 'derp erp 123'
+        },
+      ]
+    },
+  },
 }
 
 export default {

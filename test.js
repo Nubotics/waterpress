@@ -34,10 +34,10 @@ let result = {}
 
 api
   .connect()
-  .media
-  .save(media.create, (err, newMedia, next)=> {
+  .post
+  .savePostCategory(post.category, (err, response, next)=> {
     if (err) error.push(err)
-    result.newMedia = newMedia
+    result = response
     next()
   })
   //.find({},(err,comments,next)=>{
