@@ -140,11 +140,11 @@ let one = function (params, cb, next) {
 let save = function (commentObj, callback, next) {
   if (this.collections) {
     //-> !has -> post -> error
-    if (!has(commentObj, 'postId')) {
+    if (!has(commentObj, 'id') && !has(commentObj, 'postId')) {
       callback('No post supplied', null, next)
     } else
     //-> !has -> user || public author -> error
-    if (!is(commentObj.postId, 'int')) {
+    if (!has(commentObj, 'id') && !is(commentObj.postId, 'int')) {
       callback('No post supplied', null, next)
     } else {
 
@@ -189,7 +189,7 @@ let save = function (commentObj, callback, next) {
           if (err) {
             callback(err, comment, next)
           } else {
-            if (has(post, 'id')) {
+            if (has(comment, 'id')) {
               reloadComment(comment.id, (err, freshComment)=> {
                 callback(err, freshComment, next)
               })

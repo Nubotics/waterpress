@@ -34,8 +34,8 @@ let result = {}
 
 api
   .connect()
-  .post
-  .savePostCategory(post.category, (err, response, next)=> {
+  .comment
+  .save(comment.create, (err, response, next)=> {
     if (err) error.push(err)
     result = response
     next()

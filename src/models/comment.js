@@ -48,7 +48,7 @@ const comment = {
       columnName:'comment_parent',
       model:'comment'
     },
-    createdAt: {
+    commentDate: {
       type: 'datetime',
       columnName: 'comment_date'
     },

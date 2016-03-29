@@ -66,16 +66,23 @@ let comment = {
   create: {
     postId: 96,
     user: 1,
-    content: '<b>Deeeerrrrp</b>',
+    content: '<b>Deeeerrrrp 123</b>',
+    commentDate:new Date(),
+    metaCollection: [{
+      key: 'DERP',
+      value: 'something else',
+
+    }],
   },
   update: {
-    id: 1,
-    content: '<b>Derp Deeeerrrrp</b>',
-  },
-  meta: {
-    comment: 0,
-    key: 'DERP',
-    value: 'something',
+    id: 24,
+    content: '<b>Derp Deeeerrrrp yesssss</b>',
+    commentDate:new Date(),
+    metaCollection: [{
+      key: 'DERP',
+      value: 'something',
+
+    }],
   },
 }
 
