@@ -3,7 +3,7 @@ const hasher = require('wordpress-hash-node')
 
 //util
 import {
-
+  includes,
   assign,
   eachKey,
   findValue,

@@ -769,8 +769,8 @@ let findByFormat = function (format, options, cb, next) {
       .exec((e, termTaxCollection)=> {
         let filterResult = []
         map(termTaxCollection, termTax=> {
-          if (contains(termTax.term.slug, format)
-            || contains(termTax.term.name, format)) {
+          if (includes(termTax.term.slug, format)
+            || includes(termTax.term.name, format)) {
             filterResult.push(termTax)
           }
         })
@@ -809,8 +809,8 @@ let findByCategory = function (category, options, cb, next) {
       .exec((e, termTaxCollection)=> {
         let filterResult = []
         map(termTaxCollection, termTax=> {
-          if (contains(termTax.term.slug, category)
-            || contains(termTax.term.name, category)) {
+          if (includes(termTax.term.slug, category)
+            || includes(termTax.term.name, category)) {
             filterResult.push(termTax)
           }
         })
