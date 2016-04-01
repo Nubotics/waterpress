@@ -760,38 +760,52 @@ let findChildren = function (postId, cb, next) {
 let findByFormat = function (format, options, cb, next) {
   if (this.collections) {
     let params = {taxonomy: {'endsWith': '_format'}}
+
+    const findRelation = (taxIds, relCb)=> {
+      this.collections
+        .termrelationship
+        .query(
+        `
+          SELECT * FROM wp_term_relationships
+          WHERE term_taxonomy_id in (${taxIds.toString()});
+          `, relCb)
+    }
+
     this.collections
       .termtaxonomy
       .find()
       .where(params)
       .populate('term')
-      .populate('relationshipCollection')
+      //.populate('relationshipCollection')
       .exec((e, termTaxCollection)=> {
         let filterResult = []
+        let termIds = []
         map(termTaxCollection, termTax=> {
-          if (includes(termTax.term.slug, format)
-            || includes(termTax.term.name, format)) {
+          if (includes(termTax.term.slug, category)
+            || includes(termTax.term.name, category)) {
             filterResult.push(termTax)
+            termIds.push(termTax.id)
           }
         })
-        let postIdCollection = []
+
         if (filterResult.length > 0) {
-          map(filterResult, filterTermTax=> {
-            if (has(filterTermTax, 'relationshipCollection')) {
-              map(filterTermTax.relationshipCollection, relation=> {
-                postIdCollection.push(relation.object)
-              })
+
+          findRelation(termIds, (err, relations)=> {
+
+            let postIdCollection = pluck(relations, 'object_id')
+
+            if (postIdCollection.length > 0) {
+              findPost.call(this, {id: postIdCollection}, options, cb, next)
+            } else {
+              cb(e, [], next)
             }
+
           })
-          if (postIdCollection.length > 0) {
-            findPost.call(this, {id: postIdCollection}, options, cb, next)
-          } else {
-            cb(e, [], next)
-          }
 
         } else {
           cb(e, [], next)
         }
+
       })
   } else {
     cb('Not connected', null, next)
@@ -800,37 +814,52 @@ let findByFormat = function (format, options, cb, next) {
 let findByCategory = function (category, options, cb, next) {
   if (this.collections) {
     let params = {taxonomy: 'category'}
+
+    const findRelation = (taxIds, relCb)=> {
+      this.collections
+        .termrelationship
+        .query(
+        `
+          SELECT * FROM wp_term_relationships
+          WHERE term_taxonomy_id in (${taxIds.toString()});
+          `, relCb)
+    }
+
     this.collections
       .termtaxonomy
       .find()
       .where(params)
       .populate('term')
-      .populate('relationshipCollection')
+      //.populate('relationshipCollection')
       .exec((e, termTaxCollection)=> {
         let filterResult = []
+        let termIds = []
         map(termTaxCollection, termTax=> {
           if (includes(termTax.term.slug, category)
             || includes(termTax.term.name, category)) {
             filterResult.push(termTax)
+            termIds.push(termTax.id)
           }
         })
-        let postIdCollection = []
+
         if (filterResult.length > 0) {
-          map(filterResult, filterTermTax=> {
-            if (has(filterTermTax, 'relationshipCollection')) {
-              map(filterTermTax.relationshipCollection, relation=> {
-                postIdCollection.push(relation.object)
-              })
+
+          findRelation(termIds, (err, relations)=> {
+
+            let postIdCollection = pluck(relations, 'object_id')
+
+            if (postIdCollection.length > 0) {
+              findPost.call(this, {id: postIdCollection}, options, cb, next)
+            } else {
+              cb(e, [], next)
             }
+
           })
-          if (postIdCollection.length > 0) {
-            findPost.call(this, {id: postIdCollection}, options, cb, next)
-          } else {
-            cb(e, [], next)
-          }
+
         } else {
           cb(e, [], next)
         }
+
       })
   } else {
     cb('Not connected', null, next)
