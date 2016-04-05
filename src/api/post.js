@@ -422,6 +422,8 @@ let savePostCategoryCollection = function ({id, categoryCollection}, cb, next) {
           } else {
             findTaxByTermIds.push(category.id)
           }
+        }else {
+          findTaxByTermIds.push(category.id)
         }
       })
       if (is(findTaxByTermIds, 'zero')) {
