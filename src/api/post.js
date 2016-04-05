@@ -887,7 +887,7 @@ export default {
   one,
   save,
   savePostCategory,
-  //savePostCategoryCollection,
+  savePostCategoryCollection,
   savePostMetaItem,
   savePostMetaCollection,
   kill,
