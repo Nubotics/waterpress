@@ -73,7 +73,7 @@ let populatePostCollection = function (e, postCollection, cb, next) {
           }
         }
       }
-      if (has(post, 'author')) {
+      if (has(post, 'author.password')) {
         delete post.author.password
       }
     })
@@ -220,7 +220,9 @@ let populatePost = function (e, post, cb, next) {
   }
   let actionCb = (err, post, next)=> {
     if (has(post, 'author')) {
-      delete post.author.password
+      if (has(post, 'author.password')) {
+        delete post.author.password
+      }
       populateUserMeta((metaErr, metaCollection, metaObj)=> {
         if (metaErr) {
           cb(metaErr, post, next)
@@ -422,7 +424,7 @@ let savePostCategoryCollection = function ({id, categoryCollection}, cb, next) {
           } else {
             findTaxByTermIds.push(category.id)
           }
-        }else {
+        } else {
           findTaxByTermIds.push(category.id)
         }
       })
