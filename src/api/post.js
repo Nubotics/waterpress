@@ -205,6 +205,7 @@ let populatePost = function (e, post, cb, next) {
   }
 
   let populateUserMeta = (callback)=> {
+    if (has(post,'author.id')){
     this.collections
       .usermeta
       .find()
@@ -217,6 +218,9 @@ let populatePost = function (e, post, cb, next) {
           callback(errUserMeta, metaCollection, metaObj)
         }
       })
+    }else{
+      callback(null, [], {})
+    }
   }
   let actionCb = (err, post, next)=> {
     if (has(post, 'author')) {
@@ -246,6 +250,7 @@ let populatePost = function (e, post, cb, next) {
         if (err) {
           cb(err, post, next)
         } else {
+          post.author = post.author || {}
           if (is(collection, 'array')) {
             collection.map(termTax=> {
               if (termTax.taxonomy == 'category') {
