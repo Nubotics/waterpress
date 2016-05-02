@@ -231,7 +231,7 @@ let populatePost = function (e, post, cb, next) {
         if (metaErr) {
           cb(metaErr, post, next)
         } else {
-          if (!has(post, 'author')) {
+          if (!has(post, 'author') || !post.author) {
             post.author = {}
           }
           post.author.metaCollection = metaCollection
