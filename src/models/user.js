@@ -71,7 +71,11 @@ const user = {
     metaCollection: {
       collection: 'userMeta',
       via: 'user'
-    }
+    },
+    activationKey:{
+      type:'string',
+      columnName: 'user_activation_key'
+    },
   },
   migrate: 'safe',
   autoPK: false,

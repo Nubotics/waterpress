@@ -40,28 +40,30 @@ api
     result = response
     next()
   })
-  //.find({},(err,comments,next)=>{
-  //  if (err) error.push(err)
-  //  result.commentCollection = comments
-  //  next()
-  //})
-  /*  .category
-   .find({}, (err, collection, next)=> {
-   if (err) error.push(err)
-   result.terms = collection
-   next()
-   })*/
-  /*  .post
-   .save(post.update, (err, newPost, next)=> {
-   if (err) error.push(err)
-   result.savedPost = newPost
-   next()
-   })*/
-  /*  .find({title: 'post title', status:'all'}, {}, (err, postCollection, next)=> {
-   if (err) error.push(err)
-   result.postCollection = postCollection
-   next()
-   })*/
+  .find({}, (err, comments, next)=> {
+    if (err) error.push(err)
+    result.commentCollection = comments
+    next()
+  })
+  .done()
+  .category
+  .find({}, (err, collection, next)=> {
+    if (err) error.push(err)
+    result.terms = collection
+    next()
+  })
+  .done()
+  .post
+  .save(post.update, (err, newPost, next)=> {
+    if (err) error.push(err)
+    result.savedPost = newPost
+    next()
+  })
+  .find({title: 'post title', status: 'all'}, {}, (err, postCollection, next)=> {
+    if (err) error.push(err)
+    result.postCollection = postCollection
+    next()
+  })
   .done()
   .disconnect((next)=> {
     next()

@@ -205,20 +205,20 @@ let populatePost = function (e, post, cb, next) {
   }
 
   let populateUserMeta = (callback)=> {
-    if (has(post,'author.id')){
-    this.collections
-      .usermeta
-      .find()
-      .where({user: post.author.id})
-      .exec((errUserMeta, metaCollection)=> {
-        if (errUserMeta) {
-          callback(errUserMeta, null, null)
-        } else {
-          let metaObj = makeObject(metaCollection)
-          callback(errUserMeta, metaCollection, metaObj)
-        }
-      })
-    }else{
+    if (has(post, 'author.id')) {
+      this.collections
+        .usermeta
+        .find()
+        .where({user: post.author.id})
+        .exec((errUserMeta, metaCollection)=> {
+          if (errUserMeta) {
+            callback(errUserMeta, null, null)
+          } else {
+            let metaObj = makeObject(metaCollection)
+            callback(errUserMeta, metaCollection, metaObj)
+          }
+        })
+    } else {
       callback(null, [], {})
     }
   }
@@ -231,6 +231,9 @@ let populatePost = function (e, post, cb, next) {
         if (metaErr) {
           cb(metaErr, post, next)
         } else {
+          if (!has(post, 'author')) {
+            post.author = {}
+          }
           post.author.metaCollection = metaCollection
           post.author.metaObj = metaObj
           cb(err, post, next)
